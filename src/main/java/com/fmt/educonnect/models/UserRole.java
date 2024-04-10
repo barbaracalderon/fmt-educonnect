@@ -1,18 +1,13 @@
 package com.fmt.educonnect.models;
 
-public enum UsersRole {
-    ROLE_ADMIN("docente"),
-    ROLE_PEDAGOGICO("docente"),
-    ROLE_RECRUITER("docente"),
-    ROLE_PROFESSOR("docente"),
-    ROLE_ALUNO("aluno");
+public enum UserRole {
+    ADMIN("docente");
 
     private String role;
 
-    UsersRole(String role){
+    UserRole(String role){
         this.role = role;
     }
-
 
     public String getRole(){
         return role;
