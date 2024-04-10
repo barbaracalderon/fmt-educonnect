@@ -34,5 +34,5 @@ build/
 
 ### EduConnect ###
 .mvn/
-src/main/resources/
+src/main/resources/application.properties
 src/test/
