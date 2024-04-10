@@ -33,7 +33,7 @@ public class DocenteService implements IDocenteService {
 
         docenteModel.setNome(docenteDTO.getNome());
         docenteModel.setDataEntrada(docenteDTO.getDataEntrada());
-        docenteModel.setIdUsuario(docenteDTO.getIdUsuario());
+        docenteModel.setIdUser(docenteDTO.getIdUsuario());
 
         return docenteModel;
     }
@@ -45,7 +45,7 @@ public class DocenteService implements IDocenteService {
         docenteDTO.setId(docenteModel.getId());
         docenteDTO.setNome(docenteModel.getNome());
         docenteDTO.setDataEntrada(docenteModel.getDataEntrada());
-        docenteDTO.setIdUsuario(docenteModel.getIdUsuario());
+        docenteDTO.setIdUsuario(docenteModel.getIdUser());
 
         return docenteDTO;
     }
