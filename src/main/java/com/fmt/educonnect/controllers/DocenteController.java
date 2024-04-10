@@ -18,8 +18,8 @@ public class DocenteController {
     private DocenteService docenteService;
 
     @PostMapping
-    public ResponseEntity<DocenteDTO> criarDocente(@RequestBody DocenteDTO docenteDTO) {
-        DocenteDTO docenteCriado = docenteService.criarDocente(docenteDTO);
+    public ResponseEntity<DocenteDTO> criarDocente(@RequestBody DocenteDTO body) {
+        DocenteDTO docenteCriado = docenteService.criarDocente(body);
         if (docenteCriado != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(docenteCriado);
         } else {
