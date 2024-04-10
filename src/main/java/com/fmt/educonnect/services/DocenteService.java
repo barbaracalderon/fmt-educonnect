@@ -16,6 +16,10 @@ public class DocenteService implements IDocenteService {
     @Autowired
     private DocenteRepository docenteRepository;
 
+    public DocenteService(DocenteRepository docenteRepository) {
+        this.docenteRepository = docenteRepository;
+    }
+
     @Override
     public DocenteDTO criarDocente(DocenteDTO docenteDTO) {
         DocenteModel docenteModel = converterParaEntidade(docenteDTO);
