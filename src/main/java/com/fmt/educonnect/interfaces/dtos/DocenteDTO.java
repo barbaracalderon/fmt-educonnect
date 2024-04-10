@@ -1,4 +1,4 @@
-package com.fmt.educonnect.dtos;
+package com.fmt.educonnect.interfaces.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
