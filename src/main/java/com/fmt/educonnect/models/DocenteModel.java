@@ -21,6 +21,6 @@ public class DocenteModel {
     private int id;
     private String nome;
     private LocalDate dataEntrada;
-    private int idUsuario;
+    private int idUser;
 }
 
