@@ -1,4 +1,4 @@
 package com.fmt.educonnect.interfaces.dtos;
 
-public class LoginResponseDTO {
+public record LoginResponseDTO(String token) {
 }
