@@ -40,7 +40,7 @@ public class AuthenticationController {
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(body.password());
         UserModel newUser = new UserModel(body.login(), encryptedPassword, body.role());
-AuthenticationDTO
+
         this.userRepository.save(newUser);
 
         return ResponseEntity.ok().build();
