@@ -1,4 +1,7 @@
 package com.fmt.educonnect.interfaces.dtos;
 
-public class RegisterDTO {
+import com.fmt.educonnect.models.UserRole;
+
+public record RegisterDTO (String login, String password, UserRole role){
 }
+

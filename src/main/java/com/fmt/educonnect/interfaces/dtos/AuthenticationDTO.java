@@ -1,4 +1,6 @@
 package com.fmt.educonnect.interfaces.dtos;
 
-public class AuthenticationDTO {
+public record AuthenticationDTO(String login, String password) {
+
+
 }
