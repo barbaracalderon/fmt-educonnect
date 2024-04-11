@@ -1,11 +1,14 @@
 package com.fmt.educonnect.controllers;
 
 import com.fmt.educonnect.interfaces.dtos.AuthenticationDTO;
+import com.fmt.educonnect.interfaces.dtos.LoginResponseDTO;
 import com.fmt.educonnect.interfaces.dtos.RegisterDTO;
 import com.fmt.educonnect.models.UserModel;
 import com.fmt.educonnect.repositories.UserRepository;
+import com.fmt.educonnect.services.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,12 +28,17 @@ public class AuthenticationController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO body) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(body.login(), body.password());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        return ResponseEntity.ok().build();
+        var auth = this.authenticationManager.authenticate(usernamePassword);
+        var token = tokenService.generateToken((UserModel) auth.getPrincipal());
+
+        return ResponseEntity.ok(new LoginResponseDTO(token));
 
     }
 
@@ -42,7 +50,6 @@ public class AuthenticationController {
         UserModel newUser = new UserModel(body.login(), encryptedPassword, body.role());
 
         this.userRepository.save(newUser);
-
         return ResponseEntity.ok().build();
     }
 
