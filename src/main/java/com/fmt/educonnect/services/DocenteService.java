@@ -1,9 +1,8 @@
 package com.fmt.educonnect.services;
 
-import com.fmt.educonnect.interfaces.dtos.DocenteDTO;
-import com.fmt.educonnect.interfaces.IDocenteService;
-import com.fmt.educonnect.models.DocenteModel;
-import com.fmt.educonnect.repositories.DocenteRepository;
+import com.fmt.educonnect.controllers.dtos.requests.RequestDocenteDTO;
+import com.fmt.educonnect.datasource.entities.DocenteEntity;
+import com.fmt.educonnect.datasource.repositories.DocenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class DocenteService implements IDocenteService {
+public class DocenteService implements com.fmt.educonnect.interfaces.DocenteInterface {
 
     @Autowired
     private DocenteRepository docenteRepository;
@@ -21,44 +20,44 @@ public class DocenteService implements IDocenteService {
     }
 
     @Override
-    public DocenteDTO criarDocente(DocenteDTO docenteDTO) {
-        DocenteModel docenteModel = converterParaEntidade(docenteDTO);
-        DocenteModel docenteModelSalvo = docenteRepository.save(docenteModel);
-        return converterParaResponseDTO(docenteModelSalvo);
+    public RequestDocenteDTO criarDocente(RequestDocenteDTO requestDocenteDTO) {
+        DocenteEntity docenteEntity = converterParaEntidade(requestDocenteDTO);
+        DocenteEntity docenteEntitySalvo = docenteRepository.save(docenteEntity);
+        return converterParaResponseDTO(docenteEntitySalvo);
     }
 
     @Override
-    public DocenteModel converterParaEntidade(DocenteDTO docenteDTO){
-        DocenteModel docenteModel = new DocenteModel();
+    public DocenteEntity converterParaEntidade(RequestDocenteDTO requestDocenteDTO){
+        DocenteEntity docenteEntity = new DocenteEntity();
 
-        docenteModel.setNome(docenteDTO.getNome());
-        docenteModel.setDataEntrada(docenteDTO.getDataEntrada());
-        docenteModel.setIdUser(docenteDTO.getIdUsuario());
+        docenteEntity.setNome(requestDocenteDTO.getNome());
+        docenteEntity.setDataEntrada(requestDocenteDTO.getDataEntrada());
+        docenteEntity.setIdUser(requestDocenteDTO.getIdUsuario());
 
-        return docenteModel;
+        return docenteEntity;
     }
 
     @Override
-    public DocenteDTO converterParaResponseDTO(DocenteModel docenteModel){
-        DocenteDTO docenteDTO = new DocenteDTO();
+    public RequestDocenteDTO converterParaResponseDTO(DocenteEntity docenteEntity){
+        RequestDocenteDTO requestDocenteDTO = new RequestDocenteDTO();
 
-        docenteDTO.setId(docenteModel.getId());
-        docenteDTO.setNome(docenteModel.getNome());
-        docenteDTO.setDataEntrada(docenteModel.getDataEntrada());
-        docenteDTO.setIdUsuario(docenteModel.getIdUser());
+        requestDocenteDTO.setId(docenteEntity.getId());
+        requestDocenteDTO.setNome(docenteEntity.getNome());
+        requestDocenteDTO.setDataEntrada(docenteEntity.getDataEntrada());
+        requestDocenteDTO.setIdUsuario(docenteEntity.getIdUser());
 
-        return docenteDTO;
+        return requestDocenteDTO;
     }
 
     @Override
-    public List<DocenteDTO> listarDocentes() {
-        List<DocenteModel> docentes = docenteRepository.findAll();
-        List<DocenteDTO> docentesDTO = converterParaListaDeResponseDTO(docentes);
+    public List<RequestDocenteDTO> listarDocentes() {
+        List<DocenteEntity> docentes = docenteRepository.findAll();
+        List<RequestDocenteDTO> docentesDTO = converterParaListaDeResponseDTO(docentes);
         return docentesDTO;
     }
 
     @Override
-    public List<DocenteDTO> converterParaListaDeResponseDTO(List<DocenteModel> docentes) {
+    public List<RequestDocenteDTO> converterParaListaDeResponseDTO(List<DocenteEntity> docentes) {
         return docentes.stream()
                 .map(this::converterParaResponseDTO)
                 .collect(Collectors.toList());

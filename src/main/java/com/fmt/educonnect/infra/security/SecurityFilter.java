@@ -1,6 +1,6 @@
 package com.fmt.educonnect.infra.security;
 
-import com.fmt.educonnect.repositories.UserRepository;
+import com.fmt.educonnect.datasource.repositories.UserRepository;
 import com.fmt.educonnect.services.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

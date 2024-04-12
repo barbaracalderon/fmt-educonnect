@@ -1,4 +1,4 @@
-package com.fmt.educonnect.models;
+package com.fmt.educonnect.datasource.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class UserModel implements UserDetails {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -26,9 +26,9 @@ public class UserModel implements UserDetails {
     private String login;
     private String password;
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private UserRoleEntity role;
 
-    public UserModel(String login, String password, UserRole role) {
+    public UserEntity(String login, String password, UserRoleEntity role) {
         this.login = login;
         this.password = password;
         this.role = role;
@@ -36,7 +36,7 @@ public class UserModel implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        if(this.role == UserRoleEntity.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 

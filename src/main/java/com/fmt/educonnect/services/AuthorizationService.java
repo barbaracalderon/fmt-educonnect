@@ -1,6 +1,6 @@
 package com.fmt.educonnect.services;
 
-import com.fmt.educonnect.repositories.UserRepository;
+import com.fmt.educonnect.datasource.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
