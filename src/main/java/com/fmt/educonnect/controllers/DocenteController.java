@@ -48,5 +48,15 @@ public class DocenteController {
         }
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizarDocente(@PathVariable("id") int id, @RequestBody RequestDocenteDTO requestDocenteDTO) {
+        try {
+            ResponseDocenteDTO responseDocenteDTO = docenteService.atualizarDocente(id, requestDocenteDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDocenteDTO);
+        } catch (DocenteNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
 
 }

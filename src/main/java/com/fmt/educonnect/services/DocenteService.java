@@ -69,7 +69,20 @@ public class DocenteService implements DocenteInterface {
     public ResponseDocenteDTO buscarDocentePorId(int id) {
         return docenteRepository.findById(id)
                 .map(this::converterParaResponseDTO)
-                .orElseThrow(() -> new DocenteNotFoundException("Id do Docente não encontrado."));
+                .orElseThrow(() -> new DocenteNotFoundException("Id do Docente não encontrado: " + id));
     }
+
+    @Override
+    public ResponseDocenteDTO atualizarDocente(int id, RequestDocenteDTO requestDocenteDTO) {
+        return docenteRepository.findById(id)
+                .map(docente -> {
+                    docente.setNome(requestDocenteDTO.nome());
+                    docente.setDataEntrada(requestDocenteDTO.dataEntrada());
+                    DocenteEntity updatedDocente = docenteRepository.save(docente);
+                    return converterParaResponseDTO(updatedDocente);
+                })
+                .orElseThrow(() -> new DocenteNotFoundException("Id do Docente não encontrado para atualizar: " + id));
+    }
+
 
 }
