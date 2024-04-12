@@ -1,6 +1,6 @@
 package com.fmt.educonnect.services;
 
-import com.fmt.educonnect.controllers.dtos.DocenteDTO;
+import com.fmt.educonnect.controllers.dtos.requests.RequestDocenteDTO;
 import com.fmt.educonnect.datasource.entities.DocenteEntity;
 import com.fmt.educonnect.datasource.repositories.DocenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,44 +20,44 @@ public class DocenteService implements com.fmt.educonnect.interfaces.DocenteInte
     }
 
     @Override
-    public DocenteDTO criarDocente(DocenteDTO docenteDTO) {
-        DocenteEntity docenteEntity = converterParaEntidade(docenteDTO);
+    public RequestDocenteDTO criarDocente(RequestDocenteDTO requestDocenteDTO) {
+        DocenteEntity docenteEntity = converterParaEntidade(requestDocenteDTO);
         DocenteEntity docenteEntitySalvo = docenteRepository.save(docenteEntity);
         return converterParaResponseDTO(docenteEntitySalvo);
     }
 
     @Override
-    public DocenteEntity converterParaEntidade(DocenteDTO docenteDTO){
+    public DocenteEntity converterParaEntidade(RequestDocenteDTO requestDocenteDTO){
         DocenteEntity docenteEntity = new DocenteEntity();
 
-        docenteEntity.setNome(docenteDTO.getNome());
-        docenteEntity.setDataEntrada(docenteDTO.getDataEntrada());
-        docenteEntity.setIdUser(docenteDTO.getIdUsuario());
+        docenteEntity.setNome(requestDocenteDTO.getNome());
+        docenteEntity.setDataEntrada(requestDocenteDTO.getDataEntrada());
+        docenteEntity.setIdUser(requestDocenteDTO.getIdUsuario());
 
         return docenteEntity;
     }
 
     @Override
-    public DocenteDTO converterParaResponseDTO(DocenteEntity docenteEntity){
-        DocenteDTO docenteDTO = new DocenteDTO();
+    public RequestDocenteDTO converterParaResponseDTO(DocenteEntity docenteEntity){
+        RequestDocenteDTO requestDocenteDTO = new RequestDocenteDTO();
 
-        docenteDTO.setId(docenteEntity.getId());
-        docenteDTO.setNome(docenteEntity.getNome());
-        docenteDTO.setDataEntrada(docenteEntity.getDataEntrada());
-        docenteDTO.setIdUsuario(docenteEntity.getIdUser());
+        requestDocenteDTO.setId(docenteEntity.getId());
+        requestDocenteDTO.setNome(docenteEntity.getNome());
+        requestDocenteDTO.setDataEntrada(docenteEntity.getDataEntrada());
+        requestDocenteDTO.setIdUsuario(docenteEntity.getIdUser());
 
-        return docenteDTO;
+        return requestDocenteDTO;
     }
 
     @Override
-    public List<DocenteDTO> listarDocentes() {
+    public List<RequestDocenteDTO> listarDocentes() {
         List<DocenteEntity> docentes = docenteRepository.findAll();
-        List<DocenteDTO> docentesDTO = converterParaListaDeResponseDTO(docentes);
+        List<RequestDocenteDTO> docentesDTO = converterParaListaDeResponseDTO(docentes);
         return docentesDTO;
     }
 
     @Override
-    public List<DocenteDTO> converterParaListaDeResponseDTO(List<DocenteEntity> docentes) {
+    public List<RequestDocenteDTO> converterParaListaDeResponseDTO(List<DocenteEntity> docentes) {
         return docentes.stream()
                 .map(this::converterParaResponseDTO)
                 .collect(Collectors.toList());

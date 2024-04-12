@@ -1,6 +1,6 @@
 package com.fmt.educonnect.controllers;
 
-import com.fmt.educonnect.controllers.dtos.DocenteDTO;
+import com.fmt.educonnect.controllers.dtos.requests.RequestDocenteDTO;
 import com.fmt.educonnect.services.DocenteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,8 +17,8 @@ public class DocenteController {
     private DocenteService docenteService;
 
     @PostMapping
-    public ResponseEntity<DocenteDTO> criarDocente(@RequestBody DocenteDTO body) {
-        DocenteDTO docenteCriado = docenteService.criarDocente(body);
+    public ResponseEntity<RequestDocenteDTO> criarDocente(@RequestBody RequestDocenteDTO body) {
+        RequestDocenteDTO docenteCriado = docenteService.criarDocente(body);
         if (docenteCriado != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(docenteCriado);
         } else {
@@ -27,8 +27,8 @@ public class DocenteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DocenteDTO>> listarDocentes() {
-        List<DocenteDTO> docentes = docenteService.listarDocentes();
+    public ResponseEntity<List<RequestDocenteDTO>> listarDocentes() {
+        List<RequestDocenteDTO> docentes = docenteService.listarDocentes();
         if (!docentes.isEmpty()) {
             return ResponseEntity.ok(docentes);
         } else {

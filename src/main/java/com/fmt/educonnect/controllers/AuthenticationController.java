@@ -1,8 +1,8 @@
 package com.fmt.educonnect.controllers;
 
-import com.fmt.educonnect.controllers.dtos.AuthenticationDTO;
-import com.fmt.educonnect.controllers.dtos.LoginResponseDTO;
-import com.fmt.educonnect.controllers.dtos.RegisterDTO;
+import com.fmt.educonnect.controllers.dtos.requests.RequestLoginDTO;
+import com.fmt.educonnect.controllers.dtos.responses.ResponseLoginDTO;
+import com.fmt.educonnect.controllers.dtos.requests.RequestRegisterDTO;
 import com.fmt.educonnect.datasource.entities.UserEntity;
 import com.fmt.educonnect.datasource.repositories.UserRepository;
 import com.fmt.educonnect.services.TokenService;
@@ -31,18 +31,18 @@ public class AuthenticationController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO body) {
+    public ResponseEntity login(@RequestBody @Valid RequestLoginDTO body) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(body.login(), body.password());
 
         var auth = this.authenticationManager.authenticate(usernamePassword);
         var token = tokenService.generateToken((UserEntity) auth.getPrincipal());
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        return ResponseEntity.ok(new ResponseLoginDTO(token));
 
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterDTO body) {
+    public ResponseEntity register(@RequestBody @Valid RequestRegisterDTO body) {
         if (this.userRepository.findByLogin(body.login()) != null) return ResponseEntity.badRequest().build();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(body.password());
