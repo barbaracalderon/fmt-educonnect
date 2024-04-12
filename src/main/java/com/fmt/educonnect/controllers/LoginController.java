@@ -6,13 +6,16 @@ import com.fmt.educonnect.datasource.entities.UserEntity;
 import com.fmt.educonnect.services.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 @RequestMapping("login")
@@ -26,12 +29,16 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid RequestLoginDTO body) {
-        var usernamePassword = new UsernamePasswordAuthenticationToken(body.login(), body.password());
 
-        var auth = this.authenticationManager.authenticate(usernamePassword);
-        var token = tokenService.generateToken((UserEntity) auth.getPrincipal());
+        try{
+            var usernamePassword = new UsernamePasswordAuthenticationToken(body.login(), body.password());
+            var auth = this.authenticationManager.authenticate(usernamePassword);
+            var token = tokenService.generateToken((UserEntity) auth.getPrincipal());
+            return ResponseEntity.ok(new ResponseLoginDTO(token));
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login ou senha inválidos.");
+        }
 
-        return ResponseEntity.ok(new ResponseLoginDTO(token));
     }
 
 }
