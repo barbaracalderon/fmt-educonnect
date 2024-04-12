@@ -4,6 +4,7 @@ import com.fmt.educonnect.controllers.dtos.requests.RequestDocenteDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseDocenteDTO;
 import com.fmt.educonnect.datasource.entities.DocenteEntity;
 import com.fmt.educonnect.datasource.repositories.DocenteRepository;
+import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
 import com.fmt.educonnect.interfaces.DocenteInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,4 +63,34 @@ public class DocenteService implements DocenteInterface {
                 .map(this::converterParaResponseDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public ResponseDocenteDTO buscarDocentePorId(int id) {
+        return docenteRepository.findById(id)
+                .map(this::converterParaResponseDTO)
+                .orElseThrow(() -> new DocenteNotFoundException("Id do Docente não encontrado: " + id));
+    }
+
+    @Override
+    public ResponseDocenteDTO atualizarDocente(int id, RequestDocenteDTO requestDocenteDTO) {
+        return docenteRepository.findById(id)
+                .map(docente -> {
+                    docente.setNome(requestDocenteDTO.nome());
+                    docente.setDataEntrada(requestDocenteDTO.dataEntrada());
+                    DocenteEntity updatedDocente = docenteRepository.save(docente);
+                    return converterParaResponseDTO(updatedDocente);
+                })
+                .orElseThrow(() -> new DocenteNotFoundException("Id do Docente não encontrado para atualizar: " + id));
+    }
+
+    @Override
+    public Void deletarDocente(int id) {
+        docenteRepository.findById(id)
+                .orElseThrow(() -> new DocenteNotFoundException("Id do Docente não encontrado para deletar: " + id));
+        docenteRepository.deleteById(id);
+        return null;
+    }
+
+
+
 }

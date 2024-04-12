@@ -2,8 +2,8 @@ package com.fmt.educonnect.controllers;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestDocenteDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseDocenteDTO;
+import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
 import com.fmt.educonnect.services.DocenteService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,5 +37,39 @@ public class DocenteController {
             return ResponseEntity.ok().body(responseDocenteDTOsList);
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> buscarDocentePorId(@PathVariable("id") int id) {
+        try {
+            ResponseDocenteDTO responseDocenteDTO = docenteService.buscarDocentePorId(id);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDocenteDTO);
+        } catch (DocenteNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizarDocente(@PathVariable("id") int id, @RequestBody RequestDocenteDTO requestDocenteDTO) {
+        try {
+            ResponseDocenteDTO responseDocenteDTO = docenteService.atualizarDocente(id, requestDocenteDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDocenteDTO);
+        } catch (DocenteNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletarDocente(@PathVariable("id") int id) {
+        try {
+            docenteService.deletarDocente(id);
+            return ResponseEntity.noContent().build();
+        } catch (DocenteNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+
+
+
 
 }
