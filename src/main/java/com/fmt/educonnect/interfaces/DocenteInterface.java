@@ -17,4 +17,6 @@ public interface DocenteInterface {
     List<ResponseDocenteDTO> listarDocentes();
 
     List<ResponseDocenteDTO> converterParaListaDeResponseDTO(List<DocenteEntity> docentes);
+
+    ResponseDocenteDTO buscarDocentePorId(int id);
 }

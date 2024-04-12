@@ -4,11 +4,13 @@ import com.fmt.educonnect.controllers.dtos.requests.RequestDocenteDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseDocenteDTO;
 import com.fmt.educonnect.datasource.entities.DocenteEntity;
 import com.fmt.educonnect.datasource.repositories.DocenteRepository;
+import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
 import com.fmt.educonnect.interfaces.DocenteInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,4 +64,12 @@ public class DocenteService implements DocenteInterface {
                 .map(this::converterParaResponseDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public ResponseDocenteDTO buscarDocentePorId(int id) {
+        return docenteRepository.findById(id)
+                .map(this::converterParaResponseDTO)
+                .orElseThrow(() -> new DocenteNotFoundException("Id do Docente não encontrado."));
+    }
+
 }
