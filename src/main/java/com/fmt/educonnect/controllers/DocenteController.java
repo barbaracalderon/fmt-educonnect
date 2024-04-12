@@ -34,7 +34,7 @@ public class DocenteController {
         if (responseDocenteDTOsList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } else {
-            return (ResponseEntity<List<ResponseDocenteDTO>>) responseDocenteDTOsList;
+            return ResponseEntity.ok().body(responseDocenteDTOsList);
         }
     }
 

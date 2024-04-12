@@ -51,14 +51,14 @@ public class DocenteService implements DocenteInterface {
 
     @Override
     public List<ResponseDocenteDTO> listarDocentes() {
-        List<DocenteEntity> docentes = docenteRepository.findAll();
-        List<ResponseDocenteDTO> responseDocentesDTOList = converterParaListaDeResponseDTO(docentes);
+        List<DocenteEntity> docentesEntity = docenteRepository.findAll();
+        List<ResponseDocenteDTO> responseDocentesDTOList = converterParaListaDeResponseDTO(docentesEntity);
         return responseDocentesDTOList;
     }
 
     @Override
-    public List<ResponseDocenteDTO> converterParaListaDeResponseDTO(List<DocenteEntity> docentes) {
-        return docentes.stream()
+    public List<ResponseDocenteDTO> converterParaListaDeResponseDTO(List<DocenteEntity> docentesEntity) {
+        return docentesEntity.stream()
                 .map(this::converterParaResponseDTO)
                 .collect(Collectors.toList());
     }
