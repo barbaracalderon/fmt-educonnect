@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class UserEntity implements UserDetails {
+public class CadastroEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -28,7 +28,7 @@ public class UserEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRoleEntity role;
 
-    public UserEntity(String login, String password, UserRoleEntity role) {
+    public CadastroEntity(String login, String password, UserRoleEntity role) {
         this.login = login;
         this.password = password;
         this.role = role;
