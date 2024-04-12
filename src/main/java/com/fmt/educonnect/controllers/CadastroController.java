@@ -1,6 +1,7 @@
 package com.fmt.educonnect.controllers;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestCadastroDTO;
+import com.fmt.educonnect.controllers.dtos.responses.ResponseCadastroDTO;
 import com.fmt.educonnect.datasource.entities.UserEntity;
 import com.fmt.educonnect.datasource.repositories.UserRepository;
 import jakarta.validation.Valid;
@@ -23,14 +24,15 @@ public class CadastroController {
 
 
     @PostMapping()
-    public ResponseEntity<Void> cadastrarUsuario(@RequestBody @Valid RequestCadastroDTO body) {
+    public ResponseEntity<ResponseCadastroDTO> cadastrarUsuario(@RequestBody @Valid RequestCadastroDTO body) {
         if (this.userRepository.findByLogin(body.login()) != null) return ResponseEntity.badRequest().build();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(body.password());
         UserEntity newUser = new UserEntity(body.login(), encryptedPassword, body.role());
+        UserEntity savedUser = this.userRepository.save(newUser);
 
-        this.userRepository.save(newUser);
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        ResponseCadastroDTO responseCadastroDTO = new ResponseCadastroDTO(savedUser.getId(), savedUser.getLogin(), savedUser.getRole());
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseCadastroDTO);
     }
 
 
