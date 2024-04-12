@@ -1,14 +1,13 @@
 package com.fmt.educonnect.controllers;
 
-import com.fmt.educonnect.interfaces.dtos.AuthenticationDTO;
-import com.fmt.educonnect.interfaces.dtos.LoginResponseDTO;
-import com.fmt.educonnect.interfaces.dtos.RegisterDTO;
-import com.fmt.educonnect.models.UserModel;
-import com.fmt.educonnect.repositories.UserRepository;
+import com.fmt.educonnect.controllers.dtos.AuthenticationDTO;
+import com.fmt.educonnect.controllers.dtos.LoginResponseDTO;
+import com.fmt.educonnect.controllers.dtos.RegisterDTO;
+import com.fmt.educonnect.datasource.entities.UserEntity;
+import com.fmt.educonnect.datasource.repositories.UserRepository;
 import com.fmt.educonnect.services.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,7 +35,7 @@ public class AuthenticationController {
         var usernamePassword = new UsernamePasswordAuthenticationToken(body.login(), body.password());
 
         var auth = this.authenticationManager.authenticate(usernamePassword);
-        var token = tokenService.generateToken((UserModel) auth.getPrincipal());
+        var token = tokenService.generateToken((UserEntity) auth.getPrincipal());
 
         return ResponseEntity.ok(new LoginResponseDTO(token));
 
@@ -47,7 +46,7 @@ public class AuthenticationController {
         if (this.userRepository.findByLogin(body.login()) != null) return ResponseEntity.badRequest().build();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(body.password());
-        UserModel newUser = new UserModel(body.login(), encryptedPassword, body.role());
+        UserEntity newUser = new UserEntity(body.login(), encryptedPassword, body.role());
 
         this.userRepository.save(newUser);
         return ResponseEntity.ok().build();

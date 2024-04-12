@@ -1,7 +1,6 @@
 package com.fmt.educonnect.controllers;
 
-import com.fmt.educonnect.interfaces.dtos.DocenteDTO;
-import com.fmt.educonnect.interfaces.IDocenteService;
+import com.fmt.educonnect.controllers.dtos.DocenteDTO;
 import com.fmt.educonnect.services.DocenteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
