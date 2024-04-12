@@ -2,7 +2,7 @@ package com.fmt.educonnect.controllers;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestLoginDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseLoginDTO;
-import com.fmt.educonnect.datasource.entities.UserEntity;
+import com.fmt.educonnect.datasource.entities.CadastroEntity;
 import com.fmt.educonnect.services.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class LoginController {
         try{
             var usernamePassword = new UsernamePasswordAuthenticationToken(body.login(), body.password());
             var auth = this.authenticationManager.authenticate(usernamePassword);
-            var token = tokenService.generateToken((UserEntity) auth.getPrincipal());
+            var token = tokenService.generateToken((CadastroEntity) auth.getPrincipal());
             return ResponseEntity.ok(new ResponseLoginDTO(token));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login ou senha inválidos.");
