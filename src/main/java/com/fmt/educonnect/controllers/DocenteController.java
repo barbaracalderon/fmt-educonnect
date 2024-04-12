@@ -58,5 +58,18 @@ public class DocenteController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletarDocente(@PathVariable("id") int id) {
+        try {
+            docenteService.deletarDocente(id);
+            return ResponseEntity.noContent().build();
+        } catch (DocenteNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+
+
+
 
 }

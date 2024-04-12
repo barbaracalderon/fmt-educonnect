@@ -21,4 +21,6 @@ public interface DocenteInterface {
     ResponseDocenteDTO buscarDocentePorId(int id);
 
     ResponseDocenteDTO atualizarDocente(int id, RequestDocenteDTO body);
+
+    Void deletarDocente(int id);
 }

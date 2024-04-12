@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -83,6 +82,15 @@ public class DocenteService implements DocenteInterface {
                 })
                 .orElseThrow(() -> new DocenteNotFoundException("Id do Docente não encontrado para atualizar: " + id));
     }
+
+    @Override
+    public Void deletarDocente(int id) {
+        docenteRepository.findById(id)
+                .orElseThrow(() -> new DocenteNotFoundException("Id do Docente não encontrado para deletar: " + id));
+        docenteRepository.deleteById(id);
+        return null;
+    }
+
 
 
 }
