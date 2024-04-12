@@ -27,7 +27,7 @@ public class LoginController {
     @Autowired
     private TokenService tokenService;
 
-    @PostMapping("/login")
+    @PostMapping()
     public ResponseEntity login(@RequestBody @Valid RequestLoginDTO body) {
 
         try{
