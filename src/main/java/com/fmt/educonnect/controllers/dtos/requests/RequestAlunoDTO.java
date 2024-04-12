@@ -1,4 +1,11 @@
 package com.fmt.educonnect.controllers.dtos.requests;
 
-public record RequestAlunoDTO() {
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.time.LocalDate;
+
+public record RequestAlunoDTO(
+        String nome,
+        @JsonFormat(pattern = "dd-MM-yyyy") LocalDate dataNascimento,
+        Integer idCadastro) {
 }
