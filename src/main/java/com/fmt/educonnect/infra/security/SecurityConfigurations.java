@@ -30,7 +30,7 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/cadastro").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/cadastro").permitAll()
                         .requestMatchers(HttpMethod.GET, "/cadastro").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/cadastro").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/cadastro").hasRole("ADMIN")
