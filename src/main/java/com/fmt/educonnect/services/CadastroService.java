@@ -42,10 +42,10 @@ public class CadastroService implements CadastroInterface {
 
     public List<ResponseCadastroDTO> listarCadastros() {
         List<CadastroEntity> cadastros = cadastroRepository.findAll();
-        List<ResponseCadastroDTO> responseDTOsList = cadastros.stream()
+        List<ResponseCadastroDTO> responseCadastrosDTOsList = cadastros.stream()
                 .map(user -> new ResponseCadastroDTO(user.getId(), user.getLogin(), user.getRole()))
                 .collect(Collectors.toList());
-        return responseDTOsList;
+        return responseCadastrosDTOsList;
     }
 
 

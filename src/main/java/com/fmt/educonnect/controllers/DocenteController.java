@@ -1,7 +1,9 @@
 package com.fmt.educonnect.controllers;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestDocenteDTO;
+import com.fmt.educonnect.controllers.dtos.responses.ResponseDocenteDTO;
 import com.fmt.educonnect.services.DocenteService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,22 +19,22 @@ public class DocenteController {
     private DocenteService docenteService;
 
     @PostMapping
-    public ResponseEntity<RequestDocenteDTO> criarDocente(@RequestBody RequestDocenteDTO body) {
-        RequestDocenteDTO docenteCriado = docenteService.criarDocente(body);
-        if (docenteCriado != null) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(docenteCriado);
+    public ResponseEntity<ResponseDocenteDTO> criarDocente(@RequestBody RequestDocenteDTO requestDocenteDTO) {
+        ResponseDocenteDTO responseDocenteDTO = docenteService.criarDocente(requestDocenteDTO);
+        if (responseDocenteDTO != null) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseDocenteDTO);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
-    @GetMapping
-    public ResponseEntity<List<RequestDocenteDTO>> listarDocentes() {
-        List<RequestDocenteDTO> docentes = docenteService.listarDocentes();
-        if (!docentes.isEmpty()) {
-            return ResponseEntity.ok(docentes);
+    @GetMapping()
+    public ResponseEntity<List<ResponseDocenteDTO>> listarDocentes() {
+        List<ResponseDocenteDTO> responseDocenteDTOsList = docenteService.listarDocentes();
+        if (responseDocenteDTOsList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.ok().body(responseDocenteDTOsList);
         }
     }
 

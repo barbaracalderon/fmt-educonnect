@@ -37,7 +37,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.DELETE, "/cadastro/{id}").hasRole("ADMIN")
 
 
-                        .requestMatchers(HttpMethod.POST, "/docentes").hasAnyRole("ADMIN", "PEDAGOGICO", "RECRUITER")
+                        .requestMatchers(HttpMethod.POST, "/docentes").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/docentes").hasAnyRole("ADMIN", "PEDAGOGICO", "RECRUITER")
                         .requestMatchers(HttpMethod.PUT, "/docentes").hasAnyRole("ADMIN", "PEDAGOGICO", "RECRUITER")
                         .requestMatchers(HttpMethod.DELETE, "/docentes").hasRole("ADMIN")

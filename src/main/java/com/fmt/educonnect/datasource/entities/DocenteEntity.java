@@ -21,6 +21,6 @@ public class DocenteEntity {
     private int id;
     private String nome;
     private LocalDate dataEntrada;
-    private int idUser;
+    private int idCadastro;
 }
 

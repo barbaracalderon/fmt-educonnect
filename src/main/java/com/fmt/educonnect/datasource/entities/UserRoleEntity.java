@@ -1,19 +1,15 @@
 package com.fmt.educonnect.datasource.entities;
 
-public enum UserRoleEntity {
-    ADMIN("ADMIN"),
-    PROFESSOR("PROFESSOR"),
-    PEDAGOGICO("PEDAGOGICO"),
-    RECRUITER("RECRUITER"),
-    ALUNO("ALUNO");
+import jakarta.persistence.*;
+import lombok.Getter;
 
-    private final String role;
+@Entity
+public class UserRoleEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    UserRoleEntity(String role){
-        this.role = role;
-    }
+    @Enumerated(EnumType.STRING)
+    private UserRoleEnum role;
 
-    public String getRole(){
-        return role;
-    }
 }

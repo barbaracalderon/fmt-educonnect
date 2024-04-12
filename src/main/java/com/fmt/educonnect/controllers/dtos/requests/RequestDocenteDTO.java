@@ -1,16 +1,7 @@
 package com.fmt.educonnect.controllers.dtos.requests;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class RequestDocenteDTO {
-    private int id;
-    private String nome;
-    private LocalDate dataEntrada;
-    private int idUsuario;
+public record RequestDocenteDTO(String nome, @JsonFormat(pattern = "dd-MM-yyyy") LocalDate dataEntrada, Integer idCadastro) {
 }
