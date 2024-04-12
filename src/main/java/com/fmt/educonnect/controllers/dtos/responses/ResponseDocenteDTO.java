@@ -1,4 +1,12 @@
 package com.fmt.educonnect.controllers.dtos.responses;
 
-public record ResponseDocenteDTO (Integer id, String nome, java.time.LocalDate dataEntrada, int idCadastro){
+import java.time.LocalDate;
+
+public record ResponseDocenteDTO (
+        Integer id,
+        String nome,
+        LocalDate dataEntrada,
+        int idCadastro
+    ) {
+
 }
