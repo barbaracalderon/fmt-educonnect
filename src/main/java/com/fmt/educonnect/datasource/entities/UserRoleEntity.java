@@ -1,9 +1,13 @@
 package com.fmt.educonnect.datasource.entities;
 
 public enum UserRoleEntity {
-    ADMIN("docente");
+    ADMIN("ADMIN"),
+    PROFESSOR("PROFESSOR"),
+    PEDAGOGICO("PEDAGOGICO"),
+    RECRUITER("RECRUITER"),
+    ALUNO("ALUNO");
 
-    private String role;
+    private final String role;
 
     UserRoleEntity(String role){
         this.role = role;
