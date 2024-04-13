@@ -1,6 +1,7 @@
 package com.fmt.educonnect.controllers.dtos.responses;
 
-import com.fmt.educonnect.datasource.entities.UserRoleEnum;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 
-public record ResponseCadastroDTO (Integer id, String login, UserRoleEnum role){
+public record ResponseCadastroDTO(Long id, String nome, String login, Long role_id) {
 }
