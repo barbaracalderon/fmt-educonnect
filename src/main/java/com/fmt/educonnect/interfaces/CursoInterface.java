@@ -12,15 +12,15 @@ public interface CursoInterface {
 
     CursoEntity converterParaEntidade(RequestCursoDTO requestCursoDTO);
 
-    ResponseCursoDTO converterParaResponseDTO(CursoEntity docenteEntity);
+    ResponseCursoDTO converterParaResponseDTO(CursoEntity cursoEntity);
 
     List<ResponseCursoDTO> listarCursos();
 
-    List<ResponseCursoDTO> converterParaListaDeResponseDTO(List<CursoEntity> docentes);
+    List<ResponseCursoDTO> converterParaListaDeResponseDTO(List<CursoEntity> cursos);
 
-    ResponseCursoDTO buscarCursoPorId(int id);
+    ResponseCursoDTO buscarCursoPorId(Long id);
 
-    ResponseCursoDTO atualizarCurso(int id, RequestCursoDTO body);
+    ResponseCursoDTO atualizarCurso(Long id, RequestCursoDTO body);
 
-    Void deletarCurso(int id);
+    Void deletarCurso(Long id);
 }

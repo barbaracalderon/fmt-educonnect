@@ -1,9 +1,8 @@
 package com.fmt.educonnect.controllers;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestAlunoDTO;
-import com.fmt.educonnect.controllers.dtos.requests.RequestAlunoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoDTO;
-import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoDTO;
+import com.fmt.educonnect.infra.exceptions.AlunoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
 import com.fmt.educonnect.services.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,17 +40,17 @@ public class AlunoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> buscarAlunoPorId(@PathVariable("id") int id) {
+    public ResponseEntity<?> buscarAlunoPorId(@PathVariable("id") Long id) {
         try {
             ResponseAlunoDTO ResponseAlunoDTO = alunoService.buscarAlunoPorId(id);
             return ResponseEntity.status(HttpStatus.OK).body(ResponseAlunoDTO);
-        } catch (DocenteNotFoundException e) {
+        } catch (AlunoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizarAluno(@PathVariable("id") int id, @RequestBody RequestAlunoDTO RequestAlunoDTO) {
+    public ResponseEntity<?> atualizarAluno(@PathVariable("id") Long id, @RequestBody RequestAlunoDTO RequestAlunoDTO) {
         try {
             ResponseAlunoDTO ResponseAlunoDTO = alunoService.atualizarAluno(id, RequestAlunoDTO);
             return ResponseEntity.status(HttpStatus.OK).body(ResponseAlunoDTO);
@@ -61,7 +60,7 @@ public class AlunoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletarAluno(@PathVariable("id") int id) {
+    public ResponseEntity<String> deletarAluno(@PathVariable("id") Long id) {
         try {
             alunoService.deletarAluno(id);
             return ResponseEntity.noContent().build();

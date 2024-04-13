@@ -18,9 +18,9 @@ public class DocenteEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String nome;
     private LocalDate dataEntrada;
-    private int idCadastro;
+    private Long idCadastro;
 }
 

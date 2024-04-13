@@ -16,8 +16,8 @@ public class AlunoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String nome;
     private LocalDate dataNascimento;
-    private int idCadastro;
+    private Long idCadastro;
 }

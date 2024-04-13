@@ -63,26 +63,26 @@ public class CursoService implements CursoInterface {
     }
 
     @Override
-    public ResponseCursoDTO buscarCursoPorId(int id) {
+    public ResponseCursoDTO buscarCursoPorId(Long id) {
         return cursoRepository.findById(id)
                 .map(this::converterParaResponseDTO)
                 .orElseThrow(() -> new CursoNotFoundException("Id do Curso não encontrado: " + id));
     }
 
     @Override
-    public ResponseCursoDTO atualizarCurso(int id, RequestCursoDTO requestCursoDTO) {
+    public ResponseCursoDTO atualizarCurso(Long id, RequestCursoDTO requestCursoDTO) {
         return cursoRepository.findById(id)
-                .map(docente -> {
-                    docente.setNome(requestCursoDTO.nome());
-                    docente.setDataEntrada(requestCursoDTO.dataEntrada());
-                    CursoEntity updatedCurso = cursoRepository.save(docente);
+                .map(curso -> {
+                    curso.setNome(requestCursoDTO.nome());
+                    curso.setDataEntrada(requestCursoDTO.dataEntrada());
+                    CursoEntity updatedCurso = cursoRepository.save(curso);
                     return converterParaResponseDTO(updatedCurso);
                 })
                 .orElseThrow(() -> new CursoNotFoundException("Id do Curso não encontrado para atualizar: " + id));
     }
 
     @Override
-    public Void deletarCurso(int id) {
+    public Void deletarCurso(Long id) {
         cursoRepository.findById(id)
                 .orElseThrow(() -> new CursoNotFoundException("Id do Curso não encontrado para deletar: " + id));
         cursoRepository.deleteById(id);

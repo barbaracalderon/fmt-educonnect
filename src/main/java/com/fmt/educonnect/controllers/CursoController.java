@@ -39,7 +39,7 @@ public class CursoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> buscarCursoPorId(@PathVariable("id") int id) {
+    public ResponseEntity<?> buscarCursoPorId(@PathVariable("id") Long id) {
         try {
             ResponseCursoDTO responseCursoDTO = cursoService.buscarCursoPorId(id);
             return ResponseEntity.status(HttpStatus.OK).body(responseCursoDTO);
@@ -49,7 +49,7 @@ public class CursoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizarCurso(@PathVariable("id") int id, @RequestBody RequestCursoDTO requestCursoDTO) {
+    public ResponseEntity<?> atualizarCurso(@PathVariable("id") Long id, @RequestBody RequestCursoDTO requestCursoDTO) {
         try {
             ResponseCursoDTO responseCursoDTO = cursoService.atualizarCurso(id, requestCursoDTO);
             return ResponseEntity.status(HttpStatus.OK).body(responseCursoDTO);
@@ -59,7 +59,7 @@ public class CursoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletarCurso(@PathVariable("id") int id) {
+    public ResponseEntity<String> deletarCurso(@PathVariable("id") Long id) {
         try {
             cursoService.deletarCurso(id);
             return ResponseEntity.noContent().build();

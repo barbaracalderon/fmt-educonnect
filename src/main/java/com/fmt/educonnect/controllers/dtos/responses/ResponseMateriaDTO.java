@@ -2,11 +2,9 @@ package com.fmt.educonnect.controllers.dtos.responses;
 
 import java.time.LocalDate;
 
-public record ResponseAlunoDTO (
+public record ResponseMateriaDTO(
         Long id,
         String nome,
-        LocalDate dataNascimento,
-        Long idCadastro
-    ) {
-
+        LocalDate dataEntrada,
+        Long curso_id) {
 }
