@@ -65,14 +65,14 @@ public class AlunoService implements AlunoInterface {
     }
 
     @Override
-    public ResponseAlunoDTO buscarAlunoPorId(int id) {
+    public ResponseAlunoDTO buscarAlunoPorId(Long id) {
         return alunoRepository.findById(id)
                 .map(this::converterParaResponseDTO)
                 .orElseThrow(() -> new AlunoNotFoundException("Id do Aluno não encontrado: " + id));
     }
 
     @Override
-    public ResponseAlunoDTO atualizarAluno(int id, RequestAlunoDTO requestAlunoDTO) {
+    public ResponseAlunoDTO atualizarAluno(Long id, RequestAlunoDTO requestAlunoDTO) {
         return alunoRepository.findById(id)
                 .map(aluno -> {
                     aluno.setNome(requestAlunoDTO.nome());
@@ -85,7 +85,7 @@ public class AlunoService implements AlunoInterface {
     }
 
     @Override
-    public void deletarAluno(int id) {
+    public void deletarAluno(Long id) {
         alunoRepository.findById(id)
                 .orElseThrow(() -> new AlunoNotFoundException("Id do Aluno não encontrado para deletar: " + id));
         alunoRepository.deleteById(id);

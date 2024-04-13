@@ -64,14 +64,14 @@ public class DocenteService implements DocenteInterface {
     }
 
     @Override
-    public ResponseDocenteDTO buscarDocentePorId(int id) {
+    public ResponseDocenteDTO buscarDocentePorId(Long id) {
         return docenteRepository.findById(id)
                 .map(this::converterParaResponseDTO)
                 .orElseThrow(() -> new DocenteNotFoundException("Id do Docente não encontrado: " + id));
     }
 
     @Override
-    public ResponseDocenteDTO atualizarDocente(int id, RequestDocenteDTO requestDocenteDTO) {
+    public ResponseDocenteDTO atualizarDocente(Long id, RequestDocenteDTO requestDocenteDTO) {
         return docenteRepository.findById(id)
                 .map(docente -> {
                     docente.setNome(requestDocenteDTO.nome());
@@ -83,7 +83,7 @@ public class DocenteService implements DocenteInterface {
     }
 
     @Override
-    public Void deletarDocente(int id) {
+    public Void deletarDocente(Long id) {
         docenteRepository.findById(id)
                 .orElseThrow(() -> new DocenteNotFoundException("Id do Docente não encontrado para deletar: " + id));
         docenteRepository.deleteById(id);

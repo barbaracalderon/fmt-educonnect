@@ -6,5 +6,5 @@ import java.time.LocalDate;
 public record RequestDocenteDTO(
         String nome,
         @JsonFormat(pattern = "dd-MM-yyyy") LocalDate dataEntrada,
-        Integer idCadastro) {
+        Long idCadastro) {
 }

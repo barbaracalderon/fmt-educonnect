@@ -3,10 +3,10 @@ package com.fmt.educonnect.controllers.dtos.responses;
 import java.time.LocalDate;
 
 public record ResponseAlunoDTO (
-        Integer id,
+        Long id,
         String nome,
         LocalDate dataNascimento,
-        int idCadastro
+        Long idCadastro
     ) {
 
 }

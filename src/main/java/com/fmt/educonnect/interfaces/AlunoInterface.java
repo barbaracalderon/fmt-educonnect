@@ -18,10 +18,12 @@ public interface AlunoInterface {
 
     List<ResponseAlunoDTO> converterParaListaDeResponseDTO(List<AlunoEntity> alunos);
 
-    ResponseAlunoDTO buscarAlunoPorId(int id);
+    ResponseAlunoDTO buscarAlunoPorId(Long id);
 
-    ResponseAlunoDTO atualizarAluno(int id, RequestAlunoDTO requestAlunoDTO);
 
-    void deletarAluno(int id);
+    ResponseAlunoDTO atualizarAluno(Long id, RequestAlunoDTO requestAlunoDTO);
+
+    void deletarAluno(Long id);
+
 
 }
