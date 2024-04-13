@@ -31,6 +31,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/cadastro").permitAll()
+
                         .requestMatchers(HttpMethod.GET, "/cadastro").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/cadastro").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/cadastro").hasRole("ADMIN")
@@ -38,8 +39,8 @@ public class SecurityConfigurations {
 
 
                         .requestMatchers(HttpMethod.POST, "/docentes").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/docentes").hasAnyRole("ADMIN", "PEDAGOGICO", "RECRUITER")
-                        .requestMatchers(HttpMethod.PUT, "/docentes").hasAnyRole("ADMIN", "PEDAGOGICO", "RECRUITER")
+                        .requestMatchers(HttpMethod.GET, "/docentes").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/docentes").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/docentes").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/docentes/{id}").hasRole("ADMIN")
 
@@ -51,19 +52,19 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.DELETE, "/turmas/{id}").hasRole("ADMIN")
 
 
-                        .requestMatchers(HttpMethod.POST, "/alunos").hasAnyRole("ADMIN", "PEDAGOGICO")
-                        .requestMatchers(HttpMethod.GET, "/alunos").hasAnyRole("ADMIN", "PEDAGOGICO")
-                        .requestMatchers(HttpMethod.PUT, "/alunos").hasAnyRole("ADMIN", "PEDAGOGICO")
+                        .requestMatchers(HttpMethod.POST, "/alunos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/alunos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/alunos").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/alunos").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/alunos/{id}").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.GET, "/alunos/pessoal").hasAnyRole("ADMIN", "PEDAGOGICO", "ALUNO")
-                        .requestMatchers(HttpMethod.GET, "/alunos/pessoal/pontuacao").hasAnyRole("ADMIN", "PEDAGOGICO")
+                        .requestMatchers(HttpMethod.GET, "/alunos/pessoal").hasAnyRole("ADMIN", "ALUNO")
+                        .requestMatchers(HttpMethod.GET, "/alunos/pessoal/pontuacao").hasAnyRole("ADMIN", "ALUNO")
 
 
-                        .requestMatchers(HttpMethod.POST, "/cursos").hasAnyRole("ADMIN", "PEDAGOGICO")
-                        .requestMatchers(HttpMethod.GET, "/cursos").hasAnyRole("ADMIN", "PEDAGOGICO")
-                        .requestMatchers(HttpMethod.PUT, "/cursos").hasAnyRole("ADMIN", "PEDAGOGICO")
+                        .requestMatchers(HttpMethod.POST, "/cursos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/cursos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/cursos").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/cursos").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/cursos/{id}").hasRole("ADMIN")
 
@@ -75,13 +76,13 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.DELETE, "/materias/{id}").hasRole("ADMIN")
 
 
-                        .requestMatchers(HttpMethod.POST, "/notas").hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.GET, "/notas").hasAnyRole("ADMIN", "PROFESSOR")
-                        .requestMatchers(HttpMethod.PUT, "/notas").hasAnyRole("ADMIN", "PROFESSOR")
+                        .requestMatchers(HttpMethod.POST, "/notas").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/notas").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/notas").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/notas").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/notas/{id}").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.GET, "/notas/pessoal").hasAnyRole("ADMIN", "PEDAGOGICO", "ALUNO")
+                        .requestMatchers(HttpMethod.GET, "/notas/pessoal").hasAnyRole("ADMIN", "ALUNO")
 
 
                         .anyRequest().authenticated()
