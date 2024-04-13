@@ -1,8 +1,11 @@
 package com.fmt.educonnect.controllers;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestMateriaDTO;
+import com.fmt.educonnect.controllers.dtos.responses.ResponseCursoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseMateriaDTO;
-import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
+import com.fmt.educonnect.datasource.entities.CursoEntity;
+import com.fmt.educonnect.infra.exceptions.CursoNotFoundException;
+import com.fmt.educonnect.infra.exceptions.MateriaNotFoundException;
 import com.fmt.educonnect.infra.exceptions.MateriaNotFoundException;
 import com.fmt.educonnect.services.CursoService;
 import com.fmt.educonnect.services.MateriaService;
@@ -18,22 +21,30 @@ import java.util.List;
 @RequestMapping("materias")
 public class MateriaController {
 
-    @Autowired
     private MateriaService materiaService;
     private CursoService cursoService;
 
-    @PostMapping
-    public ResponseEntity<ResponseMateriaDTO> criarMateria(@RequestBody @Valid RequestMateriaDTO requestMateriaDTO) {
-        if (cursoService.buscarCursoPorId(requestMateriaDTO.idCurso()) != null) {
+    @Autowired
+    public MateriaController(MateriaService materiaService, CursoService cursoService) {
+        this.materiaService = materiaService;
+        this.cursoService = cursoService;
+    }
 
+    @PostMapping()
+    public ResponseEntity<?> criarMateria(@RequestBody @Valid RequestMateriaDTO requestMateriaDTO) {
+        try {
+            cursoService.buscarCursoPorId(requestMateriaDTO.idCurso());
+        } catch (CursoNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+
         ResponseMateriaDTO responseMateriaDTO = materiaService.criarMateria(requestMateriaDTO);
         if (responseMateriaDTO != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(responseMateriaDTO);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
         }
-    }
 
     @GetMapping()
     public ResponseEntity<List<ResponseMateriaDTO>> listarMaterias() {
@@ -48,18 +59,18 @@ public class MateriaController {
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarMateriaPorId(@PathVariable("id") Long id) {
         try {
-            ResponseMateriaDTO ResponseMateriaDTO = materiaService.buscarMateriaPorId(id);
-            return ResponseEntity.status(HttpStatus.OK).body(ResponseMateriaDTO);
-        } catch (DocenteNotFoundException e) {
+            ResponseMateriaDTO responseMateriaDTO = materiaService.buscarMateriaPorId(id);
+            return ResponseEntity.status(HttpStatus.OK).body(responseMateriaDTO);
+        } catch (MateriaNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizarMateria(@PathVariable("id") Long id, @RequestBody RequestMateriaDTO RequestMateriaDTO) {
+    public ResponseEntity<?> atualizarMateria(@PathVariable("id") Long id, @RequestBody RequestMateriaDTO requestMateriaDTO) {
         try {
-            ResponseMateriaDTO ResponseMateriaDTO = materiaService.atualizarMateria(id, RequestMateriaDTO);
-            return ResponseEntity.status(HttpStatus.OK).body(ResponseMateriaDTO);
+            ResponseMateriaDTO responseMateriaDTO = materiaService.atualizarMateria(id, requestMateriaDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(responseMateriaDTO);
         } catch (MateriaNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -70,7 +81,7 @@ public class MateriaController {
         try {
             materiaService.deletarMateria(id);
             return ResponseEntity.noContent().build();
-        } catch (DocenteNotFoundException e) {
+        } catch (MateriaNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }

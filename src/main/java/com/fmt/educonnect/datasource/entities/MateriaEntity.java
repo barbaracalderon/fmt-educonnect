@@ -5,12 +5,14 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "materia")
 @Getter
+@Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class MateriaEntity {
@@ -28,16 +30,10 @@ public class MateriaEntity {
     @JoinColumn(name = "id_curso", referencedColumnName = "id")
     private CursoEntity cursoEntity;
 
-    public MateriaEntity(String nome, LocalDate dataEntrada, Long idCurso, CursoEntity cursoEntity) {
+    public MateriaEntity(String nome, LocalDate dataEntrada, Long idCurso) {
         this.nome = nome;
         this.dataEntrada = dataEntrada;
         this.idCurso = idCurso;
     }
 
-
-    public void setNome(String nome) {
-    }
-
-    public void setDataEntrada(LocalDate localDate) {
-    }
 }
