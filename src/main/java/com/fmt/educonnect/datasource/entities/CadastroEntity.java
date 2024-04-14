@@ -42,7 +42,8 @@ public class CadastroEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (papelEntity != null && papelEntity.getNomePapel().equals(UserRoleEnum.ADMIN.toString())) {
+
+        if (papelEntity != null && papelEntity.getId().equals(getIdPapel()) && papelEntity.getNomePapel() == NomePapelEnum.ADMIN) {
             return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         } else {
             return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));

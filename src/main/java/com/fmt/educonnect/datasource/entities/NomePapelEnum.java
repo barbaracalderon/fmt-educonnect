@@ -1,6 +1,6 @@
 package com.fmt.educonnect.datasource.entities;
 
-public enum UserRoleEnum {
+public enum NomePapelEnum {
     ADMIN,
     PROFESSOR,
     PEDAGOGICO,

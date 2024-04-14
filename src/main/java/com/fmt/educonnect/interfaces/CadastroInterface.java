@@ -16,7 +16,7 @@ public interface CadastroInterface {
 
     ResponseCadastroDTO converterParaResponseCadastroDTO(CadastroEntity cadastroEntity);
 
-    CadastroEntity converterParaEntidade(RequestCadastroDTO requestCadastroDTO, PapelEntity papelEntitySalvo);
+    CadastroEntity converterParaEntidade(RequestCadastroDTO requestCadastroDTO, PapelEntity papelEntity);
 
     List<ResponseCadastroDTO> listarCadastros();
 

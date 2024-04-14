@@ -15,9 +15,23 @@ public class PapelEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nomePapel;
+
+    @Enumerated(EnumType.STRING)
+    private NomePapelEnum nomePapel;
 
     public PapelEntity(String nomePapel) {
-        this.nomePapel = nomePapel;
+        if (!isValidNomePapel(nomePapel)) {
+            throw new IllegalArgumentException(("Nome de papel inválido: " + nomePapel));
+        }
+        this.nomePapel = NomePapelEnum.valueOf(nomePapel);
     }
-}
+
+    private boolean isValidNomePapel(String nomePapel) {
+            try{
+                NomePapelEnum.valueOf(nomePapel);
+                return true;
+            } catch (IllegalArgumentException e) {
+                return false;
+            }
+        }
+    }
