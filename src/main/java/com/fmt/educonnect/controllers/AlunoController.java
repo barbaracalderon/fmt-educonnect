@@ -2,8 +2,8 @@ package com.fmt.educonnect.controllers;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestAlunoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoDTO;
-import com.fmt.educonnect.controllers.dtos.responses.ResponseListaDeNotasAlunoDTO;
-import com.fmt.educonnect.controllers.dtos.responses.ResponseNotaDTO;
+import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoListaDeNotasDTO;
+import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoPontuacaoDTO;
 import com.fmt.educonnect.infra.exceptions.*;
 import com.fmt.educonnect.services.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,11 +74,24 @@ public class AlunoController {
     public ResponseEntity<?> buscarNotasDeAlunoId(@PathVariable("id") Long id) {
         try {
             ResponseAlunoDTO responseAlunoDTO = alunoService.buscarAlunoPorId(id);
-            ResponseListaDeNotasAlunoDTO responseListaDeNotasAlunoDTO = alunoService.buscarNotasDeAluno(responseAlunoDTO);
-            return ResponseEntity.status(HttpStatus.OK).body(responseListaDeNotasAlunoDTO);
+            ResponseAlunoListaDeNotasDTO responseAlunoListaDeNotasDTO = alunoService.buscarNotasDeAluno(responseAlunoDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(responseAlunoListaDeNotasDTO);
         } catch (NotaNotFoundException | AlunoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    @GetMapping("/{id}/pontuacao")
+    public ResponseEntity<?> buscarPontuacaoDeAlunoId(@PathVariable("id") Long id) {
+        try {
+            ResponseAlunoDTO responseAlunoDTO = alunoService.buscarAlunoPorId(id);
+            ResponseAlunoListaDeNotasDTO responseAlunoListaDeNotasDTO = alunoService.buscarNotasDeAluno(responseAlunoDTO);
+            ResponseAlunoPontuacaoDTO responseAlunoPontuacaoDTO = alunoService.calcularPontuacaoDeAluno(responseAlunoListaDeNotasDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(responseAlunoPontuacaoDTO);
+        } catch (NotaNotFoundException | AlunoNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
 
 }

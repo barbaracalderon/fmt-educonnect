@@ -2,7 +2,8 @@ package com.fmt.educonnect.services;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestAlunoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoDTO;
-import com.fmt.educonnect.controllers.dtos.responses.ResponseListaDeNotasAlunoDTO;
+import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoListaDeNotasDTO;
+import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoPontuacaoDTO;
 import com.fmt.educonnect.datasource.entities.AlunoEntity;
 import com.fmt.educonnect.datasource.entities.CadastroEntity;
 import com.fmt.educonnect.datasource.entities.MateriaEntity;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 @Service
@@ -128,7 +130,7 @@ public class AlunoService implements AlunoInterface {
     }
 
     @Override
-    public ResponseListaDeNotasAlunoDTO buscarNotasDeAluno(ResponseAlunoDTO responseAlunoDTO) {
+    public ResponseAlunoListaDeNotasDTO buscarNotasDeAluno(ResponseAlunoDTO responseAlunoDTO) {
         List<NotaEntity> notasEntityList = notaRepository.findAllByIdAluno(responseAlunoDTO.id());
         if (notasEntityList.isEmpty()) {
             throw new AlunoNotFoundException("Notas do Id " + responseAlunoDTO.id() + " do Aluno não encontrado.");
@@ -138,16 +140,41 @@ public class AlunoService implements AlunoInterface {
     }
 
     @Override
-    public ResponseListaDeNotasAlunoDTO converterParaListaDeNotasResponseDTO(List<NotaEntity> notasEntityList) {
+    public ResponseAlunoListaDeNotasDTO converterParaListaDeNotasResponseDTO(List<NotaEntity> notasEntityList) {
         List<Long> valores = notasEntityList.stream()
                 .map(NotaEntity::getValor)
                 .collect(Collectors.toList());
 
-        return new ResponseListaDeNotasAlunoDTO(
+        return new ResponseAlunoListaDeNotasDTO(
                 notasEntityList.get(0).getIdAluno(),
                 valores
         );
     }
+
+    @Override
+    public ResponseAlunoPontuacaoDTO calcularPontuacaoDeAluno(ResponseAlunoListaDeNotasDTO responseAlunoListaDeNotasDTO) {
+        if (responseAlunoListaDeNotasDTO.valores() == null || responseAlunoListaDeNotasDTO.valores().isEmpty()) {
+            Long pontuacao = 0L;
+            return new ResponseAlunoPontuacaoDTO(
+                    responseAlunoListaDeNotasDTO.idAluno(),
+                    pontuacao
+            );
+        } else {
+            OptionalDouble optionalPontuacao = responseAlunoListaDeNotasDTO.valores().stream()
+                    .mapToLong(value -> (long) value)  // Use lambda expression here
+                    .average();
+
+            long pontuacao = Math.round(optionalPontuacao.orElse(0.0)); // Convert OptionalDouble to long
+
+            return new ResponseAlunoPontuacaoDTO(
+                    responseAlunoListaDeNotasDTO.idAluno(),
+                    pontuacao
+            );
+        }
+    }
+
+
+
 }
 
 

@@ -2,7 +2,8 @@ package com.fmt.educonnect.interfaces;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestAlunoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoDTO;
-import com.fmt.educonnect.controllers.dtos.responses.ResponseListaDeNotasAlunoDTO;
+import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoListaDeNotasDTO;
+import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoPontuacaoDTO;
 import com.fmt.educonnect.datasource.entities.AlunoEntity;
 import com.fmt.educonnect.datasource.entities.NotaEntity;
 
@@ -28,7 +29,9 @@ public interface AlunoInterface {
     void deletarAluno(Long id);
 
 
-    ResponseListaDeNotasAlunoDTO buscarNotasDeAluno(ResponseAlunoDTO responseAlunoDTO);
+    ResponseAlunoListaDeNotasDTO buscarNotasDeAluno(ResponseAlunoDTO responseAlunoDTO);
 
-    ResponseListaDeNotasAlunoDTO converterParaListaDeNotasResponseDTO(List<NotaEntity> notasEntityList);
+    ResponseAlunoListaDeNotasDTO converterParaListaDeNotasResponseDTO(List<NotaEntity> notasEntityList);
+
+    ResponseAlunoPontuacaoDTO calcularPontuacaoDeAluno(ResponseAlunoListaDeNotasDTO responseAlunoListaDeNotasDTO);
 }
