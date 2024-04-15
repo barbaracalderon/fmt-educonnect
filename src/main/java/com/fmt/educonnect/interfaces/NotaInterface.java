@@ -22,4 +22,6 @@ public interface NotaInterface {
     ResponseNotaDTO atualizarNota(Long id, RequestNotaDTO requestNotaDTO);
 
     Void deletarNota(Long id);
+
+    List<ResponseNotaDTO> buscarNotasDeAlunoId(Long id);
 }

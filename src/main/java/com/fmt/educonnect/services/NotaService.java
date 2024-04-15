@@ -5,7 +5,6 @@ import com.fmt.educonnect.controllers.dtos.responses.ResponseNotaDTO;
 import com.fmt.educonnect.datasource.entities.*;
 import com.fmt.educonnect.datasource.repositories.*;
 import com.fmt.educonnect.infra.exceptions.AlunoNotFoundException;
-import com.fmt.educonnect.infra.exceptions.CursoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
 import com.fmt.educonnect.infra.exceptions.NotaNotFoundException;
 import com.fmt.educonnect.interfaces.NotaInterface;
@@ -129,5 +128,14 @@ public class NotaService implements NotaInterface {
         return null;
     }
 
+    @Override
+    public List<ResponseNotaDTO> buscarNotasDeAlunoId(Long idAluno) {
+        List<NotaEntity> notasEntityList= notaRepository.findAllByIdAluno(idAluno);
+        if (notasEntityList.isEmpty()) {
+            throw new AlunoNotFoundException("Id do Aluno não encontrado: " + idAluno);
+        } else {
+            return converterParaListaDeResponseDTO(notasEntityList);
+        }
+    }
 
 }

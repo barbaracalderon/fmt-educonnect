@@ -2,10 +2,9 @@ package com.fmt.educonnect.controllers;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestAlunoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoDTO;
-import com.fmt.educonnect.infra.exceptions.AlunoNotFoundException;
-import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
-import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
-import com.fmt.educonnect.infra.exceptions.TurmaNotFoundException;
+import com.fmt.educonnect.controllers.dtos.responses.ResponseListaDeNotasAlunoDTO;
+import com.fmt.educonnect.controllers.dtos.responses.ResponseNotaDTO;
+import com.fmt.educonnect.infra.exceptions.*;
 import com.fmt.educonnect.services.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -67,6 +66,17 @@ public class AlunoController {
             alunoService.deletarAluno(id);
             return ResponseEntity.noContent().build();
         } catch (DocenteNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/notas")
+    public ResponseEntity<?> buscarNotasDeAlunoId(@PathVariable("id") Long id) {
+        try {
+            ResponseAlunoDTO responseAlunoDTO = alunoService.buscarAlunoPorId(id);
+            ResponseListaDeNotasAlunoDTO responseListaDeNotasAlunoDTO = alunoService.buscarNotasDeAluno(responseAlunoDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(responseListaDeNotasAlunoDTO);
+        } catch (NotaNotFoundException | AlunoNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
