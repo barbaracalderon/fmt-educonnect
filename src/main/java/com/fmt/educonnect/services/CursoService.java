@@ -2,24 +2,30 @@ package com.fmt.educonnect.services;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestCursoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseCursoDTO;
+import com.fmt.educonnect.controllers.dtos.responses.ResponseCursoMateriasDTO;
 import com.fmt.educonnect.datasource.entities.CursoEntity;
+import com.fmt.educonnect.datasource.entities.MateriaEntity;
 import com.fmt.educonnect.datasource.repositories.CursoRepository;
+import com.fmt.educonnect.datasource.repositories.MateriaRepository;
 import com.fmt.educonnect.infra.exceptions.CursoNotFoundException;
 import com.fmt.educonnect.interfaces.CursoInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class CursoService implements CursoInterface {
 
-    @Autowired
-    private CursoRepository cursoRepository;
 
-    public CursoService(CursoRepository cursoRepository) {
+    private final CursoRepository cursoRepository;
+    private final MateriaRepository materiaRepository;
+
+    public CursoService(CursoRepository cursoRepository, MateriaRepository materiaRepository) {
         this.cursoRepository = cursoRepository;
+        this.materiaRepository = materiaRepository;
     }
 
     @Override
@@ -87,6 +93,18 @@ public class CursoService implements CursoInterface {
                 .orElseThrow(() -> new CursoNotFoundException("Id do Curso não encontrado para deletar: " + id));
         cursoRepository.deleteById(id);
         return null;
+    }
+
+    public List<ResponseCursoMateriasDTO> buscarMateriasDeCursoId(Long idCurso) {
+        List<MateriaEntity> materiaEntityList = materiaRepository.findAllByIdCurso(idCurso);
+        if (materiaEntityList.isEmpty()) {
+            throw new CursoNotFoundException("Id do Curso não encontrado: " + idCurso);
+        } else {
+            return Collections.singletonList(new ResponseCursoMateriasDTO(
+                    idCurso,
+                    materiaEntityList
+            ));
+        }
     }
 
 
