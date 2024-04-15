@@ -5,6 +5,7 @@ import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoDTO;
 import com.fmt.educonnect.infra.exceptions.AlunoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
+import com.fmt.educonnect.infra.exceptions.TurmaNotFoundException;
 import com.fmt.educonnect.services.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class AlunoController {
         try {
             ResponseAlunoDTO responseAlunoDTO = alunoService.criarAluno(requestAlunoDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(responseAlunoDTO);
-        } catch (CadastroNotFoundException e) {
+        } catch (CadastroNotFoundException | TurmaNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }

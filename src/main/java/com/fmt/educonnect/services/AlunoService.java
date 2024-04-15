@@ -10,6 +10,8 @@ import com.fmt.educonnect.datasource.repositories.CadastroRepository;
 import com.fmt.educonnect.datasource.repositories.MateriaRepository;
 import com.fmt.educonnect.infra.exceptions.AlunoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
+import com.fmt.educonnect.infra.exceptions.TurmaNotFoundException;
+
 import com.fmt.educonnect.interfaces.AlunoInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
