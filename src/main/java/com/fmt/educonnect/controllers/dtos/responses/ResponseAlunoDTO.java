@@ -6,7 +6,8 @@ public record ResponseAlunoDTO (
         Long id,
         String nome,
         LocalDate dataNascimento,
-        Long idCadastro
+        Long idCadastro,
+        Long idTurma
     ) {
 
 }

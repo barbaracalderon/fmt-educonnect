@@ -20,4 +20,19 @@ public class AlunoEntity {
     private String nome;
     private LocalDate dataNascimento;
     private Long idCadastro;
+
+    @Column(name = "id_turma")
+    private Long idTurma;
+
+    @ManyToOne
+    @JoinColumn(name = "id_turma", referencedColumnName = "id", insertable = false, updatable = false)
+    private TurmaEntity turmaEntity;
+
+    public AlunoEntity(String nome, LocalDate dataNascimento, Long idCadastro, Long idTurma) {
+        this.nome = nome;
+        this.dataNascimento = dataNascimento;
+        this.idCadastro = idCadastro;
+        this.idTurma = idTurma;
+    }
+
 }

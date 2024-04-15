@@ -4,10 +4,14 @@ import com.fmt.educonnect.controllers.dtos.requests.RequestAlunoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoDTO;
 import com.fmt.educonnect.datasource.entities.AlunoEntity;
 import com.fmt.educonnect.datasource.entities.CadastroEntity;
+import com.fmt.educonnect.datasource.entities.MateriaEntity;
 import com.fmt.educonnect.datasource.repositories.AlunoRepository;
 import com.fmt.educonnect.datasource.repositories.CadastroRepository;
+import com.fmt.educonnect.datasource.repositories.MateriaRepository;
 import com.fmt.educonnect.infra.exceptions.AlunoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
+import com.fmt.educonnect.infra.exceptions.TurmaNotFoundException;
+
 import com.fmt.educonnect.interfaces.AlunoInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,11 +25,15 @@ public class AlunoService implements AlunoInterface {
 
     private final AlunoRepository alunoRepository;
     private final CadastroRepository cadastroRepository;
+    private final MateriaRepository materiaRepository;
 
     @Autowired
-    public AlunoService(AlunoRepository alunoRepository, CadastroRepository cadastroRepository) {
+    public AlunoService(AlunoRepository alunoRepository,
+                        CadastroRepository cadastroRepository,
+                        MateriaRepository materiaRepository) {
         this.alunoRepository = alunoRepository;
         this.cadastroRepository = cadastroRepository;
+        this.materiaRepository = materiaRepository;
     }
 
 
@@ -36,6 +44,12 @@ public class AlunoService implements AlunoInterface {
 
         CadastroEntity cadastroEntity = optionalCadastroEntity.orElseThrow(
                 () -> new CadastroNotFoundException("Número de cadastro inválido: " + requestAlunoDTO.idCadastro())
+        );
+
+        Optional<MateriaEntity> optionalMateriaEntity = materiaRepository.findById(requestAlunoDTO.idTurma());
+
+        MateriaEntity materiaEntity = optionalMateriaEntity.orElseThrow(
+                () -> new TurmaNotFoundException("Id da Turma não encontrado: " + requestAlunoDTO.idTurma())
         );
 
         AlunoEntity alunoEntity = converterParaEntidade(requestAlunoDTO);
@@ -50,6 +64,7 @@ public class AlunoService implements AlunoInterface {
         alunoEntity.setNome(requestAlunoDTO.nome());
         alunoEntity.setDataNascimento(requestAlunoDTO.dataNascimento());
         alunoEntity.setIdCadastro(requestAlunoDTO.idCadastro());
+        alunoEntity.setIdTurma(requestAlunoDTO.idTurma());
 
         return alunoEntity;
     }
@@ -60,7 +75,8 @@ public class AlunoService implements AlunoInterface {
                 alunoEntitySalvo.getId(),
                 alunoEntitySalvo.getNome(),
                 alunoEntitySalvo.getDataNascimento(),
-                alunoEntitySalvo.getIdCadastro()
+                alunoEntitySalvo.getIdCadastro(),
+                alunoEntitySalvo.getIdTurma()
         );
     }
 
@@ -91,6 +107,7 @@ public class AlunoService implements AlunoInterface {
                     aluno.setNome(requestAlunoDTO.nome());
                     aluno.setDataNascimento(requestAlunoDTO.dataNascimento());
                     aluno.setIdCadastro(requestAlunoDTO.idCadastro());
+                    aluno.setIdTurma(requestAlunoDTO.idTurma());
                     AlunoEntity updatedAluno = alunoRepository.save(aluno);
                     return converterParaResponseDTO(updatedAluno);
                 })

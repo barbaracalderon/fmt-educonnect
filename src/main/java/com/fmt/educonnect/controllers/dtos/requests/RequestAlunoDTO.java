@@ -7,5 +7,6 @@ import java.time.LocalDate;
 public record RequestAlunoDTO(
         String nome,
         @JsonFormat(pattern = "dd-MM-yyyy") LocalDate dataNascimento,
-        Long idCadastro) {
+        Long idCadastro,
+        Long idTurma) {
 }
