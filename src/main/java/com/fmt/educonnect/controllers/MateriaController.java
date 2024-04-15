@@ -32,12 +32,6 @@ public class MateriaController {
 
     @PostMapping()
     public ResponseEntity<?> criarMateria(@RequestBody @Valid RequestMateriaDTO requestMateriaDTO) {
-        try {
-            cursoService.buscarCursoPorId(requestMateriaDTO.idCurso());
-        } catch (CursoNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-
         ResponseMateriaDTO responseMateriaDTO = materiaService.criarMateria(requestMateriaDTO);
         if (responseMateriaDTO != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(responseMateriaDTO);
