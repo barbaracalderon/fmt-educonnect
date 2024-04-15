@@ -20,4 +20,5 @@ public interface CadastroInterface {
 
     List<ResponseCadastroDTO> listarCadastros();
 
+    Void deletarCadastro(Long id);
 }

@@ -7,6 +7,8 @@ import com.fmt.educonnect.datasource.entities.PapelEntity;
 import com.fmt.educonnect.datasource.repositories.CadastroRepository;
 import com.fmt.educonnect.datasource.repositories.PapelRepository;
 import com.fmt.educonnect.infra.exceptions.PapelNotFoundException;
+import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
+
 import com.fmt.educonnect.interfaces.CadastroInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -62,4 +64,13 @@ public class CadastroService implements CadastroInterface {
                 .map(user -> new ResponseCadastroDTO(user.getId(), user.getNome(), user.getLogin(), user.getIdPapel()))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Void deletarCadastro(Long id) {
+        cadastroRepository.findById(id)
+                .orElseThrow(() -> new CadastroNotFoundException("Id do Cadastro não encontrado para deletar: " + id));
+        cadastroRepository.deleteById(id);
+        return null;
+    }
+
 }
