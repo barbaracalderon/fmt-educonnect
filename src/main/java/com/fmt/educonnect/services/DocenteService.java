@@ -2,28 +2,42 @@ package com.fmt.educonnect.services;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestDocenteDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseDocenteDTO;
+import com.fmt.educonnect.datasource.entities.CadastroEntity;
 import com.fmt.educonnect.datasource.entities.DocenteEntity;
+import com.fmt.educonnect.datasource.repositories.CadastroRepository;
 import com.fmt.educonnect.datasource.repositories.DocenteRepository;
+import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
 import com.fmt.educonnect.interfaces.DocenteInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class DocenteService implements DocenteInterface {
 
-    @Autowired
-    private DocenteRepository docenteRepository;
 
-    public DocenteService(DocenteRepository docenteRepository) {
+    private DocenteRepository docenteRepository;
+    private CadastroRepository cadastroRepository;
+
+    @Autowired
+    public DocenteService(DocenteRepository docenteRepository, CadastroRepository cadastroRepository) {
         this.docenteRepository = docenteRepository;
+        this.cadastroRepository = cadastroRepository;
     }
 
     @Override
     public ResponseDocenteDTO criarDocente(RequestDocenteDTO requestDocenteDTO) {
+
+        Optional<CadastroEntity> optionalCadastroEntity = cadastroRepository.findById(requestDocenteDTO.idCadastro());
+
+        CadastroEntity cadastroEntity = optionalCadastroEntity.orElseThrow(
+                () -> new CadastroNotFoundException("Número de cadastro inválido: " + requestDocenteDTO.idCadastro())
+        );
+
         DocenteEntity docenteEntity = converterParaEntidade(requestDocenteDTO);
         DocenteEntity docenteEntitySalvo = docenteRepository.save(docenteEntity);
         return converterParaResponseDTO(docenteEntitySalvo);

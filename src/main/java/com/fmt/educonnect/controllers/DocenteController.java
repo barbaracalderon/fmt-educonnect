@@ -3,6 +3,7 @@ package com.fmt.educonnect.controllers;
 import com.fmt.educonnect.controllers.dtos.requests.RequestDocenteDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseDocenteDTO;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
+import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
 import com.fmt.educonnect.services.DocenteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,12 +20,12 @@ public class DocenteController {
     private DocenteService docenteService;
 
     @PostMapping
-    public ResponseEntity<ResponseDocenteDTO> criarDocente(@RequestBody RequestDocenteDTO requestDocenteDTO) {
-        ResponseDocenteDTO responseDocenteDTO = docenteService.criarDocente(requestDocenteDTO);
-        if (responseDocenteDTO != null) {
+    public ResponseEntity<?> criarDocente(@RequestBody RequestDocenteDTO requestDocenteDTO) {
+        try {
+            ResponseDocenteDTO responseDocenteDTO = docenteService.criarDocente(requestDocenteDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDocenteDTO);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (CadastroNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
