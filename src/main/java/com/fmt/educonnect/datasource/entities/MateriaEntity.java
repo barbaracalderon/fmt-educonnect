@@ -23,11 +23,11 @@ public class MateriaEntity {
     private String nome;
     private LocalDate dataEntrada;
 
-    @Column(name = "id_curso", insertable = false, updatable = false)
+    @Column(name = "id_curso")
     private Long idCurso;
 
     @ManyToOne
-    @JoinColumn(name = "id_curso", referencedColumnName = "id")
+    @JoinColumn(name = "id_curso", referencedColumnName = "id", insertable = false, updatable = false)
     private CursoEntity cursoEntity;
 
     public MateriaEntity(String nome, LocalDate dataEntrada, Long idCurso) {

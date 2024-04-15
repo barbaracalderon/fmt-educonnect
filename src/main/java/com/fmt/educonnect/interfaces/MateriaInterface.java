@@ -25,4 +25,6 @@ public interface MateriaInterface {
     ResponseMateriaDTO atualizarMateria(Long id, RequestMateriaDTO requestMateriaDTO);
 
     Void deletarMateria(Long id);
+
+    List<ResponseMateriaDTO> listarMateriasPorCurso(Long idCurso);
 }
