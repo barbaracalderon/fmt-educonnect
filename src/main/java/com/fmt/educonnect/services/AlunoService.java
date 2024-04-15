@@ -3,28 +3,41 @@ package com.fmt.educonnect.services;
 import com.fmt.educonnect.controllers.dtos.requests.RequestAlunoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoDTO;
 import com.fmt.educonnect.datasource.entities.AlunoEntity;
+import com.fmt.educonnect.datasource.entities.CadastroEntity;
 import com.fmt.educonnect.datasource.repositories.AlunoRepository;
+import com.fmt.educonnect.datasource.repositories.CadastroRepository;
 import com.fmt.educonnect.infra.exceptions.AlunoNotFoundException;
+import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
 import com.fmt.educonnect.interfaces.AlunoInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class AlunoService implements AlunoInterface {
 
-    @Autowired
     private AlunoRepository alunoRepository;
+    private CadastroRepository cadastroRepository;
 
-    public AlunoService(AlunoRepository alunoRepository) {
+    @Autowired
+    public AlunoService(AlunoRepository alunoRepository, CadastroRepository cadastroRepository) {
         this.alunoRepository = alunoRepository;
+        this.cadastroRepository = cadastroRepository;
     }
 
 
     @Override
     public ResponseAlunoDTO criarAluno(RequestAlunoDTO requestAlunoDTO) {
+
+        Optional<CadastroEntity> optionalCadastroEntity = cadastroRepository.findById(requestAlunoDTO.idCadastro());
+
+        CadastroEntity cadastroEntity = optionalCadastroEntity.orElseThrow(
+                () -> new CadastroNotFoundException("Número de cadastro inválido: " + requestAlunoDTO.idCadastro())
+        );
+
         AlunoEntity alunoEntity = converterParaEntidade(requestAlunoDTO);
         AlunoEntity alunoEntitySalvo = alunoRepository.save(alunoEntity);
         return converterParaResponseDTO(alunoEntitySalvo);

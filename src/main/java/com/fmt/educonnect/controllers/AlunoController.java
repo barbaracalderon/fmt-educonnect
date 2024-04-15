@@ -3,6 +3,7 @@ package com.fmt.educonnect.controllers;
 import com.fmt.educonnect.controllers.dtos.requests.RequestAlunoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoDTO;
 import com.fmt.educonnect.infra.exceptions.AlunoNotFoundException;
+import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
 import com.fmt.educonnect.services.AlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,12 @@ public class AlunoController {
     private AlunoService alunoService;
 
     @PostMapping
-    public ResponseEntity<ResponseAlunoDTO> criarAluno(@RequestBody RequestAlunoDTO requestAlunoDTO) {
-        ResponseAlunoDTO responseAlunoDTO = alunoService.criarAluno(requestAlunoDTO);
-        if (responseAlunoDTO != null) {
+    public ResponseEntity<?> criarAluno(@RequestBody RequestAlunoDTO requestAlunoDTO) {
+        try {
+            ResponseAlunoDTO responseAlunoDTO = alunoService.criarAluno(requestAlunoDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(responseAlunoDTO);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (CadastroNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
