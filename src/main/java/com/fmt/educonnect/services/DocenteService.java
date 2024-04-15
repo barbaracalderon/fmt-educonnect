@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 public class DocenteService implements DocenteInterface {
 
 
-    private DocenteRepository docenteRepository;
-    private CadastroRepository cadastroRepository;
+    private final DocenteRepository docenteRepository;
+    private final CadastroRepository cadastroRepository;
 
     @Autowired
     public DocenteService(DocenteRepository docenteRepository, CadastroRepository cadastroRepository) {

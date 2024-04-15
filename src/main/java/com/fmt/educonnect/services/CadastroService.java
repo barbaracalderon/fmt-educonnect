@@ -8,7 +8,6 @@ import com.fmt.educonnect.datasource.repositories.CadastroRepository;
 import com.fmt.educonnect.datasource.repositories.PapelRepository;
 import com.fmt.educonnect.infra.exceptions.PapelNotFoundException;
 import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
-
 import com.fmt.educonnect.interfaces.CadastroInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

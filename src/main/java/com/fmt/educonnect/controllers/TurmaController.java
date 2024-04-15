@@ -1,14 +1,9 @@
 package com.fmt.educonnect.controllers;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestTurmaDTO;
-import com.fmt.educonnect.controllers.dtos.responses.ResponseCursoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseTurmaDTO;
-import com.fmt.educonnect.datasource.entities.CursoEntity;
 import com.fmt.educonnect.infra.exceptions.CursoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.TurmaNotFoundException;
-import com.fmt.educonnect.infra.exceptions.TurmaNotFoundException;
-import com.fmt.educonnect.services.CursoService;
-import com.fmt.educonnect.services.DocenteService;
 import com.fmt.educonnect.services.TurmaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +17,11 @@ import java.util.List;
 @RequestMapping("turmas")
 public class TurmaController {
 
-    private TurmaService turmaService;
-    private CursoService cursoService;
-    private DocenteService docenteService;
+    private final TurmaService turmaService;
 
     @Autowired
-    public TurmaController(TurmaService turmaService, CursoService cursoService, DocenteService docenteService) {
+    public TurmaController(TurmaService turmaService) {
         this.turmaService = turmaService;
-        this.cursoService = cursoService;
-        this.docenteService = docenteService;
     }
 
     @PostMapping()

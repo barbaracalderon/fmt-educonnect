@@ -3,8 +3,6 @@ package com.fmt.educonnect.controllers;
 import com.fmt.educonnect.controllers.dtos.requests.RequestNotaDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseNotaDTO;
 import com.fmt.educonnect.infra.exceptions.*;
-import com.fmt.educonnect.services.CursoService;
-import com.fmt.educonnect.services.DocenteService;
 import com.fmt.educonnect.services.NotaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +17,10 @@ import java.util.List;
 public class NotaController {
 
     private final NotaService notaService;
-    private CursoService cursoService;
-    private DocenteService docenteService;
 
     @Autowired
-    public NotaController(NotaService notaService, CursoService cursoService, DocenteService docenteService) {
+    public NotaController(NotaService notaService) {
         this.notaService = notaService;
-        this.cursoService = cursoService;
-        this.docenteService = docenteService;
     }
 
     @PostMapping()
