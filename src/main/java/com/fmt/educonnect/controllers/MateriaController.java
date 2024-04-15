@@ -32,13 +32,14 @@ public class MateriaController {
 
     @PostMapping()
     public ResponseEntity<?> criarMateria(@RequestBody @Valid RequestMateriaDTO requestMateriaDTO) {
-        ResponseMateriaDTO responseMateriaDTO = materiaService.criarMateria(requestMateriaDTO);
-        if (responseMateriaDTO != null) {
+
+        try {
+            ResponseMateriaDTO responseMateriaDTO = materiaService.criarMateria(requestMateriaDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(responseMateriaDTO);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-            }
+        } catch (CursoNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
 
     @GetMapping()
     public ResponseEntity<List<ResponseMateriaDTO>> listarMaterias() {

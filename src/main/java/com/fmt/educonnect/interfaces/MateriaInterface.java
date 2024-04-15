@@ -3,10 +3,13 @@ package com.fmt.educonnect.interfaces;
 import com.fmt.educonnect.controllers.dtos.requests.RequestMateriaDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseMateriaDTO;
 import com.fmt.educonnect.datasource.entities.MateriaEntity;
+import com.fmt.educonnect.datasource.repositories.CursoRepository;
+import com.fmt.educonnect.datasource.repositories.MateriaRepository;
 
 import java.util.List;
 
 public interface MateriaInterface {
+
     ResponseMateriaDTO criarMateria(RequestMateriaDTO requestMateriaDTO);
 
     MateriaEntity converterParaEntidade(RequestMateriaDTO requestMateriaDTO);

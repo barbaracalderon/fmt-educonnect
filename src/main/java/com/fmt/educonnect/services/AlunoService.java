@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 @Service
 public class AlunoService implements AlunoInterface {
 
-    private AlunoRepository alunoRepository;
-    private CadastroRepository cadastroRepository;
+    private final AlunoRepository alunoRepository;
+    private final CadastroRepository cadastroRepository;
 
     @Autowired
     public AlunoService(AlunoRepository alunoRepository, CadastroRepository cadastroRepository) {
