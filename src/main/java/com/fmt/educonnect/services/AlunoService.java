@@ -2,12 +2,15 @@ package com.fmt.educonnect.services;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestAlunoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoDTO;
+import com.fmt.educonnect.controllers.dtos.responses.ResponseListaDeNotasAlunoDTO;
 import com.fmt.educonnect.datasource.entities.AlunoEntity;
 import com.fmt.educonnect.datasource.entities.CadastroEntity;
 import com.fmt.educonnect.datasource.entities.MateriaEntity;
+import com.fmt.educonnect.datasource.entities.NotaEntity;
 import com.fmt.educonnect.datasource.repositories.AlunoRepository;
 import com.fmt.educonnect.datasource.repositories.CadastroRepository;
 import com.fmt.educonnect.datasource.repositories.MateriaRepository;
+import com.fmt.educonnect.datasource.repositories.NotaRepository;
 import com.fmt.educonnect.infra.exceptions.AlunoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
 import com.fmt.educonnect.infra.exceptions.TurmaNotFoundException;
@@ -26,14 +29,17 @@ public class AlunoService implements AlunoInterface {
     private final AlunoRepository alunoRepository;
     private final CadastroRepository cadastroRepository;
     private final MateriaRepository materiaRepository;
+    private final NotaRepository notaRepository;
 
     @Autowired
     public AlunoService(AlunoRepository alunoRepository,
                         CadastroRepository cadastroRepository,
-                        MateriaRepository materiaRepository) {
+                        MateriaRepository materiaRepository,
+                        NotaRepository notaRepository) {
         this.alunoRepository = alunoRepository;
         this.cadastroRepository = cadastroRepository;
         this.materiaRepository = materiaRepository;
+        this.notaRepository = notaRepository;
     }
 
 
@@ -120,4 +126,28 @@ public class AlunoService implements AlunoInterface {
                 .orElseThrow(() -> new AlunoNotFoundException("Id do Aluno não encontrado para deletar: " + id));
         alunoRepository.deleteById(id);
     }
+
+    @Override
+    public ResponseListaDeNotasAlunoDTO buscarNotasDeAluno(ResponseAlunoDTO responseAlunoDTO) {
+        List<NotaEntity> notasEntityList = notaRepository.findAllByIdAluno(responseAlunoDTO.id());
+        if (notasEntityList.isEmpty()) {
+            throw new AlunoNotFoundException("Notas do Id " + responseAlunoDTO.id() + " do Aluno não encontrado.");
+        } else {
+            return converterParaListaDeNotasResponseDTO(notasEntityList);
+        }
+    }
+
+    @Override
+    public ResponseListaDeNotasAlunoDTO converterParaListaDeNotasResponseDTO(List<NotaEntity> notasEntityList) {
+        List<Long> valores = notasEntityList.stream()
+                .map(NotaEntity::getValor)
+                .collect(Collectors.toList());
+
+        return new ResponseListaDeNotasAlunoDTO(
+                notasEntityList.get(0).getIdAluno(),
+                valores
+        );
+    }
 }
+
+

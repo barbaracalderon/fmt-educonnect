@@ -81,5 +81,15 @@ public class NotaController {
         }
     }
 
+    @GetMapping("/{idAluno}/notas")
+    public ResponseEntity<?> buscarNotasDeAlunoId(@PathVariable("idAluno") Long idAluno) {
+        try {
+            List<ResponseNotaDTO> responseNotaDTO = notaService.buscarNotasDeAlunoId(idAluno);
+            return ResponseEntity.status(HttpStatus.OK).body(responseNotaDTO);
+        } catch (NotaNotFoundException | AlunoNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
 }
 

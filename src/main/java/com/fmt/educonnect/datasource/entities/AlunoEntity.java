@@ -28,6 +28,10 @@ public class AlunoEntity {
     @JoinColumn(name = "id_turma", referencedColumnName = "id", insertable = false, updatable = false)
     private TurmaEntity turmaEntity;
 
+    @ManyToOne
+    @JoinColumn(name = "id_nota", referencedColumnName = "id", insertable = false, updatable = false)
+    private NotaEntity notaEntity;
+
     public AlunoEntity(String nome, LocalDate dataNascimento, Long idCadastro, Long idTurma) {
         this.nome = nome;
         this.dataNascimento = dataNascimento;

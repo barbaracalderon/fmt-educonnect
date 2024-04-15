@@ -8,6 +8,6 @@ public record ResponseAlunoDTO (
         LocalDate dataNascimento,
         Long idCadastro,
         Long idTurma
-    ) {
+) {
 
 }
