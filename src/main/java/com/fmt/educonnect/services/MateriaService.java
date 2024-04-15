@@ -104,6 +104,12 @@ public class MateriaService implements MateriaInterface {
         return null;
     }
 
+    @Override
+    public List<ResponseMateriaDTO> listarMateriasPorCurso(Long idCurso) {
+        List<MateriaEntity> materiaEntityList = materiaRepository.findAllByIdCurso(idCurso);
+        return converterParaListaDeResponseDTO(materiaEntityList);
+    }
+
 
 
 }

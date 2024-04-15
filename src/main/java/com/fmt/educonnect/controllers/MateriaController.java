@@ -81,4 +81,15 @@ public class MateriaController {
         }
     }
 
+    @GetMapping("/cursos/{id_curso}")
+    public ResponseEntity<?> listarMateriasPorCurso(@PathVariable("id_curso") Long idCurso) {
+        List<ResponseMateriaDTO> materiaEntityList = materiaService.listarMateriasPorCurso(idCurso);
+
+        if (materiaEntityList.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(materiaEntityList, HttpStatus.OK);
+        }
+    }
 }
+
