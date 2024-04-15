@@ -6,9 +6,9 @@ import java.time.LocalDate;
 
 public record RequestNotaDTO (
         @JsonFormat(pattern = "dd-MM-yyyy") LocalDate dataLancamento,
-        Long IdAluno,
-        Long IdDocente,
-        Long IdMateria,
+        Long idAluno,
+        Long idDocente,
+        Long idMateria,
         Long valor
 )
 {
