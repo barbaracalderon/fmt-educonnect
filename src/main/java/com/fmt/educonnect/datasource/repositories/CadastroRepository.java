@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CadastroRepository extends JpaRepository<CadastroEntity, String> {
+public interface CadastroRepository extends JpaRepository<CadastroEntity, Long> {
     UserDetails findByLogin(String login);
 
 }

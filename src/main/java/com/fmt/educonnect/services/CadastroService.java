@@ -6,15 +6,16 @@ import com.fmt.educonnect.datasource.entities.CadastroEntity;
 import com.fmt.educonnect.datasource.entities.PapelEntity;
 import com.fmt.educonnect.datasource.repositories.CadastroRepository;
 import com.fmt.educonnect.datasource.repositories.PapelRepository;
+import com.fmt.educonnect.infra.exceptions.PapelNotFoundException;
+import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
+
 import com.fmt.educonnect.interfaces.CadastroInterface;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,17 +32,20 @@ public class CadastroService implements CadastroInterface {
 
     @Override
     public ResponseCadastroDTO criarCadastro(RequestCadastroDTO requestCadastroDTO) {
-        PapelEntity papelEntity = converterParaPapelEntidade(requestCadastroDTO);
-        PapelEntity papelEntitySalvo = papelRepository.save(papelEntity);
+        Optional<PapelEntity> optionalPapelEntity = converterParaPapelEntidade(requestCadastroDTO);
 
-        CadastroEntity cadastroEntity = converterParaEntidade(requestCadastroDTO, papelEntitySalvo);
+        PapelEntity papelEntity = optionalPapelEntity.orElseThrow(
+                () -> new PapelNotFoundException("Número de papel inválido: " + requestCadastroDTO.idPapel())
+        );
+
+        CadastroEntity cadastroEntity = converterParaEntidade(requestCadastroDTO, papelEntity);
         CadastroEntity cadastroEntitySalvo = cadastroRepository.save(cadastroEntity);
 
         return converterParaResponseCadastroDTO(cadastroEntitySalvo);
     }
 
-    public PapelEntity converterParaPapelEntidade(RequestCadastroDTO requestCadastroDTO) {
-        return new PapelEntity(requestCadastroDTO.nomePapel().toString());
+    public Optional<PapelEntity> converterParaPapelEntidade(RequestCadastroDTO requestCadastroDTO) {
+        return papelRepository.findById(requestCadastroDTO.idPapel());
     }
 
     public ResponseCadastroDTO converterParaResponseCadastroDTO(CadastroEntity cadastroEntitySalvo) {
@@ -49,9 +53,9 @@ public class CadastroService implements CadastroInterface {
     }
 
     @Override
-    public CadastroEntity converterParaEntidade(RequestCadastroDTO requestCadastroDTO, PapelEntity papelEntitySalvo) {
+    public CadastroEntity converterParaEntidade(RequestCadastroDTO requestCadastroDTO, PapelEntity papelEntity) {
         String encryptedPassword = new BCryptPasswordEncoder().encode(requestCadastroDTO.password());
-        return new CadastroEntity(requestCadastroDTO.nome(), requestCadastroDTO.login(), encryptedPassword, papelEntitySalvo.getId());
+        return new CadastroEntity(requestCadastroDTO.nome(), requestCadastroDTO.login(), encryptedPassword, papelEntity.getId());
     }
 
     public List<ResponseCadastroDTO> listarCadastros() {
@@ -60,4 +64,13 @@ public class CadastroService implements CadastroInterface {
                 .map(user -> new ResponseCadastroDTO(user.getId(), user.getNome(), user.getLogin(), user.getIdPapel()))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Void deletarCadastro(Long id) {
+        cadastroRepository.findById(id)
+                .orElseThrow(() -> new CadastroNotFoundException("Id do Cadastro não encontrado para deletar: " + id));
+        cadastroRepository.deleteById(id);
+        return null;
+    }
+
 }
