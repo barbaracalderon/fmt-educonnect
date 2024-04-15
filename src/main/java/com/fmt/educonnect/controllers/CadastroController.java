@@ -2,6 +2,7 @@ package com.fmt.educonnect.controllers;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestCadastroDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseCadastroDTO;
+import com.fmt.educonnect.infra.exceptions.PapelNotFoundException;
 import com.fmt.educonnect.services.CadastroService;
 import com.fmt.educonnect.services.LoginService;
 import jakarta.validation.Valid;
@@ -24,13 +25,17 @@ public class CadastroController {
 
 
     @PostMapping()
-    public ResponseEntity<ResponseCadastroDTO> criarCadastro(@RequestBody @Valid RequestCadastroDTO requestCadastroDTO) {
+    public ResponseEntity<?> criarCadastro(@RequestBody @Valid RequestCadastroDTO requestCadastroDTO) {
         if (loginService.loadUserByUsername(requestCadastroDTO.login()) != null) {
             return ResponseEntity.badRequest().build();
 
         } else {
-            ResponseCadastroDTO responseCadastroDTO = cadastroService.criarCadastro(requestCadastroDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(responseCadastroDTO);
+            try {
+                ResponseCadastroDTO responseCadastroDTO = cadastroService.criarCadastro(requestCadastroDTO);
+                return ResponseEntity.status(HttpStatus.CREATED).body(responseCadastroDTO);
+            } catch (PapelNotFoundException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            }
         }
     }
 
