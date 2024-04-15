@@ -28,7 +28,9 @@ public class AlunoService implements AlunoInterface {
     private final MateriaRepository materiaRepository;
 
     @Autowired
-    public AlunoService(AlunoRepository alunoRepository, CadastroRepository cadastroRepository) {
+    public AlunoService(AlunoRepository alunoRepository,
+                        CadastroRepository cadastroRepository,
+                        MateriaRepository materiaRepository) {
         this.alunoRepository = alunoRepository;
         this.cadastroRepository = cadastroRepository;
         this.materiaRepository = materiaRepository;
