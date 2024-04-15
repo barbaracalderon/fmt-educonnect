@@ -7,6 +7,7 @@ import com.fmt.educonnect.infra.exceptions.MateriaNotFoundException;
 import com.fmt.educonnect.services.CursoService;
 import com.fmt.educonnect.services.MateriaService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("materias")
 public class MateriaController {
@@ -29,19 +31,24 @@ public class MateriaController {
     public ResponseEntity<?> criarMateria(@RequestBody @Valid RequestMateriaDTO requestMateriaDTO) {
 
         try {
+            log.info("POST /materias ---> Chamada para o método.");
             ResponseMateriaDTO responseMateriaDTO = materiaService.criarMateria(requestMateriaDTO);
+            log.info("POST /materias ---> Sucesso.");
             return ResponseEntity.status(HttpStatus.CREATED).body(responseMateriaDTO);
         } catch (CursoNotFoundException e) {
+            log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @GetMapping()
     public ResponseEntity<List<ResponseMateriaDTO>> listarMaterias() {
+        log.info("GET /materias ---> Chamada para o método.");
         List<ResponseMateriaDTO> ResponseMateriaDTOsList = materiaService.listarMaterias();
         if (ResponseMateriaDTOsList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } else {
+            log.info("GET /materias ---> Sucesso.");
             return ResponseEntity.ok().body(ResponseMateriaDTOsList);
         }
     }
@@ -49,9 +56,12 @@ public class MateriaController {
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarMateriaPorId(@PathVariable("id") Long id) {
         try {
+            log.info("GET /materias/{} ---> Chamada para o método.", id);
             ResponseMateriaDTO responseMateriaDTO = materiaService.buscarMateriaPorId(id);
+            log.info("GET /materias/{} ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseMateriaDTO);
         } catch (MateriaNotFoundException e) {
+            log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
@@ -59,9 +69,12 @@ public class MateriaController {
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizarMateria(@PathVariable("id") Long id, @RequestBody RequestMateriaDTO requestMateriaDTO) {
         try {
+            log.info("PUT /materias/{} ---> Chamada para o método.", id);
             ResponseMateriaDTO responseMateriaDTO = materiaService.atualizarMateria(id, requestMateriaDTO);
+            log.info("PUT /materias/{} ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseMateriaDTO);
         } catch (MateriaNotFoundException e) {
+            log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
@@ -69,20 +82,24 @@ public class MateriaController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletarMateria(@PathVariable("id") Long id) {
         try {
+            log.info("DELETE /materias/{} ---> Chamada para o método.", id);
             materiaService.deletarMateria(id);
+            log.info("DELETE /materias/{} ---> Sucesso.", id);
             return ResponseEntity.noContent().build();
         } catch (MateriaNotFoundException e) {
+            log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     @GetMapping("/cursos/{id_curso}")
     public ResponseEntity<?> listarMateriasPorCurso(@PathVariable("id_curso") Long idCurso) {
+        log.info("GET /materias/cursos/{} ---> Chamada para o método.", idCurso);
         List<ResponseMateriaDTO> materiaEntityList = materiaService.listarMateriasPorCurso(idCurso);
-
         if (materiaEntityList.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
+            log.info("GET /materias/cursos/{} ---> Sucesso.", idCurso);
             return new ResponseEntity<>(materiaEntityList, HttpStatus.OK);
         }
     }
