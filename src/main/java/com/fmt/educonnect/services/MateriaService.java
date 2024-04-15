@@ -35,7 +35,6 @@ public class MateriaService implements MateriaInterface {
 
         materiaEntity.setNome(requestMateriaDTO.nome());
         materiaEntity.setDataEntrada(requestMateriaDTO.dataEntrada());
-        materiaEntity.setIdCurso(requestMateriaDTO.idCurso());
 
         return materiaEntity;
     }
@@ -45,8 +44,7 @@ public class MateriaService implements MateriaInterface {
         return new ResponseMateriaDTO(
                 materiaEntitySalvo.getId(),
                 materiaEntitySalvo.getNome(),
-                materiaEntitySalvo.getDataEntrada(),
-                materiaEntitySalvo.getIdCurso()
+                materiaEntitySalvo.getDataEntrada()
         );
     }
 

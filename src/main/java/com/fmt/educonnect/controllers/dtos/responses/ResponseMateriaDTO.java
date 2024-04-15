@@ -5,6 +5,6 @@ import java.time.LocalDate;
 public record ResponseMateriaDTO(
         Long id,
         String nome,
-        LocalDate dataEntrada,
-        Long curso_id) {
+        LocalDate dataEntrada
+) {
 }
