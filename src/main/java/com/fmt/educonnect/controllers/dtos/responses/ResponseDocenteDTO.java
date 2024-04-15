@@ -6,7 +6,5 @@ public record ResponseDocenteDTO (
         Long id,
         String nome,
         LocalDate dataEntrada,
-        Long idCadastro
-    ) {
-
+        Long idCadastro) {
 }

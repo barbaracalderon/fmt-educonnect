@@ -9,7 +9,5 @@ public record RequestNotaDTO (
         Long idAluno,
         Long idDocente,
         Long idMateria,
-        Long valor
-)
-{
+        Long valor) {
 }

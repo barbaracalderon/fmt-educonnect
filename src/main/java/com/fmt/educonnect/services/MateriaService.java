@@ -63,7 +63,6 @@ public class MateriaService implements MateriaInterface {
         );
     }
 
-
     @Override
     public List<ResponseMateriaDTO> listarMaterias() {
         List<MateriaEntity> materiaEntityList = materiaRepository.findAll();

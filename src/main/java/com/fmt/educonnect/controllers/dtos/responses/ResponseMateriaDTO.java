@@ -6,6 +6,5 @@ public record ResponseMateriaDTO(
         Long id,
         String nome,
         LocalDate dataEntrada,
-        Long idCurso
-) {
+        Long idCurso) {
 }

@@ -6,6 +6,5 @@ import java.util.List;
 
 public record ResponseCursoMateriasDTO (
     Long id,
-    List<MateriaEntity> materias
-){
+    List<MateriaEntity> materias) {
 }

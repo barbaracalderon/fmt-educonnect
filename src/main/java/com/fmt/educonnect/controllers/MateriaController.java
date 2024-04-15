@@ -1,11 +1,8 @@
 package com.fmt.educonnect.controllers;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestMateriaDTO;
-import com.fmt.educonnect.controllers.dtos.responses.ResponseCursoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseMateriaDTO;
-import com.fmt.educonnect.datasource.entities.CursoEntity;
 import com.fmt.educonnect.infra.exceptions.CursoNotFoundException;
-import com.fmt.educonnect.infra.exceptions.MateriaNotFoundException;
 import com.fmt.educonnect.infra.exceptions.MateriaNotFoundException;
 import com.fmt.educonnect.services.CursoService;
 import com.fmt.educonnect.services.MateriaService;
@@ -21,13 +18,11 @@ import java.util.List;
 @RequestMapping("materias")
 public class MateriaController {
 
-    private MateriaService materiaService;
-    private CursoService cursoService;
+    private final MateriaService materiaService;
 
     @Autowired
-    public MateriaController(MateriaService materiaService, CursoService cursoService) {
+    public MateriaController(MateriaService materiaService) {
         this.materiaService = materiaService;
-        this.cursoService = cursoService;
     }
 
     @PostMapping()

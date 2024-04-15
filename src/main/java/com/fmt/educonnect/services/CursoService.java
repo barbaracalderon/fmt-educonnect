@@ -23,6 +23,7 @@ public class CursoService implements CursoInterface {
     private final CursoRepository cursoRepository;
     private final MateriaRepository materiaRepository;
 
+    @Autowired
     public CursoService(CursoRepository cursoRepository, MateriaRepository materiaRepository) {
         this.cursoRepository = cursoRepository;
         this.materiaRepository = materiaRepository;

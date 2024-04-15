@@ -11,6 +11,5 @@ public record ResponseTurmaDTO (
         LocalDate dataEntrada,
         Long idDocente,
         Long idCurso,
-        List<AlunoEntity> alunos
-    ){
+        List<AlunoEntity> alunos) {
 }

@@ -10,7 +10,5 @@ public record ResponseNotaDTO (
         Long IdAluno,
         Long IdDocente,
         Long IdMateria,
-        Long valor
-)
-    {
+        Long valor) {
 }

@@ -1,6 +1,5 @@
 package com.fmt.educonnect.infra.security;
 
-import com.fmt.educonnect.datasource.entities.CadastroEntity;
 import com.fmt.educonnect.datasource.repositories.CadastroRepository;
 import com.fmt.educonnect.services.TokenService;
 import jakarta.servlet.FilterChain;

@@ -7,7 +7,5 @@ public record ResponseAlunoDTO (
         String nome,
         LocalDate dataNascimento,
         Long idCadastro,
-        Long idTurma
-) {
-
+        Long idTurma) {
 }

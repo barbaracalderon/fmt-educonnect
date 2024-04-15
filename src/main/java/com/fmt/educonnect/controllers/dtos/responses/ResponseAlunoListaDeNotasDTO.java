@@ -5,9 +5,5 @@ import java.util.List;
 public record ResponseAlunoListaDeNotasDTO(
         Long idAluno,
 
-        List<Long> valores
-) {
-
-
-
+        List<Long> valores) {
 }

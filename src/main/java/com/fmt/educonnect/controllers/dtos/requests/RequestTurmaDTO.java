@@ -6,6 +6,5 @@ public record RequestTurmaDTO (
         String nome,
         @JsonFormat(pattern = "dd-MM-yyyy") LocalDate dataEntrada,
         Long idDocente,
-        Long idCurso
-){
+        Long idCurso) {
 }
