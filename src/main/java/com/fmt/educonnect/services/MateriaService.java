@@ -2,28 +2,41 @@ package com.fmt.educonnect.services;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestMateriaDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseMateriaDTO;
+import com.fmt.educonnect.datasource.entities.CursoEntity;
 import com.fmt.educonnect.datasource.entities.MateriaEntity;
+import com.fmt.educonnect.datasource.repositories.CursoRepository;
 import com.fmt.educonnect.datasource.repositories.MateriaRepository;
+import com.fmt.educonnect.infra.exceptions.CursoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.MateriaNotFoundException;
 import com.fmt.educonnect.interfaces.MateriaInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class MateriaService implements MateriaInterface {
 
-    @Autowired
-    private MateriaRepository materiaRepository;
 
-    public MateriaService(MateriaRepository materiaRepository) {
+    private final MateriaRepository materiaRepository;
+    private final CursoRepository cursoRepository;
+
+    @Autowired
+    public MateriaService(MateriaRepository materiaRepository, CursoRepository cursoRepository) {
         this.materiaRepository = materiaRepository;
+        this.cursoRepository = cursoRepository;
     }
 
     @Override
     public ResponseMateriaDTO criarMateria(RequestMateriaDTO requestMateriaDTO) {
+
+        Optional<CursoEntity> optionalCursoEntity = cursoRepository.findById(requestMateriaDTO.idCurso());
+        CursoEntity cursoEntity = optionalCursoEntity.orElseThrow(
+                () -> new CursoNotFoundException("Id do Curso inválido: " + requestMateriaDTO.idCurso())
+        );
+
         MateriaEntity materiaEntity = converterParaEntidade(requestMateriaDTO);
         MateriaEntity materiaEntitySalvo = materiaRepository.save(materiaEntity);
         return converterParaResponseDTO(materiaEntitySalvo);
@@ -35,6 +48,7 @@ public class MateriaService implements MateriaInterface {
 
         materiaEntity.setNome(requestMateriaDTO.nome());
         materiaEntity.setDataEntrada(requestMateriaDTO.dataEntrada());
+        materiaEntity.setIdCurso(requestMateriaDTO.idCurso());
 
         return materiaEntity;
     }
@@ -44,7 +58,8 @@ public class MateriaService implements MateriaInterface {
         return new ResponseMateriaDTO(
                 materiaEntitySalvo.getId(),
                 materiaEntitySalvo.getNome(),
-                materiaEntitySalvo.getDataEntrada()
+                materiaEntitySalvo.getDataEntrada(),
+                materiaEntitySalvo.getIdCurso()
         );
     }
 
