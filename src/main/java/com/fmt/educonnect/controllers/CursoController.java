@@ -2,6 +2,7 @@ package com.fmt.educonnect.controllers;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestCursoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseCursoDTO;
+import com.fmt.educonnect.controllers.dtos.responses.ResponseCursoMateriasDTO;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
 import com.fmt.educonnect.services.CursoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,8 +69,16 @@ public class CursoController {
         }
     }
 
+    @GetMapping("/{id}/materias")
+    public ResponseEntity<?> buscarMateriasPorCurso(@PathVariable("id") Long id) {
+        try {
 
-
+            List<ResponseCursoMateriasDTO> responseCursoMateriasDTO = cursoService.buscarMateriasDeCursoId(id);
+            return ResponseEntity.status(HttpStatus.OK).body(responseCursoMateriasDTO);
+        } catch (DocenteNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 
 
 }
