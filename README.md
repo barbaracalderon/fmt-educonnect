@@ -165,7 +165,6 @@ Uma descrição mais detalhada de cada rota, método HTTP, JSON de request e JSO
 | `ADMIN, PEDAGOGICO`            | POST        | /cursos                | ```{"nome": "Filosofia", "dataEntrada": "04-08-2019"}```                                          |
 | `ADMIN, PEDAGOGICO`            | GET         | /cursos                |                                                                                                   |
 | `ADMIN, PEDAGOGICO`            | GET         | /cursos/<id>           | ```{"nome": "Filosofia", "dataEntrada": "04-08-2019"}```                                          |
-| `ADMIN, PEDAGOGICO`            | GET         | /cursos/<id>/materias  |                                                                                                   |
 | `ADMIN, PEDAGOGICO`            | PUT         | /cursos/<id>           | ```{"nome": "Sistemas de Informação", "dataEntrada": "04-08-2019"}```                             |
 | `ADMIN`                        | DELETE      | /cursos/<id>           |                                                                                                   |
 | `ADMIN`                        | POST        | /materias              | ```{"nome": "Engenharia de Software", "dataEntrada": "04-08-2019",	"idCurso": 2}```               |

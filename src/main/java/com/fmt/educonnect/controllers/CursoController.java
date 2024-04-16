@@ -91,18 +91,5 @@ public class CursoController {
         }
     }
 
-    @GetMapping("/{id}/materias")
-    public ResponseEntity<?> buscarMateriasPorCurso(@PathVariable("id") Long id) {
-        try {
-            log.info("GET /cursos/{}/materias ---> Chamada para o método.", id);
-            List<ResponseCursoMateriasDTO> responseCursoMateriasDTO = cursoService.buscarMateriasDeCursoId(id);
-            log.info("GET /cursos/{}/materias ---> Sucesso.", id);
-            return ResponseEntity.status(HttpStatus.OK).body(responseCursoMateriasDTO);
-        } catch (MateriaNotFoundException e) {
-            log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
 
 }
