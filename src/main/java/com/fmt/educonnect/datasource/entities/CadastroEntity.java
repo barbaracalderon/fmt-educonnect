@@ -44,9 +44,26 @@ public class CadastroEntity implements UserDetails {
 
         if (papelEntity != null && papelEntity.getId().equals(getIdPapel()) && papelEntity.getNomePapel() == NomePapelEnum.ADMIN) {
             return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
-        } else {
-            return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
         }
+
+        if (papelEntity != null && papelEntity.getId().equals(getIdPapel()) && papelEntity.getNomePapel() == NomePapelEnum.PEDAGOGICO) {
+            return List.of(new SimpleGrantedAuthority("ROLE_PEDAGOGICO"));
+        }
+
+        if (papelEntity != null && papelEntity.getId().equals(getIdPapel()) && papelEntity.getNomePapel() == NomePapelEnum.ALUNO) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ALUNO"));
+        }
+
+        if (papelEntity != null && papelEntity.getId().equals(getIdPapel()) && papelEntity.getNomePapel() == NomePapelEnum.PROFESSOR) {
+            return List.of(new SimpleGrantedAuthority("ROLE_PROFESSOR"));
+        }
+
+        if (papelEntity != null && papelEntity.getId().equals(getIdPapel()) && papelEntity.getNomePapel() == NomePapelEnum.RECRUITER) {
+            return List.of(new SimpleGrantedAuthority("ROLE_RECRUITER"));
+        }
+
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+
     }
 
     @Override
