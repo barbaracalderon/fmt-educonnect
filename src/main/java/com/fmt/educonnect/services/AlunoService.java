@@ -26,16 +26,13 @@ import java.util.stream.Collectors;
 public class AlunoService implements AlunoInterface {
 
     private final AlunoRepository alunoRepository;
-    private final NotaService notaService;
     private final CadastroService cadastroService;
 
     @Autowired
     public AlunoService(AlunoRepository alunoRepository,
-                        NotaService notaService,
                         CadastroService cadastroService
     ) {
         this.alunoRepository = alunoRepository;
-        this.notaService = notaService;
         this.cadastroService = cadastroService;
     }
 
@@ -114,11 +111,6 @@ public class AlunoService implements AlunoInterface {
                 .orElseThrow(() -> new AlunoNotFoundException("Id do Aluno não encontrado para deletar: " + id));
         alunoRepository.deleteById(id);
         return null;
-    }
-
-    @Override
-    public List<NotaEntity> buscarNotasDeAluno(AlunoEntity alunoEntity) {
-        return notaService.buscarNotasPorIdAluno(alunoEntity.getId());
     }
 
 

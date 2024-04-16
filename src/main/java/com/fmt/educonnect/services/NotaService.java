@@ -8,6 +8,7 @@ import com.fmt.educonnect.infra.exceptions.AlunoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
 import com.fmt.educonnect.infra.exceptions.MateriaNotFoundException;
 import com.fmt.educonnect.infra.exceptions.NotaNotFoundException;
+import com.fmt.educonnect.interfaces.AlunoNotaInterface;
 import com.fmt.educonnect.interfaces.NotaInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,30 +21,27 @@ public class NotaService implements NotaInterface {
 
 
     private final NotaRepository notaRepository;
+    private final DocenteService docenteService;
+    private final MateriaService materiaService;
+    private final AlunoService alunoService;
 
     @Autowired
-    public NotaService(NotaRepository notaRepository) {
+    public NotaService(NotaRepository notaRepository,
+                       AlunoService alunoService,
+                       DocenteService docenteService,
+                       MateriaService materiaService) {
         this.notaRepository = notaRepository;
+        this.alunoService = alunoService;
+        this.docenteService = docenteService;
+        this.materiaService = materiaService;
     }
 
     @Override
     public NotaEntity criarNota(RequestNotaDTO requestNotaDTO) {
 
-        List<NotaEntity> notaEntityList = notaRepository.findAllByIdAluno(requestNotaDTO.idAluno());
-
-        if (notaEntityList.isEmpty()) {
-            throw new AlunoNotFoundException("Id do aluno inválido: " + requestNotaDTO.idAluno());
-        }
-
-        notaEntityList = notaRepository.findAllByIdDocente(requestNotaDTO.idDocente());
-        if (notaEntityList.isEmpty()) {
-            throw new DocenteNotFoundException("Id do Docente inválido: " + requestNotaDTO.idDocente());
-        }
-
-        notaEntityList = notaRepository.findAllByIdMateria(requestNotaDTO.idMateria());
-        if (notaEntityList.isEmpty()) {
-            throw new MateriaNotFoundException("Id da Materia inválido: " + requestNotaDTO.idMateria());
-        }
+        AlunoEntity alunoEntity = alunoService.buscarAlunoPorId(requestNotaDTO.idAluno());
+        DocenteEntity docenteEntity = docenteService.buscarDocentePorId(requestNotaDTO.idDocente());
+        MateriaEntity materiaEntity = materiaService.buscarMateriaPorId(requestNotaDTO.idMateria());
 
         NotaEntity notaEntity = criarNotaEntity(requestNotaDTO);
         return notaRepository.save(notaEntity);

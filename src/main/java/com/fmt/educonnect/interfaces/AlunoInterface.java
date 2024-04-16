@@ -29,8 +29,6 @@ public interface AlunoInterface {
 
     Void deletarAluno(Long id);
 
-    List<NotaEntity> buscarNotasDeAluno(AlunoEntity alunoEntity);
-
     Long calcularPontuacaoDeAluno(List<NotaEntity> notaEntityList);
 
     List<AlunoEntity> buscarAlunosDeIdTurma(Long idTurma);

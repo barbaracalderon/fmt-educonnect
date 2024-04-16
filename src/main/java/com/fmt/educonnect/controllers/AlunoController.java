@@ -7,6 +7,7 @@ import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoPontuacaoDTO;
 import com.fmt.educonnect.datasource.entities.AlunoEntity;
 import com.fmt.educonnect.datasource.entities.NotaEntity;
 import com.fmt.educonnect.infra.exceptions.*;
+import com.fmt.educonnect.services.AlunoNotaService;
 import com.fmt.educonnect.services.AlunoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,8 @@ import java.util.List;
 public class AlunoController {
 
     @Autowired
-    private AlunoService alunoService;
+    private AlunoNotaService alunoNotaService;
+    @Autowired AlunoService alunoService;
 
     @PostMapping
     public ResponseEntity<?> criarAluno(@RequestBody RequestAlunoDTO requestAlunoDTO) {
@@ -97,7 +99,7 @@ public class AlunoController {
         try {
             log.info("GET /alunos/{}/notas ---> Chamada para o método.", id);
             AlunoEntity alunoEntity = alunoService.buscarAlunoPorId(id);
-            List<NotaEntity> notasEntityList = alunoService.buscarNotasDeAluno(alunoEntity);
+            List<NotaEntity> notasEntityList = alunoNotaService.buscarNotasPorIdAluno(alunoEntity);
             ResponseAlunoListaDeNotasDTO responseAlunoListaDeNotasDTO = alunoService.criarResponseAlunoListaDeNotasDTO(notasEntityList);
             log.info("GET /alunos/{}/notas ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseAlunoListaDeNotasDTO);
@@ -112,7 +114,7 @@ public class AlunoController {
         try {
             log.info("GET /alunos/{}/pontuação ---> Chamada para o método.", id);
             AlunoEntity alunoEntity = alunoService.buscarAlunoPorId(id);
-            List<NotaEntity> notaEntityList = alunoService.buscarNotasDeAluno(alunoEntity);
+            List<NotaEntity> notaEntityList = alunoNotaService.buscarNotasPorIdAluno(alunoEntity);
             Long pontuacao = alunoService.calcularPontuacaoDeAluno(notaEntityList);
             ResponseAlunoPontuacaoDTO responseAlunoPontuacaoDTO = alunoService.criarResponseAlunoPontuacaoDTO(alunoEntity, pontuacao);
             log.info("GET /alunos/{}/pontuação ---> Sucesso.", id);
