@@ -101,7 +101,7 @@ public class AlunoController {
             ResponseAlunoListaDeNotasDTO responseAlunoListaDeNotasDTO = alunoService.criarResponseAlunoListaDeNotasDTO(notasEntityList);
             log.info("GET /alunos/{}/notas ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseAlunoListaDeNotasDTO);
-        } catch (NotaNotFoundException | AlunoNotFoundException e) {
+        } catch (AlunoNotFoundException | NotaNotFoundException e) {
             log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

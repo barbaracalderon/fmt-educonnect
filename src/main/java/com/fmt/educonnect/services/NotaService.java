@@ -119,7 +119,7 @@ public class NotaService implements NotaInterface {
     public List<NotaEntity> buscarNotasPorIdAluno(Long idAluno) {
         List<NotaEntity> notaEntityList = notaRepository.findAllByIdAluno(idAluno);
         if (notaEntityList.isEmpty()) {
-            throw new AlunoNotFoundException("Id do Aluno " + idAluno + " não encontrado.");
+            throw new NotaNotFoundException("Notas do Id Aluno " + idAluno + " não lançadas.");
         }
         return notaEntityList;
     }
