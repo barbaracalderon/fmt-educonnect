@@ -109,6 +109,9 @@ public class MateriaService implements MateriaInterface {
         return converterParaListaDeResponseDTO(materiaEntityList);
     }
 
+    public List<MateriaEntity> buscarCursoPorId(Long idCurso) {
+        return materiaRepository.findAllByIdCurso(idCurso);
+    }
 
 
 }

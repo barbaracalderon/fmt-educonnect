@@ -8,19 +8,19 @@ import java.util.List;
 
 public interface CursoInterface {
 
-    ResponseCursoDTO criarCurso(RequestCursoDTO requestCursoDTO);
+    CursoEntity criarCurso(RequestCursoDTO requestCursoDTO);
 
-    CursoEntity converterParaEntidade(RequestCursoDTO requestCursoDTO);
+    CursoEntity criarCursoEntity(RequestCursoDTO requestCursoDTO);
 
-    ResponseCursoDTO converterParaResponseDTO(CursoEntity cursoEntity);
+    ResponseCursoDTO criarResponseCursoDTO(CursoEntity cursoEntitySalvo);
 
-    List<ResponseCursoDTO> listarCursos();
+    List<ResponseCursoDTO> criarResponseCursoDTO(List<CursoEntity> cursoEntityList);
 
-    List<ResponseCursoDTO> converterParaListaDeResponseDTO(List<CursoEntity> cursos);
+    List<CursoEntity> listarCursos();
 
-    ResponseCursoDTO buscarCursoPorId(Long id);
+    CursoEntity buscarCursoPorId(Long id);
 
-    ResponseCursoDTO atualizarCurso(Long id, RequestCursoDTO body);
+    CursoEntity atualizarCurso(Long id, RequestCursoDTO body);
 
     Void deletarCurso(Long id);
 }

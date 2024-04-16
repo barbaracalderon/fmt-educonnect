@@ -19,25 +19,23 @@ import java.util.stream.Collectors;
 @Service
 public class CursoService implements CursoInterface {
 
-
     private final CursoRepository cursoRepository;
-    private final MateriaRepository materiaRepository;
+    private final MateriaService materiaService;
 
     @Autowired
-    public CursoService(CursoRepository cursoRepository, MateriaRepository materiaRepository) {
+    public CursoService(CursoRepository cursoRepository, MateriaService materiaService) {
         this.cursoRepository = cursoRepository;
-        this.materiaRepository = materiaRepository;
+        this.materiaService = materiaService;
     }
 
     @Override
-    public ResponseCursoDTO criarCurso(RequestCursoDTO requestCursoDTO) {
-        CursoEntity cursoEntity = converterParaEntidade(requestCursoDTO);
-        CursoEntity cursoEntitySalvo = cursoRepository.save(cursoEntity);
-        return converterParaResponseDTO(cursoEntitySalvo);
+    public CursoEntity criarCurso(RequestCursoDTO requestCursoDTO) {
+        CursoEntity cursoEntity = criarCursoEntity(requestCursoDTO);
+        return cursoRepository.save(cursoEntity);
     }
 
     @Override
-    public CursoEntity converterParaEntidade(RequestCursoDTO requestCursoDTO){
+    public CursoEntity criarCursoEntity(RequestCursoDTO requestCursoDTO){
         CursoEntity cursoEntity = new CursoEntity();
 
         cursoEntity.setNome(requestCursoDTO.nome());
@@ -47,7 +45,7 @@ public class CursoService implements CursoInterface {
     }
 
     @Override
-    public ResponseCursoDTO converterParaResponseDTO(CursoEntity cursoEntitySalvo){
+    public ResponseCursoDTO criarResponseCursoDTO(CursoEntity cursoEntitySalvo){
         return new ResponseCursoDTO(
                 cursoEntitySalvo.getId(),
                 cursoEntitySalvo.getNome(),
@@ -55,35 +53,31 @@ public class CursoService implements CursoInterface {
         );
     }
 
-
     @Override
-    public List<ResponseCursoDTO> listarCursos() {
-        List<CursoEntity> cursoEntityList = cursoRepository.findAll();
-        return converterParaListaDeResponseDTO(cursoEntityList);
+    public List<CursoEntity> listarCursos() {
+        return cursoRepository.findAll();
     }
 
     @Override
-    public List<ResponseCursoDTO> converterParaListaDeResponseDTO(List<CursoEntity> cursoEntityList) {
+    public List<ResponseCursoDTO> criarResponseCursoDTO(List<CursoEntity> cursoEntityList) {
         return cursoEntityList.stream()
-                .map(this::converterParaResponseDTO)
+                .map(this::criarResponseCursoDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ResponseCursoDTO buscarCursoPorId(Long id) {
-        return cursoRepository.findById(id)
-                .map(this::converterParaResponseDTO)
-                .orElseThrow(() -> new CursoNotFoundException("Id do Curso não encontrado: " + id));
+    public CursoEntity buscarCursoPorId(Long id) {
+        return cursoRepository.findById(id).orElseThrow(
+                () -> new CursoNotFoundException("Id do Curso não encontrado: " + id));
     }
 
     @Override
-    public ResponseCursoDTO atualizarCurso(Long id, RequestCursoDTO requestCursoDTO) {
+    public CursoEntity atualizarCurso(Long id, RequestCursoDTO requestCursoDTO) {
         return cursoRepository.findById(id)
                 .map(curso -> {
                     curso.setNome(requestCursoDTO.nome());
                     curso.setDataEntrada(requestCursoDTO.dataEntrada());
-                    CursoEntity updatedCurso = cursoRepository.save(curso);
-                    return converterParaResponseDTO(updatedCurso);
+                    return cursoRepository.save(curso);
                 })
                 .orElseThrow(() -> new CursoNotFoundException("Id do Curso não encontrado para atualizar: " + id));
     }
@@ -97,7 +91,7 @@ public class CursoService implements CursoInterface {
     }
 
     public List<ResponseCursoMateriasDTO> buscarMateriasDeCursoId(Long idCurso) {
-        List<MateriaEntity> materiaEntityList = materiaRepository.findAllByIdCurso(idCurso);
+        List<MateriaEntity> materiaEntityList = materiaService.buscarCursoPorId(idCurso);
         if (materiaEntityList.isEmpty()) {
             throw new CursoNotFoundException("Id do Curso não encontrado: " + idCurso);
         } else {
