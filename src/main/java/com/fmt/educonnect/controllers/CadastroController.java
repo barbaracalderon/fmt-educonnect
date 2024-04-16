@@ -3,6 +3,7 @@ package com.fmt.educonnect.controllers;
 import com.fmt.educonnect.controllers.dtos.requests.RequestCadastroDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseCadastroDTO;
 import com.fmt.educonnect.datasource.entities.CadastroEntity;
+import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
 import com.fmt.educonnect.infra.exceptions.PapelNotFoundException;
 import com.fmt.educonnect.services.CadastroService;
@@ -63,7 +64,7 @@ public class CadastroController {
             cadastroService.deletarCadastro(id);
             log.info("DELETE /cadastro ---> Sucesso.");
             return ResponseEntity.noContent().build();
-        } catch (DocenteNotFoundException e) {
+        } catch (CadastroNotFoundException e) {
             log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

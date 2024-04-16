@@ -71,7 +71,7 @@ public class CursoController {
             ResponseCursoDTO responseCursoDTO = cursoService.criarResponseCursoDTO(cursoEntitySalvo);
             log.info("PUT /cursos/{} ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseCursoDTO);
-        } catch (DocenteNotFoundException e) {
+        } catch (CursoNotFoundException e) {
             log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
