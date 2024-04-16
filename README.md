@@ -14,17 +14,20 @@ Sou a Barbara Calderon, desenvolvedora de software.
 
 # Sumário
 
-1. [Kanban e Trello](##1.Kanban e Trello)
-2. [Tecnologias utilizadas](##2.Tecnologias utilizadas)
-3. [Estrutura de pastas](##3.Estrutura de pastas do projeto)
-4. [Rotas e autorizações](##4.Rotas e autorizações)
-5. [Instalação](##5.Instalação)
-6. [Passo-a-passo de uso](##6.Passo-a-passo de uso)
-7. [Descrição de endpoints](##7.Descrição de endpoints )
-8. [Princípio de responsabilidade única](##8.Princípio de responsabilide única)
-9. [Gitflow e desenvolvimento](##9.Gitflow e desenvolvimento)
-10. [Futuramente](##10.Futuramente)
-11. [Considerações finais](##Considerações finais)
+# Sumário
+
+1. [Kanban e Trello](#1-kanban-e-trello)
+2. [Tecnologias utilizadas](#2-tecnologias-utilizadas)
+3. [Estrutura de pastas](#3-estrutura-de-pastas-do-projeto)
+4. [Rotas e autorizações](#4-rotas-e-autorizações)
+5. [Instalação](#5-instalação)
+6. [Passo-a-passo de uso](#6-passo-a-passo-de-uso)
+7. [Descrição de endpoints](#7-descrição-de-endpoints)
+8. [Princípio de responsabilidade única](#8-princípio-de-responsabilide-única)
+9. [Gitflow e desenvolvimento](#9-gitflow-e-desenvolvimento)
+10. [Futuramente](#10-futuramente)
+11. [Considerações finais](#considerações-finais)
+
 
 ## 1. Kanban e Trello
 
