@@ -5,7 +5,6 @@ import com.fmt.educonnect.controllers.dtos.responses.ResponseCadastroDTO;
 import com.fmt.educonnect.datasource.entities.CadastroEntity;
 import com.fmt.educonnect.datasource.entities.PapelEntity;
 import com.fmt.educonnect.datasource.repositories.CadastroRepository;
-import com.fmt.educonnect.datasource.repositories.PapelRepository;
 import com.fmt.educonnect.infra.exceptions.PapelNotFoundException;
 import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
 import com.fmt.educonnect.interfaces.CadastroInterface;
@@ -21,48 +20,43 @@ import java.util.stream.Collectors;
 public class CadastroService implements CadastroInterface {
 
     private final CadastroRepository cadastroRepository;
-    private final PapelRepository papelRepository;
+    private final PapelService papelService;
 
     @Autowired
-    public CadastroService(CadastroRepository cadastroRepository, PapelRepository papelRepository) {
+    public CadastroService(CadastroRepository cadastroRepository, PapelService papelService) {
         this.cadastroRepository = cadastroRepository;
-        this.papelRepository = papelRepository;
+        this.papelService = papelService;
     }
 
     @Override
-    public ResponseCadastroDTO criarCadastro(RequestCadastroDTO requestCadastroDTO) {
-        Optional<PapelEntity> optionalPapelEntity = converterParaPapelEntidade(requestCadastroDTO);
+    public CadastroEntity criarCadastro(RequestCadastroDTO requestCadastroDTO) {
 
+        Optional<PapelEntity> optionalPapelEntity = papelService.buscarPapelPorId(requestCadastroDTO.idPapel());
         PapelEntity papelEntity = optionalPapelEntity.orElseThrow(
                 () -> new PapelNotFoundException("Número de papel inválido: " + requestCadastroDTO.idPapel())
         );
+        CadastroEntity cadastroEntityEncrypted = criarEntidadeCadastroEncrypted(requestCadastroDTO);
 
-        CadastroEntity cadastroEntity = converterParaEntidade(requestCadastroDTO, papelEntity);
-        CadastroEntity cadastroEntitySalvo = cadastroRepository.save(cadastroEntity);
-
-        return converterParaResponseCadastroDTO(cadastroEntitySalvo);
+        return cadastroRepository.save(cadastroEntityEncrypted);
     }
 
-    public Optional<PapelEntity> converterParaPapelEntidade(RequestCadastroDTO requestCadastroDTO) {
-        return papelRepository.findById(requestCadastroDTO.idPapel());
+    CadastroEntity criarEntidadeCadastroEncrypted(RequestCadastroDTO requestCadastroDTO) {
+        String encryptedPassword = new BCryptPasswordEncoder().encode(requestCadastroDTO.password());
+        return new CadastroEntity(requestCadastroDTO.nome(), requestCadastroDTO.login(), encryptedPassword, requestCadastroDTO.idPapel());
     }
 
-    public ResponseCadastroDTO converterParaResponseCadastroDTO(CadastroEntity cadastroEntitySalvo) {
+    public ResponseCadastroDTO criarResponseCadastroDTO(CadastroEntity cadastroEntitySalvo) {
         return new ResponseCadastroDTO(cadastroEntitySalvo.getId(), cadastroEntitySalvo.getNome(), cadastroEntitySalvo.getLogin(), cadastroEntitySalvo.getIdPapel());
     }
 
-    @Override
-    public CadastroEntity converterParaEntidade(RequestCadastroDTO requestCadastroDTO, PapelEntity papelEntity) {
-        String encryptedPassword = new BCryptPasswordEncoder().encode(requestCadastroDTO.password());
-        return new CadastroEntity(requestCadastroDTO.nome(), requestCadastroDTO.login(), encryptedPassword, papelEntity.getId());
+    public List<CadastroEntity> listarCadastros() {
+        return cadastroRepository.findAll();
     }
 
-    public List<ResponseCadastroDTO> listarCadastros() {
-        List<CadastroEntity> cadastros = cadastroRepository.findAll();
-        return cadastros.stream()
+    public List<ResponseCadastroDTO> criarResponseCadastroList(List<CadastroEntity> cadastroEntityList) {
+        return cadastroEntityList.stream()
                 .map(user -> new ResponseCadastroDTO(user.getId(), user.getNome(), user.getLogin(), user.getIdPapel()))
-                .collect(Collectors.toList());
-    }
+                .collect(Collectors.toList());    }
 
     @Override
     public Void deletarCadastro(Long id) {
@@ -70,6 +64,10 @@ public class CadastroService implements CadastroInterface {
                 .orElseThrow(() -> new CadastroNotFoundException("Id do Cadastro não encontrado para deletar: " + id));
         cadastroRepository.deleteById(id);
         return null;
+    }
+
+    public Optional<CadastroEntity> buscarCadastroPorId(Long id) {
+        return cadastroRepository.findById(id);
     }
 
 }

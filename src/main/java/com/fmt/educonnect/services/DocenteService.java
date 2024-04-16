@@ -4,7 +4,6 @@ import com.fmt.educonnect.controllers.dtos.requests.RequestDocenteDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseDocenteDTO;
 import com.fmt.educonnect.datasource.entities.CadastroEntity;
 import com.fmt.educonnect.datasource.entities.DocenteEntity;
-import com.fmt.educonnect.datasource.repositories.CadastroRepository;
 import com.fmt.educonnect.datasource.repositories.DocenteRepository;
 import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
@@ -21,30 +20,27 @@ public class DocenteService implements DocenteInterface {
 
 
     private final DocenteRepository docenteRepository;
-    private final CadastroRepository cadastroRepository;
+    private final CadastroService cadastroService;
 
     @Autowired
-    public DocenteService(DocenteRepository docenteRepository, CadastroRepository cadastroRepository) {
+    public DocenteService(DocenteRepository docenteRepository, CadastroService cadastroService) {
         this.docenteRepository = docenteRepository;
-        this.cadastroRepository = cadastroRepository;
+        this.cadastroService = cadastroService;
     }
 
-    @Override
-    public ResponseDocenteDTO criarDocente(RequestDocenteDTO requestDocenteDTO) {
-
-        Optional<CadastroEntity> optionalCadastroEntity = cadastroRepository.findById(requestDocenteDTO.idCadastro());
+    public DocenteEntity criarDocente(RequestDocenteDTO requestDocenteDTO) {
+        Optional<CadastroEntity> optionalCadastroEntity = cadastroService.buscarCadastroPorId(requestDocenteDTO.idCadastro());
 
         CadastroEntity cadastroEntity = optionalCadastroEntity.orElseThrow(
-                () -> new CadastroNotFoundException("Número de cadastro inválido: " + requestDocenteDTO.idCadastro())
+            () -> new CadastroNotFoundException("Número de cadastro inválido: " + requestDocenteDTO.idCadastro())
         );
 
-        DocenteEntity docenteEntity = converterParaEntidade(requestDocenteDTO);
-        DocenteEntity docenteEntitySalvo = docenteRepository.save(docenteEntity);
-        return converterParaResponseDTO(docenteEntitySalvo);
+        DocenteEntity docenteEntity = criarDocenteEntity(requestDocenteDTO);
+        return docenteRepository.save(docenteEntity);
     }
 
     @Override
-    public DocenteEntity converterParaEntidade(RequestDocenteDTO requestDocenteDTO){
+    public DocenteEntity criarDocenteEntity(RequestDocenteDTO requestDocenteDTO) {
         DocenteEntity docenteEntity = new DocenteEntity();
 
         docenteEntity.setNome(requestDocenteDTO.nome());
@@ -55,7 +51,7 @@ public class DocenteService implements DocenteInterface {
     }
 
     @Override
-    public ResponseDocenteDTO converterParaResponseDTO(DocenteEntity docenteEntitySalvo){
+    public ResponseDocenteDTO criarResponseDocenteDTO(DocenteEntity docenteEntitySalvo){
         return new ResponseDocenteDTO(
                 docenteEntitySalvo.getId(),
                 docenteEntitySalvo.getNome(),
@@ -65,35 +61,36 @@ public class DocenteService implements DocenteInterface {
     }
 
     @Override
-    public List<ResponseDocenteDTO> listarDocentes() {
-        List<DocenteEntity> docenteEntityList = docenteRepository.findAll();
-        return converterParaListaDeResponseDTO(docenteEntityList);
+    public List<DocenteEntity> listarDocentes() {
+        return docenteRepository.findAll();
     }
 
+
     @Override
-    public List<ResponseDocenteDTO> converterParaListaDeResponseDTO(List<DocenteEntity> docenteEntityList) {
+    public List<ResponseDocenteDTO> criarResponseDocenteDTO(List<DocenteEntity> docenteEntityList) {
         return docenteEntityList.stream()
-                .map(this::converterParaResponseDTO)
+                .map(this::criarResponseDocenteDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ResponseDocenteDTO buscarDocentePorId(Long id) {
-        return docenteRepository.findById(id)
-                .map(this::converterParaResponseDTO)
-                .orElseThrow(() -> new DocenteNotFoundException("Id do Docente não encontrado: " + id));
+    public DocenteEntity buscarDocentePorId(Long id) {
+        return docenteRepository.findById(id).orElseThrow(
+                () -> new DocenteNotFoundException("Id do Docente não encontrado: " + id)
+        );
     }
 
     @Override
-    public ResponseDocenteDTO atualizarDocente(Long id, RequestDocenteDTO requestDocenteDTO) {
+    public DocenteEntity atualizarDocente(Long id, RequestDocenteDTO requestDocenteDTO) {
         return docenteRepository.findById(id)
                 .map(docente -> {
                     docente.setNome(requestDocenteDTO.nome());
                     docente.setDataEntrada(requestDocenteDTO.dataEntrada());
-                    DocenteEntity updatedDocente = docenteRepository.save(docente);
-                    return converterParaResponseDTO(updatedDocente);
+                    return docente;
                 })
-                .orElseThrow(() -> new DocenteNotFoundException("Id do Docente não encontrado para atualizar: " + id));
+                .orElseThrow(
+                        () -> new DocenteNotFoundException("Id do Docente não encontrado para atualizar: " + id)
+                );
     }
 
     @Override
@@ -103,7 +100,5 @@ public class DocenteService implements DocenteInterface {
         docenteRepository.deleteById(id);
         return null;
     }
-
-
 
 }

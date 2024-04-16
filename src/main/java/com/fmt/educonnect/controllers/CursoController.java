@@ -1,9 +1,10 @@
 package com.fmt.educonnect.controllers;
-
 import com.fmt.educonnect.controllers.dtos.requests.RequestCursoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseCursoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseCursoMateriasDTO;
+import com.fmt.educonnect.infra.exceptions.CursoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
+import com.fmt.educonnect.datasource.entities.CursoEntity;
 import com.fmt.educonnect.services.CursoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,9 @@ public class CursoController {
     @PostMapping
     public ResponseEntity<ResponseCursoDTO> criarCurso(@RequestBody RequestCursoDTO requestCursoDTO) {
         log.info("POST /cursos ---> Chamada para o método.");
-        ResponseCursoDTO responseCursoDTO = cursoService.criarCurso(requestCursoDTO);
+
+        CursoEntity cursoEntitySalvo = cursoService.criarCurso(requestCursoDTO);
+        ResponseCursoDTO responseCursoDTO = cursoService.criarResponseCursoDTO(cursoEntitySalvo);
         if (responseCursoDTO != null) {
             log.info("POST /cursos ---> Sucesso.");
             return ResponseEntity.status(HttpStatus.CREATED).body(responseCursoDTO);
@@ -36,10 +39,11 @@ public class CursoController {
     @GetMapping()
     public ResponseEntity<List<ResponseCursoDTO>> listarCursos() {
         log.info("GET /cursos ---> Chamada para o método.");
-        List<ResponseCursoDTO> responseCursoDTOsList = cursoService.listarCursos();
-        if (responseCursoDTOsList.isEmpty()) {
+        List<CursoEntity> cursoEntityList = cursoService.listarCursos();
+        if (cursoEntityList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } else {
+            List<ResponseCursoDTO> responseCursoDTOsList = cursoService.criarResponseCursoDTO(cursoEntityList);
             log.info("GET /cursos ---> Sucesso.");
             return ResponseEntity.ok().body(responseCursoDTOsList);
         }
@@ -49,10 +53,11 @@ public class CursoController {
     public ResponseEntity<?> buscarCursoPorId(@PathVariable("id") Long id) {
         try {
             log.info("GET /cursos/{} ---> Chamada para o método.", id);
-            ResponseCursoDTO responseCursoDTO = cursoService.buscarCursoPorId(id);
+            CursoEntity cursoEntity = cursoService.buscarCursoPorId(id);
+            ResponseCursoDTO responseCursoDTO = cursoService.criarResponseCursoDTO(cursoEntity);
             log.info("GET /cursos/{} ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseCursoDTO);
-        } catch (DocenteNotFoundException e) {
+        } catch (CursoNotFoundException e) {
             log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -62,10 +67,11 @@ public class CursoController {
     public ResponseEntity<?> atualizarCurso(@PathVariable("id") Long id, @RequestBody RequestCursoDTO requestCursoDTO) {
         try {
             log.info("PUT /cursos/{} ---> Chamada para o método.", id);
-            ResponseCursoDTO responseCursoDTO = cursoService.atualizarCurso(id, requestCursoDTO);
+            CursoEntity cursoEntitySalvo = cursoService.atualizarCurso(id, requestCursoDTO);
+            ResponseCursoDTO responseCursoDTO = cursoService.criarResponseCursoDTO(cursoEntitySalvo);
             log.info("PUT /cursos/{} ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseCursoDTO);
-        } catch (DocenteNotFoundException e) {
+        } catch (CursoNotFoundException e) {
             log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -78,7 +84,7 @@ public class CursoController {
             cursoService.deletarCurso(id);
             log.info("DELETE /cursos/{} ---> Sucesso.", id);
             return ResponseEntity.noContent().build();
-        } catch (DocenteNotFoundException e) {
+        } catch (CursoNotFoundException e) {
             log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -91,7 +97,7 @@ public class CursoController {
             List<ResponseCursoMateriasDTO> responseCursoMateriasDTO = cursoService.buscarMateriasDeCursoId(id);
             log.info("GET /cursos/{}/materias ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseCursoMateriasDTO);
-        } catch (DocenteNotFoundException e) {
+        } catch (CursoNotFoundException e) {
             log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

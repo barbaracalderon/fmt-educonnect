@@ -2,7 +2,9 @@ package com.fmt.educonnect.controllers;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestTurmaDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseTurmaDTO;
+import com.fmt.educonnect.datasource.entities.TurmaEntity;
 import com.fmt.educonnect.infra.exceptions.CursoNotFoundException;
+import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
 import com.fmt.educonnect.infra.exceptions.TurmaNotFoundException;
 import com.fmt.educonnect.services.TurmaService;
 import jakarta.validation.Valid;
@@ -31,10 +33,11 @@ public class TurmaController {
 
         try {
             log.info("POST /turmas ---> Chamada para o método.");
-            ResponseTurmaDTO responseTurmaDTO = turmaService.criarTurma(requestTurmaDTO);
+            TurmaEntity turmaEntitySalvo = turmaService.criarTurma(requestTurmaDTO);
+            ResponseTurmaDTO responseTurmaDTO = turmaService.criarResponseTurmaDTO(turmaEntitySalvo);
             log.info("POST /turmas ---> Sucesso.");
             return ResponseEntity.status(HttpStatus.CREATED).body(responseTurmaDTO);
-        } catch (CursoNotFoundException e) {
+        } catch (CursoNotFoundException | DocenteNotFoundException e) {
             log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -43,10 +46,11 @@ public class TurmaController {
     @GetMapping()
     public ResponseEntity<List<ResponseTurmaDTO>> listarTurmas() {
         log.info("GET /turmas ---> Chamada para o método.");
-        List<ResponseTurmaDTO> ResponseTurmaDTOsList = turmaService.listarTurmas();
-        if (ResponseTurmaDTOsList.isEmpty()) {
+        List<TurmaEntity> turmaEntityList = turmaService.listarTurmas();
+        if (turmaEntityList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } else {
+            List<ResponseTurmaDTO> ResponseTurmaDTOsList = turmaService.criarResponseTurmaDTO(turmaEntityList);
             log.info("GET /turmas ---> Sucesso.");
             return ResponseEntity.ok().body(ResponseTurmaDTOsList);
         }
@@ -56,7 +60,8 @@ public class TurmaController {
     public ResponseEntity<?> buscarTurmaPorId(@PathVariable("id") Long id) {
         try {
             log.info("GET /turmas/{} ---> Chamada para o método.", id);
-            ResponseTurmaDTO responseTurmaDTO = turmaService.buscarTurmaPorId(id);
+            TurmaEntity turmaEntity = turmaService.buscarTurmaPorId(id);
+            ResponseTurmaDTO responseTurmaDTO = turmaService.criarResponseTurmaDTO(turmaEntity);
             log.info("GET /turmas/{} ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseTurmaDTO);
         } catch (TurmaNotFoundException e) {
@@ -69,7 +74,8 @@ public class TurmaController {
     public ResponseEntity<?> atualizarTurma(@PathVariable("id") Long id, @RequestBody RequestTurmaDTO requestTurmaDTO) {
         try {
             log.info("PUT /turmas/{} ---> Chamada para o método.", id);
-            ResponseTurmaDTO responseTurmaDTO = turmaService.atualizarTurma(id, requestTurmaDTO);
+            TurmaEntity turmaEntity = turmaService.atualizarTurma(id, requestTurmaDTO);
+            ResponseTurmaDTO responseTurmaDTO = turmaService.criarResponseTurmaDTO(turmaEntity);
             log.info("PUT /turmas/{} ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseTurmaDTO);
         } catch (TurmaNotFoundException e) {

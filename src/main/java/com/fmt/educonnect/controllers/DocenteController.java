@@ -2,6 +2,7 @@ package com.fmt.educonnect.controllers;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestDocenteDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseDocenteDTO;
+import com.fmt.educonnect.datasource.entities.DocenteEntity;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
 import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
 import com.fmt.educonnect.services.DocenteService;
@@ -25,7 +26,8 @@ public class DocenteController {
     public ResponseEntity<?> criarDocente(@RequestBody RequestDocenteDTO requestDocenteDTO) {
         try {
             log.info("POST /docentes ---> Chamada para o método.");
-            ResponseDocenteDTO responseDocenteDTO = docenteService.criarDocente(requestDocenteDTO);
+            DocenteEntity docenteEntitySalvo = docenteService.criarDocente(requestDocenteDTO);
+            ResponseDocenteDTO responseDocenteDTO = docenteService.criarResponseDocenteDTO(docenteEntitySalvo);
             log.info("POST /docentes ---> Sucesso.");
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDocenteDTO);
         } catch (CadastroNotFoundException e) {
@@ -37,10 +39,11 @@ public class DocenteController {
     @GetMapping()
     public ResponseEntity<List<ResponseDocenteDTO>> listarDocentes() {
         log.info("GET /docentes ---> Chamada para o método.");
-        List<ResponseDocenteDTO> responseDocenteDTOsList = docenteService.listarDocentes();
-        if (responseDocenteDTOsList.isEmpty()) {
+        List<DocenteEntity> docenteEntityList = docenteService.listarDocentes();
+        if (docenteEntityList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } else {
+            List<ResponseDocenteDTO> responseDocenteDTOsList = docenteService.criarResponseDocenteDTO(docenteEntityList);
             log.info("POST /docentes ---> Sucesso.");
             return ResponseEntity.ok().body(responseDocenteDTOsList);
         }
@@ -50,7 +53,8 @@ public class DocenteController {
     public ResponseEntity<?> buscarDocentePorId(@PathVariable("id") Long id) {
         try {
             log.info("GET /docentes/{} ---> Chamada para o método.", id);
-            ResponseDocenteDTO responseDocenteDTO = docenteService.buscarDocentePorId(id);
+            DocenteEntity docenteEntitySalvo = docenteService.buscarDocentePorId(id);
+            ResponseDocenteDTO responseDocenteDTO = docenteService.criarResponseDocenteDTO(docenteEntitySalvo);
             log.info("GET /docentes/{} ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseDocenteDTO);
         } catch (DocenteNotFoundException e) {
@@ -63,7 +67,8 @@ public class DocenteController {
     public ResponseEntity<?> atualizarDocente(@PathVariable("id") Long id, @RequestBody RequestDocenteDTO requestDocenteDTO) {
         try {
             log.info("PUT /docentes/{} ---> Chamada para o método.", id);
-            ResponseDocenteDTO responseDocenteDTO = docenteService.atualizarDocente(id, requestDocenteDTO);
+            DocenteEntity docenteEntitySalvo = docenteService.atualizarDocente(id, requestDocenteDTO);
+            ResponseDocenteDTO responseDocenteDTO = docenteService.criarResponseDocenteDTO(docenteEntitySalvo);
             log.info("PUT /docentes/{} ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseDocenteDTO);
         } catch (DocenteNotFoundException e) {

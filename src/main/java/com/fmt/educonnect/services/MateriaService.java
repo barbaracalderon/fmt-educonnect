@@ -2,9 +2,7 @@ package com.fmt.educonnect.services;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestMateriaDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseMateriaDTO;
-import com.fmt.educonnect.datasource.entities.CursoEntity;
 import com.fmt.educonnect.datasource.entities.MateriaEntity;
-import com.fmt.educonnect.datasource.repositories.CursoRepository;
 import com.fmt.educonnect.datasource.repositories.MateriaRepository;
 import com.fmt.educonnect.infra.exceptions.CursoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.MateriaNotFoundException;
@@ -21,29 +19,31 @@ public class MateriaService implements MateriaInterface {
 
 
     private final MateriaRepository materiaRepository;
-    private final CursoRepository cursoRepository;
 
     @Autowired
-    public MateriaService(MateriaRepository materiaRepository, CursoRepository cursoRepository) {
+    public MateriaService(MateriaRepository materiaRepository) {
         this.materiaRepository = materiaRepository;
-        this.cursoRepository = cursoRepository;
     }
 
     @Override
-    public ResponseMateriaDTO criarMateria(RequestMateriaDTO requestMateriaDTO) {
+    public MateriaEntity criarMateria(RequestMateriaDTO requestMateriaDTO) {
 
-        Optional<CursoEntity> optionalCursoEntity = cursoRepository.findById(requestMateriaDTO.idCurso());
-        CursoEntity cursoEntity = optionalCursoEntity.orElseThrow(
-                () -> new CursoNotFoundException("Id do Curso inválido: " + requestMateriaDTO.idCurso())
-        );
+        List<MateriaEntity> materiaEntityList = buscarMateriaPorIdCurso(requestMateriaDTO.idCurso());
+        if (materiaEntityList.isEmpty()) {
+            throw new CursoNotFoundException("Id do Curso inválido: " + requestMateriaDTO.idCurso());
+        }
+        else {
+            MateriaEntity materiaEntity = criarMateriaEntity(requestMateriaDTO);
+            return materiaRepository.save(materiaEntity);
+        }
+    }
 
-        MateriaEntity materiaEntity = converterParaEntidade(requestMateriaDTO);
-        MateriaEntity materiaEntitySalvo = materiaRepository.save(materiaEntity);
-        return converterParaResponseDTO(materiaEntitySalvo);
+    public List<MateriaEntity> buscarMateriaPorIdCurso(Long idCurso) {
+        return materiaRepository.findAllByIdCurso(idCurso);
     }
 
     @Override
-    public MateriaEntity converterParaEntidade(RequestMateriaDTO requestMateriaDTO){
+    public MateriaEntity criarMateriaEntity(RequestMateriaDTO requestMateriaDTO){
         MateriaEntity materiaEntity = new MateriaEntity();
 
         materiaEntity.setNome(requestMateriaDTO.nome());
@@ -54,7 +54,7 @@ public class MateriaService implements MateriaInterface {
     }
 
     @Override
-    public ResponseMateriaDTO converterParaResponseDTO(MateriaEntity materiaEntitySalvo){
+    public ResponseMateriaDTO criarResponseMateriaDTO(MateriaEntity materiaEntitySalvo){
         return new ResponseMateriaDTO(
                 materiaEntitySalvo.getId(),
                 materiaEntitySalvo.getNome(),
@@ -64,33 +64,31 @@ public class MateriaService implements MateriaInterface {
     }
 
     @Override
-    public List<ResponseMateriaDTO> listarMaterias() {
-        List<MateriaEntity> materiaEntityList = materiaRepository.findAll();
-        return converterParaListaDeResponseDTO(materiaEntityList);
+    public List<MateriaEntity> listarMaterias() {
+        return materiaRepository.findAll();
     }
 
     @Override
-    public List<ResponseMateriaDTO> converterParaListaDeResponseDTO(List<MateriaEntity> materiaEntityList) {
+    public List<ResponseMateriaDTO> criarResponseMateriaDTO(List<MateriaEntity> materiaEntityList) {
         return materiaEntityList.stream()
-                .map(this::converterParaResponseDTO)
+                .map(this::criarResponseMateriaDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ResponseMateriaDTO buscarMateriaPorId(Long id) {
-        return materiaRepository.findById(id)
-                .map(this::converterParaResponseDTO)
-                .orElseThrow(() -> new MateriaNotFoundException("Id da Materia não encontrado: " + id));
+    public MateriaEntity buscarMateriaPorId(Long id) {
+        return materiaRepository.findById(id).orElseThrow(
+                () -> new MateriaNotFoundException("Id da Materia não encontrada: " + id));
     }
 
+
     @Override
-    public ResponseMateriaDTO atualizarMateria(Long id, RequestMateriaDTO requestMateriaDTO) {
+    public MateriaEntity atualizarMateria(Long id, RequestMateriaDTO requestMateriaDTO) {
         return materiaRepository.findById(id)
                 .map(materia -> {
                     materia.setNome(requestMateriaDTO.nome());
                     materia.setDataEntrada(requestMateriaDTO.dataEntrada());
-                    MateriaEntity updatedMateria = materiaRepository.save(materia);
-                    return converterParaResponseDTO(updatedMateria);
+                    return materiaRepository.save(materia);
                 })
                 .orElseThrow(() -> new MateriaNotFoundException("Id da Materia não encontrado para atualizar: " + id));
     }
@@ -104,11 +102,13 @@ public class MateriaService implements MateriaInterface {
     }
 
     @Override
-    public List<ResponseMateriaDTO> listarMateriasPorCurso(Long idCurso) {
-        List<MateriaEntity> materiaEntityList = materiaRepository.findAllByIdCurso(idCurso);
-        return converterParaListaDeResponseDTO(materiaEntityList);
+    public List<MateriaEntity> listarMateriasPorCurso(Long idCurso) {
+        return materiaRepository.findAllByIdCurso(idCurso);
     }
 
+    public List<MateriaEntity> buscarCursoPorId(Long idCurso) {
+        return materiaRepository.findAllByIdCurso(idCurso);
+    }
 
 
 }

@@ -9,4 +9,8 @@ import java.util.List;
 @Repository
 public interface NotaRepository extends JpaRepository<NotaEntity, Long> {
     List<NotaEntity> findAllByIdAluno(Long idAluno);
+
+    List<NotaEntity> findAllByIdDocente(Long idDocente);
+
+    List<NotaEntity> findAllByIdMateria(Long idMateria);
 }

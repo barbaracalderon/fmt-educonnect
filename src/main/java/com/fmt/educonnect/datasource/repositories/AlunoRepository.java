@@ -8,5 +8,8 @@ import java.util.List;
 
 @Repository
 public interface AlunoRepository extends JpaRepository<AlunoEntity, Long> {
+
+    List<AlunoEntity> findAllByIdCadastro(Long id);
+
     List<AlunoEntity> findAllByIdTurma(Long id);
 }

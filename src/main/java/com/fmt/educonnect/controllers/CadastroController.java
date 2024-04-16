@@ -2,6 +2,8 @@ package com.fmt.educonnect.controllers;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestCadastroDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseCadastroDTO;
+import com.fmt.educonnect.datasource.entities.CadastroEntity;
+import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
 import com.fmt.educonnect.infra.exceptions.PapelNotFoundException;
 import com.fmt.educonnect.services.CadastroService;
@@ -35,7 +37,8 @@ public class CadastroController {
         } else {
             try {
                 log.info("POST /cadastro ---> Chamada para o método.");
-                ResponseCadastroDTO responseCadastroDTO = cadastroService.criarCadastro(requestCadastroDTO);
+                CadastroEntity cadastroEntitySalvo = cadastroService.criarCadastro(requestCadastroDTO);
+                ResponseCadastroDTO responseCadastroDTO = cadastroService.criarResponseCadastroDTO(cadastroEntitySalvo);
                 log.info("POST /cadastro ---> Sucesso.");
                 return ResponseEntity.status(HttpStatus.CREATED).body(responseCadastroDTO);
             } catch (PapelNotFoundException e) {
@@ -48,7 +51,8 @@ public class CadastroController {
     @GetMapping()
     public ResponseEntity<List<ResponseCadastroDTO>> listarCadastros() {
         log.info("GET /cadastro ---> Chamada para o método.");
-        List<ResponseCadastroDTO> responseCadastroDTOsList = cadastroService.listarCadastros();
+        List<CadastroEntity> cadastroEntityList = cadastroService.listarCadastros();
+        List<ResponseCadastroDTO> responseCadastroDTOsList = cadastroService.criarResponseCadastroList(cadastroEntityList);
         log.info("GET /cadastro ---> Sucesso.");
         return ResponseEntity.ok(responseCadastroDTOsList);
     }
@@ -60,7 +64,7 @@ public class CadastroController {
             cadastroService.deletarCadastro(id);
             log.info("DELETE /cadastro ---> Sucesso.");
             return ResponseEntity.noContent().build();
-        } catch (DocenteNotFoundException e) {
+        } catch (CadastroNotFoundException e) {
             log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
