@@ -91,12 +91,12 @@ public class NotaController {
         }
     }
 
-    @GetMapping("/{idAluno}/notas")
+    @GetMapping("/alunos/{idAluno}")
     public ResponseEntity<?> buscarNotasDeAlunoId(@PathVariable("idAluno") Long idAluno) {
         try {
-            log.info("GET /notas/{}/notas ---> Chamada para o método.", idAluno);
+            log.info("GET /notas/alunos/{} ---> Chamada para o método.", idAluno);
             List<ResponseNotaDTO> responseNotaDTO = notaService.buscarNotasDeAlunoId(idAluno);
-            log.info("GET /notas/{}/notas ---> Sucesso.", idAluno);
+            log.info("GET /notas/alunos/{} ---> Sucesso.", idAluno);
             return ResponseEntity.status(HttpStatus.OK).body(responseNotaDTO);
         } catch (NotaNotFoundException | AlunoNotFoundException e) {
             log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
