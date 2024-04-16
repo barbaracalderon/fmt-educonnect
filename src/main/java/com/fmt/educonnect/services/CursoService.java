@@ -8,6 +8,7 @@ import com.fmt.educonnect.datasource.entities.MateriaEntity;
 import com.fmt.educonnect.datasource.repositories.CursoRepository;
 import com.fmt.educonnect.datasource.repositories.MateriaRepository;
 import com.fmt.educonnect.infra.exceptions.CursoNotFoundException;
+import com.fmt.educonnect.infra.exceptions.MateriaNotFoundException;
 import com.fmt.educonnect.interfaces.CursoInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -93,7 +94,7 @@ public class CursoService implements CursoInterface {
     public List<ResponseCursoMateriasDTO> buscarMateriasDeCursoId(Long idCurso) {
         List<MateriaEntity> materiaEntityList = materiaService.buscarCursoPorId(idCurso);
         if (materiaEntityList.isEmpty()) {
-            throw new CursoNotFoundException("Id do Curso não encontrado: " + idCurso);
+            throw new MateriaNotFoundException("Materias para Id curso " + idCurso + " não encontradas.");
         } else {
             return Collections.singletonList(new ResponseCursoMateriasDTO(
                     idCurso,

@@ -5,6 +5,7 @@ import com.fmt.educonnect.controllers.dtos.responses.ResponseCursoMateriasDTO;
 import com.fmt.educonnect.infra.exceptions.CursoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
 import com.fmt.educonnect.datasource.entities.CursoEntity;
+import com.fmt.educonnect.infra.exceptions.MateriaNotFoundException;
 import com.fmt.educonnect.services.CursoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,7 +98,7 @@ public class CursoController {
             List<ResponseCursoMateriasDTO> responseCursoMateriasDTO = cursoService.buscarMateriasDeCursoId(id);
             log.info("GET /cursos/{}/materias ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseCursoMateriasDTO);
-        } catch (CursoNotFoundException e) {
+        } catch (MateriaNotFoundException e) {
             log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
