@@ -3,12 +3,7 @@ package com.fmt.educonnect.services;
 import com.fmt.educonnect.controllers.dtos.requests.RequestTurmaDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseTurmaDTO;
 import com.fmt.educonnect.datasource.entities.AlunoEntity;
-import com.fmt.educonnect.datasource.entities.CursoEntity;
-import com.fmt.educonnect.datasource.entities.DocenteEntity;
 import com.fmt.educonnect.datasource.entities.TurmaEntity;
-import com.fmt.educonnect.datasource.repositories.AlunoRepository;
-import com.fmt.educonnect.datasource.repositories.CursoRepository;
-import com.fmt.educonnect.datasource.repositories.DocenteRepository;
 import com.fmt.educonnect.datasource.repositories.TurmaRepository;
 import com.fmt.educonnect.infra.exceptions.CursoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
@@ -18,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,42 +20,36 @@ public class TurmaService implements TurmaInterface {
 
 
     private final TurmaRepository turmaRepository;
-    private final CursoRepository cursoRepository;
-    private final DocenteRepository docenteRepository;
-    private final AlunoRepository alunoRepository;
+    private final AlunoService alunoService;
 
     @Autowired
     public TurmaService(TurmaRepository turmaRepository,
-                        CursoRepository cursoRepository,
-                        DocenteRepository docenteRepository,
-                        AlunoRepository alunoRepository
+                        AlunoService alunoService
     ) {
         this.turmaRepository = turmaRepository;
-        this.cursoRepository = cursoRepository;
-        this.docenteRepository = docenteRepository;
-        this.alunoRepository = alunoRepository;
+        this.alunoService = alunoService;
     }
 
     @Override
-    public ResponseTurmaDTO criarTurma(RequestTurmaDTO requestTurmaDTO) {
+    public TurmaEntity criarTurma(RequestTurmaDTO requestTurmaDTO) {
 
-        Optional<CursoEntity> optionalCursoEntity = cursoRepository.findById(requestTurmaDTO.idCurso());
-        CursoEntity cursoEntity = optionalCursoEntity.orElseThrow(
-                () -> new CursoNotFoundException("Id do Curso inválido: " + requestTurmaDTO.idCurso())
-        );
+        List<TurmaEntity> turmaEntityList = turmaRepository.findAllByIdCurso(requestTurmaDTO.idCurso());
+        if (turmaEntityList.isEmpty()) {
+            throw new CursoNotFoundException("Id do Curso inválido: " + requestTurmaDTO.idCurso());
+        }
 
-        Optional<DocenteEntity> optionalDocenteEntity = docenteRepository.findById(requestTurmaDTO.idDocente());
-        DocenteEntity docenteEntity = optionalDocenteEntity.orElseThrow(
-                () -> new DocenteNotFoundException("Id do Docente inválido: " + requestTurmaDTO.idDocente())
-        );
+        turmaEntityList = turmaRepository.findAllByIdDocente(requestTurmaDTO.idDocente());
 
-        TurmaEntity turmaEntity = converterParaEntidade(requestTurmaDTO);
-        TurmaEntity turmaEntitySalvo = turmaRepository.save(turmaEntity);
-        return converterParaResponseDTO(turmaEntitySalvo);
+        if (turmaEntityList.isEmpty()) {
+            throw new DocenteNotFoundException("Id do Docente inválido: " + requestTurmaDTO.idDocente());
+        }
+
+        TurmaEntity turmaEntity = criarTurmaEntity(requestTurmaDTO);
+        return turmaRepository.save(turmaEntity);
     }
 
     @Override
-    public TurmaEntity converterParaEntidade(RequestTurmaDTO requestTurmaDTO){
+    public TurmaEntity criarTurmaEntity(RequestTurmaDTO requestTurmaDTO){
         TurmaEntity turmaEntity = new TurmaEntity();
 
         turmaEntity.setNome(requestTurmaDTO.nome());
@@ -73,50 +61,46 @@ public class TurmaService implements TurmaInterface {
     }
 
     @Override
-    public ResponseTurmaDTO converterParaResponseDTO(TurmaEntity turmaEntitySalvo){
-
-        List<AlunoEntity> optionalAlunoEntityList = alunoRepository.findAllByIdTurma(turmaEntitySalvo.getId());
-
-
+    public ResponseTurmaDTO criarResponseTurmaDTO(TurmaEntity turmaEntitySalvo) {
+        List<AlunoEntity> alunoEntityList = alunoService.buscarAlunosDeIdTurma(turmaEntitySalvo.getId());
         return new ResponseTurmaDTO(
                 turmaEntitySalvo.getId(),
                 turmaEntitySalvo.getNome(),
                 turmaEntitySalvo.getDataEntrada(),
                 turmaEntitySalvo.getIdDocente(),
                 turmaEntitySalvo.getIdCurso(),
-                optionalAlunoEntityList
+                alunoEntityList
         );
     }
 
 
     @Override
-    public List<ResponseTurmaDTO> listarTurmas() {
-        List<TurmaEntity> turmaEntityList = turmaRepository.findAll();
-        return converterParaListaDeResponseDTO(turmaEntityList);
+    public List<TurmaEntity> listarTurmas() {
+        return turmaRepository.findAll();
     }
 
     @Override
-    public List<ResponseTurmaDTO> converterParaListaDeResponseDTO(List<TurmaEntity> turmaEntityList) {
+    public List<ResponseTurmaDTO> criarResponseTurmaDTO(List<TurmaEntity> turmaEntityList) {
         return turmaEntityList.stream()
-                .map(this::converterParaResponseDTO)
+                .map(this::criarResponseTurmaDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ResponseTurmaDTO buscarTurmaPorId(Long id) {
+    public TurmaEntity buscarTurmaPorId(Long id) {
         return turmaRepository.findById(id)
-                .map(this::converterParaResponseDTO)
                 .orElseThrow(() -> new TurmaNotFoundException("Id da Turma não encontrado: " + id));
     }
 
     @Override
-    public ResponseTurmaDTO atualizarTurma(Long id, RequestTurmaDTO requestTurmaDTO) {
+    public TurmaEntity atualizarTurma(Long id, RequestTurmaDTO requestTurmaDTO) {
         return turmaRepository.findById(id)
                 .map(turma -> {
                     turma.setNome(requestTurmaDTO.nome());
                     turma.setDataEntrada(requestTurmaDTO.dataEntrada());
-                    TurmaEntity updatedTurma = turmaRepository.save(turma);
-                    return converterParaResponseDTO(updatedTurma);
+                    turma.setIdDocente(requestTurmaDTO.idDocente());
+                    turma.setIdCurso(requestTurmaDTO.idCurso());
+                    return turma;
                 })
                 .orElseThrow(() -> new TurmaNotFoundException("Id da Turma não encontrado para atualizar: " + id));
     }

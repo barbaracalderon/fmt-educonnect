@@ -173,6 +173,10 @@ public class AlunoService implements AlunoInterface {
         }
     }
 
+    public List<AlunoEntity> buscarAlunosDeIdTurma(Long idTurma) {
+        return alunoRepository.findAllByIdTurma(idTurma);
+    }
+
 
 
 }

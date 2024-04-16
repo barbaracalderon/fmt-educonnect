@@ -7,19 +7,19 @@ import com.fmt.educonnect.datasource.entities.TurmaEntity;
 import java.util.List;
 
 public interface TurmaInterface {
-    ResponseTurmaDTO criarTurma(RequestTurmaDTO requestTurmaDTO);
+    TurmaEntity criarTurma(RequestTurmaDTO requestTurmaDTO);
 
-    TurmaEntity converterParaEntidade(RequestTurmaDTO requestTurmaDTO);
+    TurmaEntity criarTurmaEntity(RequestTurmaDTO requestTurmaDTO);
 
-    ResponseTurmaDTO converterParaResponseDTO(TurmaEntity turmaEntitySalvo);
+    ResponseTurmaDTO criarResponseTurmaDTO(TurmaEntity turmaEntitySalvo);
 
-    List<ResponseTurmaDTO> listarTurmas();
+    List<ResponseTurmaDTO> criarResponseTurmaDTO(List<TurmaEntity> turmaEntityList);
 
-    List<ResponseTurmaDTO> converterParaListaDeResponseDTO(List<TurmaEntity> turmaEntityList);
+    List<TurmaEntity> listarTurmas();
 
-    ResponseTurmaDTO buscarTurmaPorId(Long id);
+    TurmaEntity buscarTurmaPorId(Long id);
 
-    ResponseTurmaDTO atualizarTurma(Long id, RequestTurmaDTO requestTurmaDTO);
+    TurmaEntity atualizarTurma(Long id, RequestTurmaDTO requestTurmaDTO);
 
     Void deletarTurma(Long id);
 }
