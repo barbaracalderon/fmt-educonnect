@@ -66,4 +66,8 @@ public class CadastroService implements CadastroInterface {
         return null;
     }
 
+    public Optional<CadastroEntity> buscarCadastroPorId(Long id) {
+        return cadastroRepository.findById(id);
+    }
+
 }

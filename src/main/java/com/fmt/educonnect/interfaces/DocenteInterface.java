@@ -8,19 +8,19 @@ import java.util.List;
 
 public interface DocenteInterface {
 
-    ResponseDocenteDTO criarDocente(RequestDocenteDTO requestDocenteDTO);
+    DocenteEntity criarDocente(RequestDocenteDTO requestDocenteDTO);
 
-    DocenteEntity converterParaEntidade(RequestDocenteDTO requestDocenteDTO);
+    DocenteEntity criarDocenteEntity(RequestDocenteDTO requestDocenteDTO);
 
-    ResponseDocenteDTO converterParaResponseDTO(DocenteEntity docenteEntity);
+    ResponseDocenteDTO criarResponseDocenteDTO(DocenteEntity docenteEntitySalvo);
 
-    List<ResponseDocenteDTO> listarDocentes();
+    List<ResponseDocenteDTO> criarResponseDocenteDTO(List<DocenteEntity> docenteEntityList);
 
-    List<ResponseDocenteDTO> converterParaListaDeResponseDTO(List<DocenteEntity> docentes);
+    List<DocenteEntity> listarDocentes();
 
-    ResponseDocenteDTO buscarDocentePorId(Long id);
+    DocenteEntity buscarDocentePorId(Long id);
 
-    ResponseDocenteDTO atualizarDocente(Long id, RequestDocenteDTO body);
+    DocenteEntity atualizarDocente(Long id, RequestDocenteDTO body);
 
     Void deletarDocente(Long id);
 }
