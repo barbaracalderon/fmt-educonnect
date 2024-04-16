@@ -14,16 +14,20 @@ Sou a Barbara Calderon, desenvolvedora de software.
 
 # Sumário
 
-1. [Kanban e Trello]()
-2. [Tecnologias utilizadas]()
-3. [Estrutura de pastas]()
-4. [Rotas e autorizações]()
-5. [Instalação]()
-6. [Passo-a-passo de uso]()
-7. [Descrição de endpoints]()
-8. [Princípio da Responsabilidade Única]()
-9. [Gitflow]()
-10. [Futuramente]()
+# Sumário
+
+1. [Kanban e Trello](#1-kanban-e-trello)
+2. [Tecnologias utilizadas](#2-tecnologias-utilizadas)
+3. [Estrutura de pastas](#3-estrutura-de-pastas-do-projeto)
+4. [Rotas e autorizações](#4-rotas-e-autorizações)
+5. [Instalação](#5-instalação)
+6. [Passo-a-passo de uso](#6-passo-a-passo-de-uso)
+7. [Descrição de endpoints](#7-descrição-de-endpoints)
+8. [Princípio de responsabilidade única](#8-princípio-de-responsabilide-única)
+9. [Gitflow e desenvolvimento](#9-gitflow-e-desenvolvimento)
+10. [Futuramente](#10-futuramente)
+11. [Considerações finais](#considerações-finais)
+
 
 ## 1. Kanban e Trello
 
@@ -148,7 +152,7 @@ Dito isso, a sequência de uso das rotas para manipulação e persistência dos 
 
 Uma descrição mais detalhada de cada rota, método HTTP, JSON de request e JSON de resposta (ou mensagem de exceção) é fornecido adiante.
 
-## 7. Descrição dos endpoints
+## 7. Descrição de endpoints
 
 | Autorização                    | Método HTTP | Endpoint               | Request Body (Exemplo)                                                                            |
 |--------------------------------|-------------|------------------------|---------------------------------------------------------------------------------------------------|
@@ -193,7 +197,7 @@ Uma descrição mais detalhada de cada rota, método HTTP, JSON de request e JSO
 
 A aplicação conta com aplicação de Logs (`@slf4j`) para visualização de `infos` e `errors` no terminal.
 
-## 8. Princípio de Responsabilidade Única
+## 8. Princípio de responsabilidade única
 
 O projeto visa a adoção do Princípio de Responsabilidade Única ("Single Responsability Principle - SRP") amplamente descrito no paradigma da Programação Orientada a Objeto, definido por Robert C. Martin. Assim, as classes têm apenas uma única responsabilidade.
 
