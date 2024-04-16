@@ -5,6 +5,7 @@ import com.fmt.educonnect.controllers.dtos.responses.ResponseCadastroDTO;
 import com.fmt.educonnect.datasource.entities.CadastroEntity;
 import com.fmt.educonnect.datasource.entities.PapelEntity;
 import com.fmt.educonnect.datasource.repositories.CadastroRepository;
+import com.fmt.educonnect.infra.exceptions.CursoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.PapelNotFoundException;
 import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
 import com.fmt.educonnect.interfaces.CadastroInterface;
@@ -66,8 +67,9 @@ public class CadastroService implements CadastroInterface {
         return null;
     }
 
-    public Optional<CadastroEntity> buscarCadastroPorId(Long id) {
-        return cadastroRepository.findById(id);
+    public CadastroEntity buscarCadastroPorId(Long id) {
+        return cadastroRepository.findById(id).orElseThrow(
+                () -> new CadastroNotFoundException("Id do Cadastro não encontrado: " + id));
     }
 
 }

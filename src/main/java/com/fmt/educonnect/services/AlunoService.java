@@ -5,6 +5,7 @@ import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoListaDeNotasDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoPontuacaoDTO;
 import com.fmt.educonnect.datasource.entities.AlunoEntity;
+import com.fmt.educonnect.datasource.entities.CadastroEntity;
 import com.fmt.educonnect.datasource.entities.NotaEntity;
 import com.fmt.educonnect.datasource.repositories.AlunoRepository;
 import com.fmt.educonnect.infra.exceptions.AlunoNotFoundException;
@@ -25,26 +26,24 @@ public class AlunoService implements AlunoInterface {
 
     private final AlunoRepository alunoRepository;
     private final NotaService notaService;
+    private final CadastroService cadastroService;
 
     @Autowired
     public AlunoService(AlunoRepository alunoRepository,
-                        NotaService notaService) {
+                        NotaService notaService,
+                        CadastroService cadastroService
+    ) {
         this.alunoRepository = alunoRepository;
         this.notaService = notaService;
+        this.cadastroService = cadastroService;
     }
 
 
     @Override
     public AlunoEntity criarAluno(RequestAlunoDTO requestAlunoDTO) {
 
-        List<AlunoEntity> alunoEntityList = alunoRepository.findAllByIdCadastro(requestAlunoDTO.idCadastro());
-
-        if (alunoEntityList.isEmpty()) {
-            throw new CadastroNotFoundException("Id do Cadastro deste aluno não foi encontrado: " + requestAlunoDTO.idCadastro());
-        }
-
-        alunoEntityList = alunoRepository.findAllByIdTurma(requestAlunoDTO.idTurma());
-
+        CadastroEntity cadastroEntity = cadastroService.buscarCadastroPorId(requestAlunoDTO.idCadastro());
+        List<AlunoEntity> alunoEntityList = alunoRepository.findAllByIdTurma(requestAlunoDTO.idTurma());
         if (alunoEntityList.isEmpty()) {
             throw new TurmaNotFoundException("Id da Turma não encontrado: " + requestAlunoDTO.idTurma());
         }

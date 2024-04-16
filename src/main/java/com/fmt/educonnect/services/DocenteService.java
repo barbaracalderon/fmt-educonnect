@@ -29,12 +29,7 @@ public class DocenteService implements DocenteInterface {
     }
 
     public DocenteEntity criarDocente(RequestDocenteDTO requestDocenteDTO) {
-        Optional<CadastroEntity> optionalCadastroEntity = cadastroService.buscarCadastroPorId(requestDocenteDTO.idCadastro());
-
-        CadastroEntity cadastroEntity = optionalCadastroEntity.orElseThrow(
-            () -> new CadastroNotFoundException("Número de cadastro inválido: " + requestDocenteDTO.idCadastro())
-        );
-
+        CadastroEntity cadastroEntity = cadastroService.buscarCadastroPorId(requestDocenteDTO.idCadastro());
         DocenteEntity docenteEntity = criarDocenteEntity(requestDocenteDTO);
         return docenteRepository.save(docenteEntity);
     }
