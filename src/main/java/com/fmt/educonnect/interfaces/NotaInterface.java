@@ -7,23 +7,21 @@ import com.fmt.educonnect.datasource.entities.NotaEntity;
 import java.util.List;
 
 public interface NotaInterface {
-    ResponseNotaDTO criarNota(RequestNotaDTO requestNotaDTO);
+    NotaEntity criarNota(RequestNotaDTO requestNotaDTO);
 
-    NotaEntity converterParaEntidade(RequestNotaDTO requestNotaDTO);
+    NotaEntity criarNotaEntity(RequestNotaDTO requestNotaDTO);
 
-    ResponseNotaDTO converterParaResponseDTO(NotaEntity notaEntitySalvo);
+    ResponseNotaDTO criarResponseNotaDTO(NotaEntity notaEntitySalvo);
 
-    List<ResponseNotaDTO> listarNotas();
+    List<ResponseNotaDTO> criarResponseNotaDTO(List<NotaEntity> notaEntityList);
 
-    List<ResponseNotaDTO> converterParaListaDeResponseDTO(List<NotaEntity> notaEntityList);
+    List<NotaEntity> listarNotas();
 
-    ResponseNotaDTO buscarNotaPorId(Long id);
+    NotaEntity buscarNotaPorId(Long id);
 
-    ResponseNotaDTO atualizarNota(Long id, RequestNotaDTO requestNotaDTO);
+    NotaEntity atualizarNota(Long id, RequestNotaDTO requestNotaDTO);
 
     Void deletarNota(Long id);
-
-    List<ResponseNotaDTO> buscarNotasDeAlunoId(Long id);
 
     List<NotaEntity> buscarNotasPorIdAluno(Long idAluno);
 }

@@ -2,6 +2,7 @@ package com.fmt.educonnect.controllers;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestNotaDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseNotaDTO;
+import com.fmt.educonnect.datasource.entities.NotaEntity;
 import com.fmt.educonnect.infra.exceptions.*;
 import com.fmt.educonnect.services.NotaService;
 import jakarta.validation.Valid;
@@ -27,10 +28,10 @@ public class NotaController {
 
     @PostMapping()
     public ResponseEntity<?> criarNota(@RequestBody @Valid RequestNotaDTO requestNotaDTO) {
-
         try {
             log.info("POST /notas ---> Chamada para o método.");
-            ResponseNotaDTO responseNotaDTO = notaService.criarNota(requestNotaDTO);
+            NotaEntity notaEntity = notaService.criarNota(requestNotaDTO);
+            ResponseNotaDTO responseNotaDTO = notaService.criarResponseNotaDTO(notaEntity);
             log.info("POST /notas ---> Sucesso.");
             return ResponseEntity.status(HttpStatus.CREATED).body(responseNotaDTO);
         } catch (AlunoNotFoundException | DocenteNotFoundException | MateriaNotFoundException e) {
@@ -43,10 +44,11 @@ public class NotaController {
     @GetMapping()
     public ResponseEntity<List<ResponseNotaDTO>> listarNotas() {
         log.info("GET /notas ---> Chamada para o método.");
-        List<ResponseNotaDTO> ResponseNotaDTOsList = notaService.listarNotas();
-        if (ResponseNotaDTOsList.isEmpty()) {
+        List<NotaEntity> notaEntityList = notaService.listarNotas();
+        if (notaEntityList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } else {
+            List<ResponseNotaDTO> ResponseNotaDTOsList = notaService.criarResponseNotaDTO(notaEntityList);
             log.info("GET /notas ---> Sucesso.");
             return ResponseEntity.ok().body(ResponseNotaDTOsList);
         }
@@ -56,7 +58,8 @@ public class NotaController {
     public ResponseEntity<?> buscarNotaPorId(@PathVariable("id") Long id) {
         try {
             log.info("GET /notas/{} ---> Chamada para o método.", id);
-            ResponseNotaDTO responseNotaDTO = notaService.buscarNotaPorId(id);
+            NotaEntity notaEntity = notaService.buscarNotaPorId(id);
+            ResponseNotaDTO responseNotaDTO = notaService.criarResponseNotaDTO(notaEntity);
             log.info("GET /notas/{} ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseNotaDTO);
         } catch (NotaNotFoundException e) {
@@ -69,7 +72,8 @@ public class NotaController {
     public ResponseEntity<?> atualizarNota(@PathVariable("id") Long id, @RequestBody RequestNotaDTO requestNotaDTO) {
         try {
             log.info("PUT /notas/{} ---> Chamada para o método.", id);
-            ResponseNotaDTO responseNotaDTO = notaService.atualizarNota(id, requestNotaDTO);
+            NotaEntity notaEntity = notaService.atualizarNota(id, requestNotaDTO);
+            ResponseNotaDTO responseNotaDTO = notaService.criarResponseNotaDTO(notaEntity);
             log.info("PUT /notas/{} ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseNotaDTO);
         } catch (NotaNotFoundException e) {
@@ -95,7 +99,8 @@ public class NotaController {
     public ResponseEntity<?> buscarNotasDeAlunoId(@PathVariable("idAluno") Long idAluno) {
         try {
             log.info("GET /notas/alunos/{} ---> Chamada para o método.", idAluno);
-            List<ResponseNotaDTO> responseNotaDTO = notaService.buscarNotasDeAlunoId(idAluno);
+            List<NotaEntity> notaEntityList = notaService.buscarNotasPorIdAluno(idAluno);
+            List<ResponseNotaDTO> responseNotaDTO = notaService.criarResponseNotaDTO(notaEntityList);
             log.info("GET /notas/alunos/{} ---> Sucesso.", idAluno);
             return ResponseEntity.status(HttpStatus.OK).body(responseNotaDTO);
         } catch (NotaNotFoundException | AlunoNotFoundException e) {

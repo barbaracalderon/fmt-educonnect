@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,47 +20,37 @@ public class NotaService implements NotaInterface {
 
 
     private final NotaRepository notaRepository;
-    private final MateriaRepository materiaRepository;
-    private final DocenteRepository docenteRepository;
-    private final AlunoRepository alunoRepository;
 
     @Autowired
-    public NotaService(NotaRepository notaRepository,
-                        MateriaRepository materiaRepository,
-                        DocenteRepository docenteRepository,
-                        AlunoRepository alunoRepository
-    ) {
+    public NotaService(NotaRepository notaRepository) {
         this.notaRepository = notaRepository;
-        this.materiaRepository = materiaRepository;
-        this.docenteRepository = docenteRepository;
-        this.alunoRepository = alunoRepository;
     }
 
     @Override
-    public ResponseNotaDTO criarNota(RequestNotaDTO requestNotaDTO) {
+    public NotaEntity criarNota(RequestNotaDTO requestNotaDTO) {
 
-        Optional<AlunoEntity> optionalAlunoEntity = alunoRepository.findById(requestNotaDTO.idAluno());
-        AlunoEntity alunoEntity = optionalAlunoEntity.orElseThrow(
-                () -> new AlunoNotFoundException("Id do Aluno inválido: " + requestNotaDTO.idAluno())
-        );
+        List<NotaEntity> notaEntityList = notaRepository.findAllByIdAluno(requestNotaDTO.idAluno());
 
-        Optional<DocenteEntity> optionalDocenteEntity = docenteRepository.findById(requestNotaDTO.idDocente());
-        DocenteEntity docenteEntity = optionalDocenteEntity.orElseThrow(
-                () -> new DocenteNotFoundException("Id do Docente inválido: " + requestNotaDTO.idDocente())
-        );
+        if (notaEntityList.isEmpty()) {
+            throw new AlunoNotFoundException("Id do aluno inválido: " + requestNotaDTO.idAluno());
+        }
 
-        Optional<MateriaEntity> optionalMateriaEntity = materiaRepository.findById(requestNotaDTO.idMateria());
-        MateriaEntity materiaEntity = optionalMateriaEntity.orElseThrow(
-                () -> new MateriaNotFoundException("Id da Materia inválido: " + requestNotaDTO.idMateria())
-        );
+        notaEntityList = notaRepository.findAllByIdDocente(requestNotaDTO.idDocente());
+        if (notaEntityList.isEmpty()) {
+            throw new DocenteNotFoundException("Id do Docente inválido: " + requestNotaDTO.idDocente());
+        }
 
-        NotaEntity notaEntity = converterParaEntidade(requestNotaDTO);
-        NotaEntity notaEntitySalvo = notaRepository.save(notaEntity);
-        return converterParaResponseDTO(notaEntitySalvo);
+        notaEntityList = notaRepository.findAllByIdMateria(requestNotaDTO.idMateria());
+        if (notaEntityList.isEmpty()) {
+            throw new MateriaNotFoundException("Id da Materia inválido: " + requestNotaDTO.idMateria());
+        }
+
+        NotaEntity notaEntity = criarNotaEntity(requestNotaDTO);
+        return notaRepository.save(notaEntity);
     }
 
     @Override
-    public NotaEntity converterParaEntidade(RequestNotaDTO requestNotaDTO){
+    public NotaEntity criarNotaEntity(RequestNotaDTO requestNotaDTO){
         NotaEntity notaEntity = new NotaEntity();
 
         notaEntity.setDataLancamento(requestNotaDTO.dataLancamento());
@@ -74,7 +63,7 @@ public class NotaService implements NotaInterface {
     }
 
     @Override
-    public ResponseNotaDTO converterParaResponseDTO(NotaEntity notaEntitySalvo){
+    public ResponseNotaDTO criarResponseNotaDTO(NotaEntity notaEntitySalvo){
         return new ResponseNotaDTO(
                 notaEntitySalvo.getId(),
                 notaEntitySalvo.getDataLancamento(),
@@ -87,27 +76,25 @@ public class NotaService implements NotaInterface {
 
 
     @Override
-    public List<ResponseNotaDTO> listarNotas() {
-        List<NotaEntity> notaEntityList = notaRepository.findAll();
-        return converterParaListaDeResponseDTO(notaEntityList);
+    public List<NotaEntity> listarNotas() {
+         return notaRepository.findAll();
     }
 
     @Override
-    public List<ResponseNotaDTO> converterParaListaDeResponseDTO(List<NotaEntity> notaEntityList) {
+    public List<ResponseNotaDTO> criarResponseNotaDTO(List<NotaEntity> notaEntityList) {
         return notaEntityList.stream()
-                .map(this::converterParaResponseDTO)
+                .map(this::criarResponseNotaDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ResponseNotaDTO buscarNotaPorId(Long id) {
+    public NotaEntity buscarNotaPorId(Long id) {
         return notaRepository.findById(id)
-                .map(this::converterParaResponseDTO)
                 .orElseThrow(() -> new NotaNotFoundException("Id da Nota não encontrado: " + id));
     }
 
     @Override
-    public ResponseNotaDTO atualizarNota(Long id, RequestNotaDTO requestNotaDTO) {
+    public NotaEntity atualizarNota(Long id, RequestNotaDTO requestNotaDTO) {
         return notaRepository.findById(id)
                 .map(nota -> {
                     nota.setDataLancamento(requestNotaDTO.dataLancamento());
@@ -115,8 +102,7 @@ public class NotaService implements NotaInterface {
                     nota.setIdDocente(requestNotaDTO.idDocente());
                     nota.setIdMateria(requestNotaDTO.idMateria());
                     nota.setValor(requestNotaDTO.valor());
-                    NotaEntity updatedNota = notaRepository.save(nota);
-                    return converterParaResponseDTO(updatedNota);
+                    return notaRepository.save(nota);
                 })
                 .orElseThrow(() -> new NotaNotFoundException("Id da Nota não encontrado para atualizar: " + id));
     }
@@ -130,18 +116,12 @@ public class NotaService implements NotaInterface {
     }
 
     @Override
-    public List<ResponseNotaDTO> buscarNotasDeAlunoId(Long idAluno) {
-        List<NotaEntity> notasEntityList = notaRepository.findAllByIdAluno(idAluno);
-        if (notasEntityList.isEmpty()) {
-            throw new AlunoNotFoundException("Id do Aluno não encontrado: " + idAluno);
-        } else {
-            return converterParaListaDeResponseDTO(notasEntityList);
-        }
-    }
-
-    @Override
     public List<NotaEntity> buscarNotasPorIdAluno(Long idAluno) {
-        return notaRepository.findAllByIdAluno(idAluno);
+        List<NotaEntity> notaEntityList = notaRepository.findAllByIdAluno(idAluno);
+        if (notaEntityList.isEmpty()) {
+            throw new AlunoNotFoundException("Id do Aluno " + idAluno + " não encontrado.");
+        }
+        return notaEntityList;
     }
 
 }
