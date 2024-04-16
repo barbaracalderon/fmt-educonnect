@@ -24,4 +24,6 @@ public interface NotaInterface {
     Void deletarNota(Long id);
 
     List<ResponseNotaDTO> buscarNotasDeAlunoId(Long id);
+
+    List<NotaEntity> buscarNotasPorIdAluno(Long idAluno);
 }

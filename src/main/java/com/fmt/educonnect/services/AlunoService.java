@@ -5,15 +5,11 @@ import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoListaDeNotasDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoPontuacaoDTO;
 import com.fmt.educonnect.datasource.entities.AlunoEntity;
-import com.fmt.educonnect.datasource.entities.CadastroEntity;
-import com.fmt.educonnect.datasource.entities.MateriaEntity;
 import com.fmt.educonnect.datasource.entities.NotaEntity;
 import com.fmt.educonnect.datasource.repositories.AlunoRepository;
-import com.fmt.educonnect.datasource.repositories.CadastroRepository;
-import com.fmt.educonnect.datasource.repositories.MateriaRepository;
-import com.fmt.educonnect.datasource.repositories.NotaRepository;
 import com.fmt.educonnect.infra.exceptions.AlunoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
+import com.fmt.educonnect.infra.exceptions.NotaNotFoundException;
 import com.fmt.educonnect.infra.exceptions.TurmaNotFoundException;
 
 import com.fmt.educonnect.interfaces.AlunoInterface;
@@ -21,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
@@ -29,44 +24,37 @@ import java.util.stream.Collectors;
 public class AlunoService implements AlunoInterface {
 
     private final AlunoRepository alunoRepository;
-    private final CadastroRepository cadastroRepository;
-    private final MateriaRepository materiaRepository;
-    private final NotaRepository notaRepository;
+    private final NotaService notaService;
 
     @Autowired
     public AlunoService(AlunoRepository alunoRepository,
-                        CadastroRepository cadastroRepository,
-                        MateriaRepository materiaRepository,
-                        NotaRepository notaRepository) {
+                        NotaService notaService) {
         this.alunoRepository = alunoRepository;
-        this.cadastroRepository = cadastroRepository;
-        this.materiaRepository = materiaRepository;
-        this.notaRepository = notaRepository;
+        this.notaService = notaService;
     }
 
 
     @Override
-    public ResponseAlunoDTO criarAluno(RequestAlunoDTO requestAlunoDTO) {
+    public AlunoEntity criarAluno(RequestAlunoDTO requestAlunoDTO) {
 
-        Optional<CadastroEntity> optionalCadastroEntity = cadastroRepository.findById(requestAlunoDTO.idCadastro());
+        List<AlunoEntity> alunoEntityList = alunoRepository.findAllByIdCadastro(requestAlunoDTO.idCadastro());
 
-        CadastroEntity cadastroEntity = optionalCadastroEntity.orElseThrow(
-                () -> new CadastroNotFoundException("Número de cadastro inválido: " + requestAlunoDTO.idCadastro())
-        );
+        if (alunoEntityList.isEmpty()) {
+            throw new CadastroNotFoundException("Id do Cadastro deste aluno não foi encontrado: " + requestAlunoDTO.idCadastro());
+        }
 
-        Optional<MateriaEntity> optionalMateriaEntity = materiaRepository.findById(requestAlunoDTO.idTurma());
+        alunoEntityList = alunoRepository.findAllByIdTurma(requestAlunoDTO.idTurma());
 
-        MateriaEntity materiaEntity = optionalMateriaEntity.orElseThrow(
-                () -> new TurmaNotFoundException("Id da Turma não encontrado: " + requestAlunoDTO.idTurma())
-        );
+        if (alunoEntityList.isEmpty()) {
+            throw new TurmaNotFoundException("Id da Turma não encontrado: " + requestAlunoDTO.idTurma());
+        }
 
-        AlunoEntity alunoEntity = converterParaEntidade(requestAlunoDTO);
-        AlunoEntity alunoEntitySalvo = alunoRepository.save(alunoEntity);
-        return converterParaResponseDTO(alunoEntitySalvo);
+        AlunoEntity alunoEntity = criarAlunoEntity(requestAlunoDTO);
+        return alunoRepository.save(alunoEntity);
     }
 
     @Override
-    public AlunoEntity converterParaEntidade(RequestAlunoDTO requestAlunoDTO) {
+    public AlunoEntity criarAlunoEntity(RequestAlunoDTO requestAlunoDTO) {
         AlunoEntity alunoEntity = new AlunoEntity();
 
         alunoEntity.setNome(requestAlunoDTO.nome());
@@ -78,7 +66,7 @@ public class AlunoService implements AlunoInterface {
     }
 
     @Override
-    public ResponseAlunoDTO converterParaResponseDTO(AlunoEntity alunoEntitySalvo) {
+    public ResponseAlunoDTO criarResponseAlunoDTO(AlunoEntity alunoEntitySalvo) {
         return new ResponseAlunoDTO(
                 alunoEntitySalvo.getId(),
                 alunoEntitySalvo.getNome(),
@@ -89,62 +77,60 @@ public class AlunoService implements AlunoInterface {
     }
 
     @Override
-    public List<ResponseAlunoDTO> listarAlunos() {
-        List<AlunoEntity> alunoEntityList = alunoRepository.findAll();
-        return converterParaListaDeResponseDTO(alunoEntityList);
+    public List<AlunoEntity> listarAlunos() {
+         return alunoRepository.findAll();
+
     }
 
     @Override
-    public List<ResponseAlunoDTO> converterParaListaDeResponseDTO(List<AlunoEntity> alunoEntityList) {
+    public List<ResponseAlunoDTO> criarResponseAlunoDTO(List<AlunoEntity> alunoEntityList) {
         return alunoEntityList.stream()
-                .map(this::converterParaResponseDTO)
+                .map(this::criarResponseAlunoDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ResponseAlunoDTO buscarAlunoPorId(Long id) {
+    public AlunoEntity buscarAlunoPorId(Long id) {
         return alunoRepository.findById(id)
-                .map(this::converterParaResponseDTO)
                 .orElseThrow(() -> new AlunoNotFoundException("Id do Aluno não encontrado: " + id));
     }
 
     @Override
-    public ResponseAlunoDTO atualizarAluno(Long id, RequestAlunoDTO requestAlunoDTO) {
+    public AlunoEntity atualizarAluno(Long id, RequestAlunoDTO requestAlunoDTO) {
         return alunoRepository.findById(id)
                 .map(aluno -> {
                     aluno.setNome(requestAlunoDTO.nome());
                     aluno.setDataNascimento(requestAlunoDTO.dataNascimento());
                     aluno.setIdCadastro(requestAlunoDTO.idCadastro());
                     aluno.setIdTurma(requestAlunoDTO.idTurma());
-                    AlunoEntity updatedAluno = alunoRepository.save(aluno);
-                    return converterParaResponseDTO(updatedAluno);
+                    return alunoRepository.save(aluno);
                 })
                 .orElseThrow(() -> new AlunoNotFoundException("Id do Aluno não encontrado para atualizar: " + id));
     }
 
     @Override
-    public void deletarAluno(Long id) {
+    public Void deletarAluno(Long id) {
         alunoRepository.findById(id)
                 .orElseThrow(() -> new AlunoNotFoundException("Id do Aluno não encontrado para deletar: " + id));
         alunoRepository.deleteById(id);
+        return null;
     }
 
     @Override
-    public ResponseAlunoListaDeNotasDTO buscarNotasDeAluno(ResponseAlunoDTO responseAlunoDTO) {
-        List<NotaEntity> notasEntityList = notaRepository.findAllByIdAluno(responseAlunoDTO.id());
-        if (notasEntityList.isEmpty()) {
-            throw new AlunoNotFoundException("Notas do Id " + responseAlunoDTO.id() + " do Aluno não encontrado.");
+    public List<NotaEntity> buscarNotasDeAluno(AlunoEntity alunoEntity) {
+        List<NotaEntity> notaEntityList = notaService.buscarNotasPorIdAluno(alunoEntity.getId());
+        if (notaEntityList.isEmpty()) {
+            throw new NotaNotFoundException("Notas do Aluno Id " + alunoEntity.getId() + " não encontrado.");
         } else {
-            return converterParaListaDeNotasResponseDTO(notasEntityList);
+            return notaEntityList;
         }
     }
 
     @Override
-    public ResponseAlunoListaDeNotasDTO converterParaListaDeNotasResponseDTO(List<NotaEntity> notasEntityList) {
+    public ResponseAlunoListaDeNotasDTO criarResponseAlunoListaDeNotasDTO(List<NotaEntity> notasEntityList) {
         List<Long> valores = notasEntityList.stream()
                 .map(NotaEntity::getValor)
                 .collect(Collectors.toList());
-
         return new ResponseAlunoListaDeNotasDTO(
                 notasEntityList.get(0).getIdAluno(),
                 valores
@@ -152,31 +138,30 @@ public class AlunoService implements AlunoInterface {
     }
 
     @Override
-    public ResponseAlunoPontuacaoDTO calcularPontuacaoDeAluno(ResponseAlunoListaDeNotasDTO responseAlunoListaDeNotasDTO) {
-        if (responseAlunoListaDeNotasDTO.valores() == null || responseAlunoListaDeNotasDTO.valores().isEmpty()) {
-            Long pontuacao = 0L;
-            return new ResponseAlunoPontuacaoDTO(
-                    responseAlunoListaDeNotasDTO.idAluno(),
-                    pontuacao
-            );
-        } else {
-            OptionalDouble optionalPontuacao = responseAlunoListaDeNotasDTO.valores().stream()
-                    .mapToLong(value -> (long) value)  // Use lambda expression here
-                    .average();
-
-            long pontuacao = Math.round(optionalPontuacao.orElse(0.0)); // Convert OptionalDouble to long
-
-            return new ResponseAlunoPontuacaoDTO(
-                    responseAlunoListaDeNotasDTO.idAluno(),
-                    pontuacao
-            );
+    public Long calcularPontuacaoDeAluno(List<NotaEntity> notaEntityList) {
+        if (notaEntityList == null || notaEntityList.isEmpty()) {
+            return 0L;
         }
+
+        OptionalDouble averageOptional = notaEntityList.stream()
+            .mapToLong(NotaEntity::getValor)
+            .average();
+
+        return Math.round(averageOptional.orElse(0.0));
+
     }
 
+    @Override
     public List<AlunoEntity> buscarAlunosDeIdTurma(Long idTurma) {
         return alunoRepository.findAllByIdTurma(idTurma);
     }
 
+    public ResponseAlunoPontuacaoDTO criarResponseAlunoPontuacaoDTO(AlunoEntity alunoEntity, Long pontuacao) {
+        return new ResponseAlunoPontuacaoDTO(
+                alunoEntity.getId(),
+                pontuacao
+        );
+    }
 
 
 }

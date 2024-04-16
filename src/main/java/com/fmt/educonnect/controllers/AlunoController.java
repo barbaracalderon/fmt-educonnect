@@ -4,6 +4,8 @@ import com.fmt.educonnect.controllers.dtos.requests.RequestAlunoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoListaDeNotasDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoPontuacaoDTO;
+import com.fmt.educonnect.datasource.entities.AlunoEntity;
+import com.fmt.educonnect.datasource.entities.NotaEntity;
 import com.fmt.educonnect.infra.exceptions.*;
 import com.fmt.educonnect.services.AlunoService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +28,8 @@ public class AlunoController {
     public ResponseEntity<?> criarAluno(@RequestBody RequestAlunoDTO requestAlunoDTO) {
         try {
             log.info("POST /alunos ---> Chamada para o método.");
-            ResponseAlunoDTO responseAlunoDTO = alunoService.criarAluno(requestAlunoDTO);
+            AlunoEntity alunoEntity = alunoService.criarAluno(requestAlunoDTO);
+            ResponseAlunoDTO responseAlunoDTO = alunoService.criarResponseAlunoDTO(alunoEntity);
             log.info("POST /alunos ---> Sucesso.");
             return ResponseEntity.status(HttpStatus.CREATED).body(responseAlunoDTO);
         } catch (CadastroNotFoundException | TurmaNotFoundException e) {
@@ -38,12 +41,13 @@ public class AlunoController {
     @GetMapping()
     public ResponseEntity<List<ResponseAlunoDTO>> listarAlunos() {
         log.info("GET /alunos ---> Chamada para o método.");
-        List<ResponseAlunoDTO> ResponseAlunoDTOsList = alunoService.listarAlunos();
-        if (ResponseAlunoDTOsList.isEmpty()) {
+        List<AlunoEntity> alunoEntityList = alunoService.listarAlunos();
+        if (alunoEntityList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } else {
-            log.info("GET /alunos ---> Sucesso.");
-            return ResponseEntity.ok().body(ResponseAlunoDTOsList);
+            List<ResponseAlunoDTO> responseAlunoDTOsList = alunoService.criarResponseAlunoDTO(alunoEntityList);
+                    log.info("GET /alunos ---> Sucesso.");
+            return ResponseEntity.ok().body(responseAlunoDTOsList);
         }
     }
 
@@ -51,8 +55,9 @@ public class AlunoController {
     public ResponseEntity<?> buscarAlunoPorId(@PathVariable("id") Long id) {
         try {
             log.info("GET /alunos/{} ---> Chamada para o método.", id);
-            ResponseAlunoDTO ResponseAlunoDTO = alunoService.buscarAlunoPorId(id);
-            log.info("GET /alunos/{} ---> Sucesso.", id);
+            AlunoEntity alunoEntity = alunoService.buscarAlunoPorId(id);
+            ResponseAlunoDTO ResponseAlunoDTO = alunoService.criarResponseAlunoDTO(alunoEntity);
+                    log.info("GET /alunos/{} ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(ResponseAlunoDTO);
         } catch (AlunoNotFoundException e) {
             log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
@@ -64,10 +69,11 @@ public class AlunoController {
     public ResponseEntity<?> atualizarAluno(@PathVariable("id") Long id, @RequestBody RequestAlunoDTO RequestAlunoDTO) {
         try {
             log.info("PUT /alunos/{} ---> Chamada para o método.", id);
-            ResponseAlunoDTO ResponseAlunoDTO = alunoService.atualizarAluno(id, RequestAlunoDTO);
+            AlunoEntity alunoEntity = alunoService.atualizarAluno(id, RequestAlunoDTO);
+            ResponseAlunoDTO ResponseAlunoDTO = alunoService.criarResponseAlunoDTO(alunoEntity);
             log.info("PUT /alunos/{} ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(ResponseAlunoDTO);
-        } catch (DocenteNotFoundException e) {
+        } catch (AlunoNotFoundException e) {
             log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -80,7 +86,7 @@ public class AlunoController {
             alunoService.deletarAluno(id);
             log.info("DELETE /alunos/{} ---> Sucesso.", id);
             return ResponseEntity.noContent().build();
-        } catch (DocenteNotFoundException e) {
+        } catch (AlunoNotFoundException e) {
             log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -90,8 +96,9 @@ public class AlunoController {
     public ResponseEntity<?> buscarNotasDeAlunoId(@PathVariable("id") Long id) {
         try {
             log.info("GET /alunos/{}/notas ---> Chamada para o método.", id);
-            ResponseAlunoDTO responseAlunoDTO = alunoService.buscarAlunoPorId(id);
-            ResponseAlunoListaDeNotasDTO responseAlunoListaDeNotasDTO = alunoService.buscarNotasDeAluno(responseAlunoDTO);
+            AlunoEntity alunoEntity = alunoService.buscarAlunoPorId(id);
+            List<NotaEntity> notasEntityList = alunoService.buscarNotasDeAluno(alunoEntity);
+            ResponseAlunoListaDeNotasDTO responseAlunoListaDeNotasDTO = alunoService.criarResponseAlunoListaDeNotasDTO(notasEntityList);
             log.info("GET /alunos/{}/notas ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseAlunoListaDeNotasDTO);
         } catch (NotaNotFoundException | AlunoNotFoundException e) {
@@ -104,9 +111,10 @@ public class AlunoController {
     public ResponseEntity<?> buscarPontuacaoDeAlunoId(@PathVariable("id") Long id) {
         try {
             log.info("GET /alunos/{}/pontuação ---> Chamada para o método.", id);
-            ResponseAlunoDTO responseAlunoDTO = alunoService.buscarAlunoPorId(id);
-            ResponseAlunoListaDeNotasDTO responseAlunoListaDeNotasDTO = alunoService.buscarNotasDeAluno(responseAlunoDTO);
-            ResponseAlunoPontuacaoDTO responseAlunoPontuacaoDTO = alunoService.calcularPontuacaoDeAluno(responseAlunoListaDeNotasDTO);
+            AlunoEntity alunoEntity = alunoService.buscarAlunoPorId(id);
+            List<NotaEntity> notaEntityList = alunoService.buscarNotasDeAluno(alunoEntity);
+            Long pontuacao = alunoService.calcularPontuacaoDeAluno(notaEntityList);
+            ResponseAlunoPontuacaoDTO responseAlunoPontuacaoDTO = alunoService.criarResponseAlunoPontuacaoDTO(alunoEntity, pontuacao);
             log.info("GET /alunos/{}/pontuação ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseAlunoPontuacaoDTO);
         } catch (NotaNotFoundException | AlunoNotFoundException e) {

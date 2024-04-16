@@ -11,27 +11,27 @@ import java.util.List;
 
 public interface AlunoInterface {
 
-    ResponseAlunoDTO criarAluno(RequestAlunoDTO requestAlunoDTO);
+    AlunoEntity criarAluno(RequestAlunoDTO requestAlunoDTO);
 
-    AlunoEntity converterParaEntidade(RequestAlunoDTO requestAlunoDTO);
+    AlunoEntity criarAlunoEntity(RequestAlunoDTO requestAlunoDTO);
 
-    ResponseAlunoDTO converterParaResponseDTO(AlunoEntity alunoEntity);
+    ResponseAlunoDTO criarResponseAlunoDTO(AlunoEntity alunoEntitySalvo);
 
-    List<ResponseAlunoDTO> listarAlunos();
+    List<ResponseAlunoDTO> criarResponseAlunoDTO(List<AlunoEntity> alunoEntityList);
 
-    List<ResponseAlunoDTO> converterParaListaDeResponseDTO(List<AlunoEntity> alunos);
+    ResponseAlunoListaDeNotasDTO criarResponseAlunoListaDeNotasDTO(List<NotaEntity> notasEntityList);
 
-    ResponseAlunoDTO buscarAlunoPorId(Long id);
+    List<AlunoEntity> listarAlunos();
 
+    AlunoEntity buscarAlunoPorId(Long id);
 
-    ResponseAlunoDTO atualizarAluno(Long id, RequestAlunoDTO requestAlunoDTO);
+    AlunoEntity atualizarAluno(Long id, RequestAlunoDTO requestAlunoDTO);
 
-    void deletarAluno(Long id);
+    Void deletarAluno(Long id);
 
+    List<NotaEntity> buscarNotasDeAluno(AlunoEntity alunoEntity);
 
-    ResponseAlunoListaDeNotasDTO buscarNotasDeAluno(ResponseAlunoDTO responseAlunoDTO);
+    Long calcularPontuacaoDeAluno(List<NotaEntity> notaEntityList);
 
-    ResponseAlunoListaDeNotasDTO converterParaListaDeNotasResponseDTO(List<NotaEntity> notasEntityList);
-
-    ResponseAlunoPontuacaoDTO calcularPontuacaoDeAluno(ResponseAlunoListaDeNotasDTO responseAlunoListaDeNotasDTO);
+    List<AlunoEntity> buscarAlunosDeIdTurma(Long idTurma);
 }

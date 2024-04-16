@@ -139,4 +139,9 @@ public class NotaService implements NotaInterface {
         }
     }
 
+    @Override
+    public List<NotaEntity> buscarNotasPorIdAluno(Long idAluno) {
+        return notaRepository.findAllByIdAluno(idAluno);
+    }
+
 }
