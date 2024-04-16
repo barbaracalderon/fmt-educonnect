@@ -6,6 +6,7 @@ import com.fmt.educonnect.datasource.entities.*;
 import com.fmt.educonnect.datasource.repositories.*;
 import com.fmt.educonnect.infra.exceptions.AlunoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
+import com.fmt.educonnect.infra.exceptions.MateriaNotFoundException;
 import com.fmt.educonnect.infra.exceptions.NotaNotFoundException;
 import com.fmt.educonnect.interfaces.NotaInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class NotaService implements NotaInterface {
 
         Optional<MateriaEntity> optionalMateriaEntity = materiaRepository.findById(requestNotaDTO.idMateria());
         MateriaEntity materiaEntity = optionalMateriaEntity.orElseThrow(
-                () -> new DocenteNotFoundException("Id do Docente inválido: " + requestNotaDTO.idMateria())
+                () -> new MateriaNotFoundException("Id da Materia inválido: " + requestNotaDTO.idMateria())
         );
 
         NotaEntity notaEntity = converterParaEntidade(requestNotaDTO);
