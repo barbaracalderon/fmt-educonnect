@@ -7,6 +7,7 @@ import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoPontuacaoDTO;
 import com.fmt.educonnect.datasource.entities.AlunoEntity;
 import com.fmt.educonnect.datasource.entities.NotaEntity;
 import com.fmt.educonnect.infra.exceptions.*;
+import com.fmt.educonnect.services.AlunoNotaService;
 import com.fmt.educonnect.services.AlunoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +23,14 @@ import java.util.List;
 public class AlunoController {
 
     @Autowired
-    private AlunoService alunoService;
+    private AlunoNotaService alunoNotaService;
+    @Autowired AlunoService alunoService;
 
     @PostMapping
     public ResponseEntity<?> criarAluno(@RequestBody RequestAlunoDTO requestAlunoDTO) {
         try {
             log.info("POST /alunos ---> Chamada para o método.");
-            AlunoEntity alunoEntity = alunoService.criarAluno(requestAlunoDTO);
+            AlunoEntity alunoEntity = alunoNotaService.criarAluno(requestAlunoDTO);
             ResponseAlunoDTO responseAlunoDTO = alunoService.criarResponseAlunoDTO(alunoEntity);
             log.info("POST /alunos ---> Sucesso.");
             return ResponseEntity.status(HttpStatus.CREATED).body(responseAlunoDTO);
@@ -97,11 +99,11 @@ public class AlunoController {
         try {
             log.info("GET /alunos/{}/notas ---> Chamada para o método.", id);
             AlunoEntity alunoEntity = alunoService.buscarAlunoPorId(id);
-            List<NotaEntity> notasEntityList = alunoService.buscarNotasDeAluno(alunoEntity);
+            List<NotaEntity> notasEntityList = alunoNotaService.buscarNotasPorIdAluno(alunoEntity);
             ResponseAlunoListaDeNotasDTO responseAlunoListaDeNotasDTO = alunoService.criarResponseAlunoListaDeNotasDTO(notasEntityList);
             log.info("GET /alunos/{}/notas ---> Sucesso.", id);
             return ResponseEntity.status(HttpStatus.OK).body(responseAlunoListaDeNotasDTO);
-        } catch (NotaNotFoundException | AlunoNotFoundException e) {
+        } catch (AlunoNotFoundException | NotaNotFoundException e) {
             log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -112,7 +114,7 @@ public class AlunoController {
         try {
             log.info("GET /alunos/{}/pontuação ---> Chamada para o método.", id);
             AlunoEntity alunoEntity = alunoService.buscarAlunoPorId(id);
-            List<NotaEntity> notaEntityList = alunoService.buscarNotasDeAluno(alunoEntity);
+            List<NotaEntity> notaEntityList = alunoNotaService.buscarNotasPorIdAluno(alunoEntity);
             Long pontuacao = alunoService.calcularPontuacaoDeAluno(notaEntityList);
             ResponseAlunoPontuacaoDTO responseAlunoPontuacaoDTO = alunoService.criarResponseAlunoPontuacaoDTO(alunoEntity, pontuacao);
             log.info("GET /alunos/{}/pontuação ---> Sucesso.", id);

@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface AlunoInterface {
 
-    AlunoEntity criarAluno(RequestAlunoDTO requestAlunoDTO);
+    AlunoEntity criarAluno(AlunoEntity alunoEntity);
 
     AlunoEntity criarAlunoEntity(RequestAlunoDTO requestAlunoDTO);
 
@@ -28,8 +28,6 @@ public interface AlunoInterface {
     AlunoEntity atualizarAluno(Long id, RequestAlunoDTO requestAlunoDTO);
 
     Void deletarAluno(Long id);
-
-    List<NotaEntity> buscarNotasDeAluno(AlunoEntity alunoEntity);
 
     Long calcularPontuacaoDeAluno(List<NotaEntity> notaEntityList);
 

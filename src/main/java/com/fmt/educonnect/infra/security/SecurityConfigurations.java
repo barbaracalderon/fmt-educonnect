@@ -45,7 +45,6 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/cursos").hasAnyRole("ADMIN", "PEDAGOGICO")
                         .requestMatchers(HttpMethod.GET, "/cursos").hasAnyRole("ADMIN", "PEDAGOGICO")
                         .requestMatchers(HttpMethod.GET, "/cursos/{id}").hasAnyRole("ADMIN", "PEDAGOGICO")
-                        .requestMatchers(HttpMethod.GET, "/cursos/{id}/materias").hasAnyRole("ADMIN", "PEDAGOGICO")
                         .requestMatchers(HttpMethod.PUT, "/cursos/{id}").hasAnyRole("ADMIN", "PEDAGOGICO")
                         .requestMatchers(HttpMethod.DELETE, "/cursos/{id}").hasRole("ADMIN")
 

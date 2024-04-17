@@ -5,6 +5,7 @@ import com.fmt.educonnect.controllers.dtos.responses.ResponseCursoMateriasDTO;
 import com.fmt.educonnect.infra.exceptions.CursoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
 import com.fmt.educonnect.datasource.entities.CursoEntity;
+import com.fmt.educonnect.infra.exceptions.MateriaNotFoundException;
 import com.fmt.educonnect.services.CursoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,19 +85,6 @@ public class CursoController {
             cursoService.deletarCurso(id);
             log.info("DELETE /cursos/{} ---> Sucesso.", id);
             return ResponseEntity.noContent().build();
-        } catch (CursoNotFoundException e) {
-            log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/{id}/materias")
-    public ResponseEntity<?> buscarMateriasPorCurso(@PathVariable("id") Long id) {
-        try {
-            log.info("GET /cursos/{}/materias ---> Chamada para o método.", id);
-            List<ResponseCursoMateriasDTO> responseCursoMateriasDTO = cursoService.buscarMateriasDeCursoId(id);
-            log.info("GET /cursos/{}/materias ---> Sucesso.", id);
-            return ResponseEntity.status(HttpStatus.OK).body(responseCursoMateriasDTO);
         } catch (CursoNotFoundException e) {
             log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

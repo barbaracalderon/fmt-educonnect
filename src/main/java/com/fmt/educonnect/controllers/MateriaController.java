@@ -38,7 +38,7 @@ public class MateriaController {
             ResponseMateriaDTO responseMateriaDTO = materiaService.criarResponseMateriaDTO(materiaEntitySalvo);
             log.info("POST /materias ---> Sucesso.");
             return ResponseEntity.status(HttpStatus.CREATED).body(responseMateriaDTO);
-        } catch (CursoNotFoundException e) {
+        } catch (MateriaNotFoundException e) {
             log.error("STATUS 404 ---> Recurso não encontrado ---> {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

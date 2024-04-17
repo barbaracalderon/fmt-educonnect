@@ -8,9 +8,6 @@ import com.fmt.educonnect.datasource.entities.AlunoEntity;
 import com.fmt.educonnect.datasource.entities.NotaEntity;
 import com.fmt.educonnect.datasource.repositories.AlunoRepository;
 import com.fmt.educonnect.infra.exceptions.AlunoNotFoundException;
-import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
-import com.fmt.educonnect.infra.exceptions.NotaNotFoundException;
-import com.fmt.educonnect.infra.exceptions.TurmaNotFoundException;
 
 import com.fmt.educonnect.interfaces.AlunoInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,32 +21,16 @@ import java.util.stream.Collectors;
 public class AlunoService implements AlunoInterface {
 
     private final AlunoRepository alunoRepository;
-    private final NotaService notaService;
 
     @Autowired
-    public AlunoService(AlunoRepository alunoRepository,
-                        NotaService notaService) {
+    public AlunoService(AlunoRepository alunoRepository
+    ) {
         this.alunoRepository = alunoRepository;
-        this.notaService = notaService;
     }
 
 
     @Override
-    public AlunoEntity criarAluno(RequestAlunoDTO requestAlunoDTO) {
-
-        List<AlunoEntity> alunoEntityList = alunoRepository.findAllByIdCadastro(requestAlunoDTO.idCadastro());
-
-        if (alunoEntityList.isEmpty()) {
-            throw new CadastroNotFoundException("Id do Cadastro deste aluno não foi encontrado: " + requestAlunoDTO.idCadastro());
-        }
-
-        alunoEntityList = alunoRepository.findAllByIdTurma(requestAlunoDTO.idTurma());
-
-        if (alunoEntityList.isEmpty()) {
-            throw new TurmaNotFoundException("Id da Turma não encontrado: " + requestAlunoDTO.idTurma());
-        }
-
-        AlunoEntity alunoEntity = criarAlunoEntity(requestAlunoDTO);
+    public AlunoEntity criarAluno(AlunoEntity alunoEntity) {
         return alunoRepository.save(alunoEntity);
     }
 
@@ -116,15 +97,6 @@ public class AlunoService implements AlunoInterface {
         return null;
     }
 
-    @Override
-    public List<NotaEntity> buscarNotasDeAluno(AlunoEntity alunoEntity) {
-        List<NotaEntity> notaEntityList = notaService.buscarNotasPorIdAluno(alunoEntity.getId());
-        if (notaEntityList.isEmpty()) {
-            throw new NotaNotFoundException("Notas do Aluno Id " + alunoEntity.getId() + " não encontrado.");
-        } else {
-            return notaEntityList;
-        }
-    }
 
     @Override
     public ResponseAlunoListaDeNotasDTO criarResponseAlunoListaDeNotasDTO(List<NotaEntity> notasEntityList) {

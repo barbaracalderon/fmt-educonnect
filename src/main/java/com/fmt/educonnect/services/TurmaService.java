@@ -4,6 +4,8 @@ import com.fmt.educonnect.controllers.dtos.requests.RequestTurmaDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseTurmaDTO;
 import com.fmt.educonnect.datasource.entities.AlunoEntity;
 import com.fmt.educonnect.datasource.entities.TurmaEntity;
+import com.fmt.educonnect.datasource.entities.CursoEntity;
+import com.fmt.educonnect.datasource.entities.DocenteEntity;
 import com.fmt.educonnect.datasource.repositories.TurmaRepository;
 import com.fmt.educonnect.infra.exceptions.CursoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
@@ -21,29 +23,26 @@ public class TurmaService implements TurmaInterface {
 
     private final TurmaRepository turmaRepository;
     private final AlunoService alunoService;
+    private final CursoService cursoService;
+    private final DocenteService docenteService;
 
     @Autowired
     public TurmaService(TurmaRepository turmaRepository,
-                        AlunoService alunoService
+                        AlunoService alunoService,
+                        CursoService cursoService,
+                        DocenteService docenteService
     ) {
         this.turmaRepository = turmaRepository;
         this.alunoService = alunoService;
+        this.cursoService = cursoService;
+        this.docenteService = docenteService;
     }
 
     @Override
     public TurmaEntity criarTurma(RequestTurmaDTO requestTurmaDTO) {
 
-        List<TurmaEntity> turmaEntityList = turmaRepository.findAllByIdCurso(requestTurmaDTO.idCurso());
-        if (turmaEntityList.isEmpty()) {
-            throw new CursoNotFoundException("Id do Curso inválido: " + requestTurmaDTO.idCurso());
-        }
-
-        turmaEntityList = turmaRepository.findAllByIdDocente(requestTurmaDTO.idDocente());
-
-        if (turmaEntityList.isEmpty()) {
-            throw new DocenteNotFoundException("Id do Docente inválido: " + requestTurmaDTO.idDocente());
-        }
-
+        CursoEntity cursoEntity = cursoService.buscarCursoPorId(requestTurmaDTO.idCurso());
+        DocenteEntity docenteEntity = docenteService.buscarDocentePorId(requestTurmaDTO.idDocente());
         TurmaEntity turmaEntity = criarTurmaEntity(requestTurmaDTO);
         return turmaRepository.save(turmaEntity);
     }

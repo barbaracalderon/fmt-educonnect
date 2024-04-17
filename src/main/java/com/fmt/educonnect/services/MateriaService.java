@@ -2,7 +2,9 @@ package com.fmt.educonnect.services;
 
 import com.fmt.educonnect.controllers.dtos.requests.RequestMateriaDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseMateriaDTO;
+import com.fmt.educonnect.datasource.entities.CursoEntity;
 import com.fmt.educonnect.datasource.entities.MateriaEntity;
+import com.fmt.educonnect.datasource.repositories.CursoRepository;
 import com.fmt.educonnect.datasource.repositories.MateriaRepository;
 import com.fmt.educonnect.infra.exceptions.CursoNotFoundException;
 import com.fmt.educonnect.infra.exceptions.MateriaNotFoundException;
@@ -19,23 +21,20 @@ public class MateriaService implements MateriaInterface {
 
 
     private final MateriaRepository materiaRepository;
+    private final CursoService cursoService;
 
     @Autowired
-    public MateriaService(MateriaRepository materiaRepository) {
+    public MateriaService(MateriaRepository materiaRepository, CursoService cursoService) {
         this.materiaRepository = materiaRepository;
+        this.cursoService = cursoService;
     }
 
     @Override
     public MateriaEntity criarMateria(RequestMateriaDTO requestMateriaDTO) {
 
-        List<MateriaEntity> materiaEntityList = buscarMateriaPorIdCurso(requestMateriaDTO.idCurso());
-        if (materiaEntityList.isEmpty()) {
-            throw new CursoNotFoundException("Id do Curso inválido: " + requestMateriaDTO.idCurso());
-        }
-        else {
-            MateriaEntity materiaEntity = criarMateriaEntity(requestMateriaDTO);
-            return materiaRepository.save(materiaEntity);
-        }
+        CursoEntity cursoEntity = cursoService.buscarCursoPorId(requestMateriaDTO.idCurso());
+        MateriaEntity materiaEntity = criarMateriaEntity(requestMateriaDTO);
+        return materiaRepository.save(materiaEntity);
     }
 
     public List<MateriaEntity> buscarMateriaPorIdCurso(Long idCurso) {
