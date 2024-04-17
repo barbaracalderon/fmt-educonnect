@@ -14,8 +14,6 @@ Sou a Barbara Calderon, desenvolvedora de software.
 
 # Sumário
 
-# Sumário
-
 1. [Kanban e Trello](#1-kanban-e-trello)
 2. [Tecnologias utilizadas](#2-tecnologias-utilizadas)
 3. [Estrutura de pastas](#3-estrutura-de-pastas-do-projeto)
