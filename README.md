@@ -33,6 +33,8 @@ Sou a Barbara Calderon, desenvolvedora de software.
 
 Projeto desenvolvido seguindo [dashboard Kanban via Trello, modo público de acesso](https://trello.com/b/FR67nTgH/fmt-m%C3%B3dulo-1-projeto-avaliativo).
 
+Export do Insomnia presente no projeto: `educonnect.json`
+
 ## 2. Tecnologias utilizadas
 
 Abaixo, a configuração do projeto Maven.
