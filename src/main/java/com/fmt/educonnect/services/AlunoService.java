@@ -5,17 +5,12 @@ import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoListaDeNotasDTO;
 import com.fmt.educonnect.controllers.dtos.responses.ResponseAlunoPontuacaoDTO;
 import com.fmt.educonnect.datasource.entities.AlunoEntity;
-import com.fmt.educonnect.datasource.entities.CadastroEntity;
 import com.fmt.educonnect.datasource.entities.NotaEntity;
 import com.fmt.educonnect.datasource.repositories.AlunoRepository;
 import com.fmt.educonnect.infra.exceptions.AlunoNotFoundException;
-import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
-import com.fmt.educonnect.infra.exceptions.NotaNotFoundException;
-import com.fmt.educonnect.infra.exceptions.TurmaNotFoundException;
 
 import com.fmt.educonnect.interfaces.AlunoInterface;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,27 +21,16 @@ import java.util.stream.Collectors;
 public class AlunoService implements AlunoInterface {
 
     private final AlunoRepository alunoRepository;
-    private final CadastroService cadastroService;
 
     @Autowired
-    public AlunoService(AlunoRepository alunoRepository,
-                        CadastroService cadastroService
+    public AlunoService(AlunoRepository alunoRepository
     ) {
         this.alunoRepository = alunoRepository;
-        this.cadastroService = cadastroService;
     }
 
 
     @Override
-    public AlunoEntity criarAluno(RequestAlunoDTO requestAlunoDTO) {
-
-        CadastroEntity cadastroEntity = cadastroService.buscarCadastroPorId(requestAlunoDTO.idCadastro());
-        List<AlunoEntity> alunoEntityList = alunoRepository.findAllByIdTurma(requestAlunoDTO.idTurma());
-        if (alunoEntityList.isEmpty()) {
-            throw new TurmaNotFoundException("Id da Turma não encontrado: " + requestAlunoDTO.idTurma());
-        }
-
-        AlunoEntity alunoEntity = criarAlunoEntity(requestAlunoDTO);
+    public AlunoEntity criarAluno(AlunoEntity alunoEntity) {
         return alunoRepository.save(alunoEntity);
     }
 

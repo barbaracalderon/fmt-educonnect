@@ -1,5 +1,6 @@
 package com.fmt.educonnect.services;
 
+import com.fmt.educonnect.controllers.dtos.requests.RequestAlunoDTO;
 import com.fmt.educonnect.datasource.entities.*;
 import com.fmt.educonnect.interfaces.AlunoNotaInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +11,20 @@ import java.util.List;
 @Service
 public class AlunoNotaService implements AlunoNotaInterface {
 
-    @Autowired
     private final NotaService notaService;
-    @Autowired
     private final AlunoService alunoService;
+    private final TurmaService turmaService;
+    private final CadastroService cadastroService;
 
-
-    public AlunoNotaService(NotaService notaService, AlunoService alunoService) {
+    @Autowired
+    public AlunoNotaService(NotaService notaService,
+                            AlunoService alunoService,
+                            TurmaService turmaService,
+                            CadastroService cadastroService) {
         this.notaService = notaService;
         this.alunoService = alunoService;
+        this.turmaService = turmaService;
+        this.cadastroService = cadastroService;
     }
 
     @Override
@@ -31,7 +37,11 @@ public class AlunoNotaService implements AlunoNotaInterface {
         return alunoService.buscarAlunoPorId(id);
     }
 
-
-
-
+    @Override
+    public AlunoEntity criarAluno(RequestAlunoDTO requestAlunoDTO) {
+        CadastroEntity cadastroEntity = cadastroService.buscarCadastroPorId(requestAlunoDTO.idCadastro());
+        TurmaEntity turmaEntity = turmaService.buscarTurmaPorId(requestAlunoDTO.idTurma());
+        AlunoEntity alunoEntity = alunoService.criarAlunoEntity(requestAlunoDTO);
+        return alunoService.criarAluno(alunoEntity);
+    }
 }

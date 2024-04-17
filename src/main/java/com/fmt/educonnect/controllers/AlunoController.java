@@ -30,7 +30,7 @@ public class AlunoController {
     public ResponseEntity<?> criarAluno(@RequestBody RequestAlunoDTO requestAlunoDTO) {
         try {
             log.info("POST /alunos ---> Chamada para o método.");
-            AlunoEntity alunoEntity = alunoService.criarAluno(requestAlunoDTO);
+            AlunoEntity alunoEntity = alunoNotaService.criarAluno(requestAlunoDTO);
             ResponseAlunoDTO responseAlunoDTO = alunoService.criarResponseAlunoDTO(alunoEntity);
             log.info("POST /alunos ---> Sucesso.");
             return ResponseEntity.status(HttpStatus.CREATED).body(responseAlunoDTO);

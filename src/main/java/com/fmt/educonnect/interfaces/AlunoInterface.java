@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface AlunoInterface {
 
-    AlunoEntity criarAluno(RequestAlunoDTO requestAlunoDTO);
+    AlunoEntity criarAluno(AlunoEntity alunoEntity);
 
     AlunoEntity criarAlunoEntity(RequestAlunoDTO requestAlunoDTO);
 
