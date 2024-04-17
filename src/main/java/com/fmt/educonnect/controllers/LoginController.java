@@ -29,7 +29,7 @@ public class LoginController {
     private TokenService tokenService;
 
     @PostMapping()
-    public ResponseEntity login(@RequestBody @Valid RequestLoginDTO body) {
+    public ResponseEntity login(@Valid @RequestBody RequestLoginDTO body) {
         try{
             log.info("POST /login ---> Chamada para o método.");
             var usernamePassword = new UsernamePasswordAuthenticationToken(body.login(), body.password());

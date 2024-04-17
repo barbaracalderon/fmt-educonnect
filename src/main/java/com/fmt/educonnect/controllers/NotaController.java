@@ -27,7 +27,7 @@ public class NotaController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> criarNota(@RequestBody @Valid RequestNotaDTO requestNotaDTO) {
+    public ResponseEntity<?> criarNota(@Valid @RequestBody RequestNotaDTO requestNotaDTO) {
         try {
             log.info("POST /notas ---> Chamada para o método.");
             NotaEntity notaEntity = notaService.criarNota(requestNotaDTO);
@@ -69,7 +69,7 @@ public class NotaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizarNota(@PathVariable("id") Long id, @RequestBody RequestNotaDTO requestNotaDTO) {
+    public ResponseEntity<?> atualizarNota(@PathVariable("id") Long id, @Valid @RequestBody RequestNotaDTO requestNotaDTO) {
         try {
             log.info("PUT /notas/{} ---> Chamada para o método.", id);
             NotaEntity notaEntity = notaService.atualizarNota(id, requestNotaDTO);

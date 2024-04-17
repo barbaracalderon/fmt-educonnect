@@ -29,7 +29,7 @@ public class TurmaController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> criarTurma(@RequestBody @Valid RequestTurmaDTO requestTurmaDTO) {
+    public ResponseEntity<?> criarTurma(@Valid @RequestBody RequestTurmaDTO requestTurmaDTO) {
 
         try {
             log.info("POST /turmas ---> Chamada para o método.");
@@ -71,7 +71,7 @@ public class TurmaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizarTurma(@PathVariable("id") Long id, @RequestBody RequestTurmaDTO requestTurmaDTO) {
+    public ResponseEntity<?> atualizarTurma(@PathVariable("id") Long id, @Valid @RequestBody RequestTurmaDTO requestTurmaDTO) {
         try {
             log.info("PUT /turmas/{} ---> Chamada para o método.", id);
             TurmaEntity turmaEntity = turmaService.atualizarTurma(id, requestTurmaDTO);

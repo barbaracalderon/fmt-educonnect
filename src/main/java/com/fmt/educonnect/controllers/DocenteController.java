@@ -6,6 +6,7 @@ import com.fmt.educonnect.datasource.entities.DocenteEntity;
 import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
 import com.fmt.educonnect.infra.exceptions.CadastroNotFoundException;
 import com.fmt.educonnect.services.DocenteService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class DocenteController {
     private DocenteService docenteService;
 
     @PostMapping
-    public ResponseEntity<?> criarDocente(@RequestBody RequestDocenteDTO requestDocenteDTO) {
+    public ResponseEntity<?> criarDocente(@Valid @RequestBody RequestDocenteDTO requestDocenteDTO) {
         try {
             log.info("POST /docentes ---> Chamada para o método.");
             DocenteEntity docenteEntitySalvo = docenteService.criarDocente(requestDocenteDTO);
@@ -64,7 +65,7 @@ public class DocenteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizarDocente(@PathVariable("id") Long id, @RequestBody RequestDocenteDTO requestDocenteDTO) {
+    public ResponseEntity<?> atualizarDocente(@PathVariable("id") Long id, @Valid @RequestBody RequestDocenteDTO requestDocenteDTO) {
         try {
             log.info("PUT /docentes/{} ---> Chamada para o método.", id);
             DocenteEntity docenteEntitySalvo = docenteService.atualizarDocente(id, requestDocenteDTO);

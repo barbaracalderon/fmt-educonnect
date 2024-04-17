@@ -7,6 +7,7 @@ import com.fmt.educonnect.infra.exceptions.DocenteNotFoundException;
 import com.fmt.educonnect.datasource.entities.CursoEntity;
 import com.fmt.educonnect.infra.exceptions.MateriaNotFoundException;
 import com.fmt.educonnect.services.CursoService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class CursoController {
     private CursoService cursoService;
 
     @PostMapping
-    public ResponseEntity<ResponseCursoDTO> criarCurso(@RequestBody RequestCursoDTO requestCursoDTO) {
+    public ResponseEntity<ResponseCursoDTO> criarCurso(@Valid @RequestBody RequestCursoDTO requestCursoDTO) {
         log.info("POST /cursos ---> Chamada para o método.");
 
         CursoEntity cursoEntitySalvo = cursoService.criarCurso(requestCursoDTO);
@@ -65,7 +66,7 @@ public class CursoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizarCurso(@PathVariable("id") Long id, @RequestBody RequestCursoDTO requestCursoDTO) {
+    public ResponseEntity<?> atualizarCurso(@PathVariable("id") Long id, @Valid @RequestBody RequestCursoDTO requestCursoDTO) {
         try {
             log.info("PUT /cursos/{} ---> Chamada para o método.", id);
             CursoEntity cursoEntitySalvo = cursoService.atualizarCurso(id, requestCursoDTO);
