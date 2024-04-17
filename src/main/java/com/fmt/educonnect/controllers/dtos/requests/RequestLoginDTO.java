@@ -1,8 +1,11 @@
 package com.fmt.educonnect.controllers.dtos.requests;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public record RequestLoginDTO(
-        String login,
-        String password) {
+        @NotBlank() String login,
+        @NotBlank() String password) {
 
 
 }

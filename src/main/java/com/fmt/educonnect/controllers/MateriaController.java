@@ -29,7 +29,7 @@ public class MateriaController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> criarMateria(@RequestBody @Valid RequestMateriaDTO requestMateriaDTO) {
+    public ResponseEntity<?> criarMateria(@Valid @RequestBody RequestMateriaDTO requestMateriaDTO) {
 
         try {
             log.info("POST /materias ---> Chamada para o método.");
@@ -72,7 +72,7 @@ public class MateriaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizarMateria(@PathVariable("id") Long id, @RequestBody RequestMateriaDTO requestMateriaDTO) {
+    public ResponseEntity<?> atualizarMateria(@PathVariable("id") Long id, @Valid @RequestBody RequestMateriaDTO requestMateriaDTO) {
         try {
             log.info("PUT /materias/{} ---> Chamada para o método.", id);
             MateriaEntity materiaEntitySalvo = materiaService.atualizarMateria(id, requestMateriaDTO);

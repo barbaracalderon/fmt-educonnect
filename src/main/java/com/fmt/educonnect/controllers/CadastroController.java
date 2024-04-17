@@ -30,7 +30,7 @@ public class CadastroController {
 
 
     @PostMapping()
-    public ResponseEntity<?> criarCadastro(@RequestBody @Valid RequestCadastroDTO requestCadastroDTO) {
+    public ResponseEntity<?> criarCadastro(@Valid @RequestBody RequestCadastroDTO requestCadastroDTO) {
         if (loginService.loadUserByUsername(requestCadastroDTO.login()) != null) {
             return ResponseEntity.badRequest().build();
 

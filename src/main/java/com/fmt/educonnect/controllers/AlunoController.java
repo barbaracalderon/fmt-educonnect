@@ -9,6 +9,7 @@ import com.fmt.educonnect.datasource.entities.NotaEntity;
 import com.fmt.educonnect.infra.exceptions.*;
 import com.fmt.educonnect.services.AlunoNotaService;
 import com.fmt.educonnect.services.AlunoService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ public class AlunoController {
     @Autowired AlunoService alunoService;
 
     @PostMapping
-    public ResponseEntity<?> criarAluno(@RequestBody RequestAlunoDTO requestAlunoDTO) {
+    public ResponseEntity<?> criarAluno(@Valid  @RequestBody RequestAlunoDTO requestAlunoDTO) {
         try {
             log.info("POST /alunos ---> Chamada para o método.");
             AlunoEntity alunoEntity = alunoNotaService.criarAluno(requestAlunoDTO);
@@ -68,7 +69,7 @@ public class AlunoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizarAluno(@PathVariable("id") Long id, @RequestBody RequestAlunoDTO RequestAlunoDTO) {
+    public ResponseEntity<?> atualizarAluno(@PathVariable("id") Long id, @Valid @RequestBody RequestAlunoDTO RequestAlunoDTO) {
         try {
             log.info("PUT /alunos/{} ---> Chamada para o método.", id);
             AlunoEntity alunoEntity = alunoService.atualizarAluno(id, RequestAlunoDTO);
