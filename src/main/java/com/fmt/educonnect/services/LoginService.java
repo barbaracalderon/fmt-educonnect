@@ -1,6 +1,7 @@
 package com.fmt.educonnect.services;
 
 import com.fmt.educonnect.datasource.repositories.CadastroRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,4 +18,5 @@ public class LoginService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return cadastroRepository.findByLogin(username);
     }
+
 }

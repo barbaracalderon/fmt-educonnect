@@ -15,16 +15,19 @@ public class AlunoNotaService implements AlunoNotaInterface {
     private final AlunoService alunoService;
     private final TurmaService turmaService;
     private final CadastroService cadastroService;
+    private final LoginService loginService;
 
     @Autowired
     public AlunoNotaService(NotaService notaService,
                             AlunoService alunoService,
                             TurmaService turmaService,
-                            CadastroService cadastroService) {
+                            CadastroService cadastroService,
+                            LoginService loginService) {
         this.notaService = notaService;
         this.alunoService = alunoService;
         this.turmaService = turmaService;
         this.cadastroService = cadastroService;
+        this.loginService = loginService;
     }
 
     @Override
@@ -44,4 +47,10 @@ public class AlunoNotaService implements AlunoNotaInterface {
         AlunoEntity alunoEntity = alunoService.criarAlunoEntity(requestAlunoDTO);
         return alunoService.criarAluno(alunoEntity);
     }
+
+    @Override
+    public CadastroEntity buscarCadastroPorLogin(String login) {
+        return (CadastroEntity) loginService.loadUserByUsername(login);
+    }
+
 }
