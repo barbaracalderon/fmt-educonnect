@@ -160,37 +160,37 @@ Uma descrição mais detalhada de cada rota, método HTTP, JSON de request e JSO
 | `permitAll()`                  | POST        | /login                 | ```{"login": "maria", "password": "1234"}```                                                      | 
 | `ADMIN, PEDAGOGICO, RECRUITER` | POST        | /docentes              | ```{"nome": "Maria Silva", "dataEntrada": "01-01-2001", "idCadastro": 1}```                       |
 | `ADMIN, PEDAGOGICO, RECRUITER` | GET         | /docentes              |                                                                                                   |
-| `ADMIN, PEDAGOGICO, RECRUITER` | GET         | /docentes/<id>         |                                                                                                   |
-| `ADMIN, PEDAGOGICO, RECRUITER` | PUT         | /docentes/<id>         | ```{"nome": "Marina Silva", "dataEntrada": "05-05-2005", "idCadastro": 1}```                      |
+| `ADMIN, PEDAGOGICO, RECRUITER` | GET         | /docentes/{id}         |                                                                                                   |
+| `ADMIN, PEDAGOGICO, RECRUITER` | PUT         | /docentes/{id}         | ```{"nome": "Marina Silva", "dataEntrada": "05-05-2005", "idCadastro": 1}```                      |
 | `ADMIN, PEDAGOGICO`            | POST        | /cursos                | ```{"nome": "Filosofia", "dataEntrada": "04-08-2019"}```                                          |
 | `ADMIN, PEDAGOGICO`            | GET         | /cursos                |                                                                                                   |
-| `ADMIN, PEDAGOGICO`            | GET         | /cursos/<id>           | ```{"nome": "Filosofia", "dataEntrada": "04-08-2019"}```                                          |
-| `ADMIN, PEDAGOGICO`            | PUT         | /cursos/<id>           | ```{"nome": "Sistemas de Informação", "dataEntrada": "04-08-2019"}```                             |
-| `ADMIN`                        | DELETE      | /cursos/<id>           |                                                                                                   |
+| `ADMIN, PEDAGOGICO`            | GET         | /cursos/{id}           | ```{"nome": "Filosofia", "dataEntrada": "04-08-2019"}```                                          |
+| `ADMIN, PEDAGOGICO`            | PUT         | /cursos/{id}           | ```{"nome": "Sistemas de Informação", "dataEntrada": "04-08-2019"}```                             |
+| `ADMIN`                        | DELETE      | /cursos/{id}           |                                                                                                   |
 | `ADMIN`                        | POST        | /materias              | ```{"nome": "Engenharia de Software", "dataEntrada": "04-08-2019",	"idCurso": 2}```               |
 | `ADMIN`                        | GET         | /materias              |                                                                                                   |
-| `ADMIN`                        | GET         | /materias/<id>         |                                                                                                   |
-| `ADMIN`                        | GET         | /materias/cursos/<id>  |                                                                                                   |
-| `ADMIN`                        | PUT         | /materias/<id>         | ```{"nome": "Compiladores", "dataEntrada": "04-08-2019"}```                                       |
-| `ADMIN`                        | DELETE      | /materias/<id>         |                                                                                                   |
+| `ADMIN`                        | GET         | /materias/{id}         |                                                                                                   |
+| `ADMIN`                        | GET         | /materias/cursos/{id}  |                                                                                                   |
+| `ADMIN`                        | PUT         | /materias/{id}         | ```{"nome": "Compiladores", "dataEntrada": "04-08-2019"}```                                       |
+| `ADMIN`                        | DELETE      | /materias/{id}         |                                                                                                   |
 | `ADMIN, PEDAGOGICO`            | POST        | /turmas                | ```{"nome": "Turma 2022.2", "dataEntrada": "11-08-2022", "idDocente": 5, "idCurso": 4}```         |
 | `ADMIN, PEDAGOGICO`            | GET         | /turmas                |                                                                                                   |
-| `ADMIN, PEDAGOGICO`            | GET         | /turmas/<id>           |                                                                                                   |
-| `ADMIN, PEDAGOGICO`            | PUT         | /turmas/<id>           | ```{"nome": "Turma 2024.1", "dataEntrada": "11-08-2022", "idDocente": 2, "idCurso": 2}```         |
-| `ADMIN`                        | DELETE      | /turmas/<id>           |                                                                                                   |
+| `ADMIN, PEDAGOGICO`            | GET         | /turmas/{id}           |                                                                                                   |
+| `ADMIN, PEDAGOGICO`            | PUT         | /turmas/{id}           | ```{"nome": "Turma 2024.1", "dataEntrada": "11-08-2022", "idDocente": 2, "idCurso": 2}```         |
+| `ADMIN`                        | DELETE      | /turmas/{id}           |                                                                                                   |
 | `ADMIN`                        | POST        | /alunos                | ```{"nome": "Aluno A", "dataNascimento": "01-01-1997", "idCadastro": 17, "idTurma": 1}```         |
 | `ADMIN`                        | GET         | /alunos                |                                                                                                   |
-| `ADMIN`                        | GET         | /alunos/<id>           |                                                                                                   |
-| `ADMIN, ALUNO`                 | GET         | /alunos/<id>/notas     |                                                                                                   |
-| `ADMIN, ALUNO`                 | GET         | /alunos/<id>/pontuacao |                                                                                                   |
-| `ADMIN`                        | PUT         | /alunos/<id>           | ```{"nome": "Aluno B", "dataNascimento": "04-08-1990"}```                                         |
-| `ADMIN`                        | DELETE      | /alunos/<id>           |                                                                                                   |
+| `ADMIN`                        | GET         | /alunos/{id}           |                                                                                                   |
+| `ADMIN, ALUNO`                 | GET         | /alunos/{id}/notas     |                                                                                                   |
+| `ADMIN, ALUNO`                 | GET         | /alunos/{id}/pontuacao |                                                                                                   |
+| `ADMIN`                        | PUT         | /alunos/{id}           | ```{"nome": "Aluno B", "dataNascimento": "04-08-1990"}```                                         |
+| `ADMIN`                        | DELETE      | /alunos/{id}           |                                                                                                   |
 | `ADMIN, PROFESSOR`             | POST        | /notas                 | ```{"dataLancamento": "01-01-2021", "idAluno": 4, "idDocente": 4, "idMateria": 3, "valor": 50}``` |
 | `ADMIN, PROFESSOR`             | GET         | /notas                 |                                                                                                   |
-| `ADMIN, PROFESSOR`             | GET         | /notas/<id>            |                                                                                                   |
-| `ADMIN, PROFESSOR, ALUNO`      | GET         | /notas/aluno/<id>      |                                                                                                   |
-| `ADMIN, PROFESSOR`             | PUT         | /notas/<id>            | ```{"dataLancamento": "01-01-2001", "idAluno": 3, "idDocente": 2, "idMateria": 1, "valor": 75}``` |
-| `ADMIN`                        | DELETE      | /alunos/<id>           |                                                                                                   |
+| `ADMIN, PROFESSOR`             | GET         | /notas/{id}            |                                                                                                   |
+| `ADMIN, PROFESSOR, ALUNO`      | GET         | /notas/aluno/{id}      |                                                                                                   |
+| `ADMIN, PROFESSOR`             | PUT         | /notas/{id}            | ```{"dataLancamento": "01-01-2001", "idAluno": 3, "idDocente": 2, "idMateria": 1, "valor": 75}``` |
+| `ADMIN`                        | DELETE      | /alunos/{id}           |                                                                                                   |
 
 ### Logs
 
