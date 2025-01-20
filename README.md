@@ -100,8 +100,8 @@ INSERT INTO papel (nome_papel) VALUES
 spring.application.name=educonnect
 server.port=8080
 spring.datasource.url=jdbc:postgresql://localhost:5432/educonnect
-spring.datasource.username=[seu-usuario-aqui]
-spring.datasource.password=[sua-senha-aqui]
+spring.datasource.username=[your-password-here]
+spring.datasource.password=[your-password-here]
 spring.datasource.driver-class-name=org.postgresql.Driver
 spring.jpa.properties.hibernate.format_sql=true
 spring.jpa.hibernate.ddl-auto=update
@@ -153,7 +153,7 @@ The sequence of endpoints for data manipulation and persistence is as follows:
 A detailed description of each route, its HTTP method, request JSON, response JSON (or exception message) is provided later in the documentation.
 
 
-## 7. Endpoint description
+## 7. Endpoint descriptions
 
 | Authorization                    | HTTP Method | Endpoint               | Request Body (Example)                                                                            |
 |--------------------------------|-------------|------------------------|---------------------------------------------------------------------------------------------------|
