@@ -1,82 +1,82 @@
 # EduConnect API
 
-A aplicação EduConnect é um sistema de gestão educacional que oferece uma API RESTful para facilitar a administração de instituições de ensino. Ela permite o gerenciamento de alunos, professores, cursos, notas e outras informações relacionadas à educação. Através da API, os usuários podem realizar operações como criar, atualizar, recuperar e excluir dados persistidos no banco de dados, além de autenticar usuários e controlar o acesso aos endpoints de acordo com seus papéis e permissões.
+This project was created as part of the Java Backend module at Lab365, SENAI - Florianópolis, SC. It was developed in Java with Spring Boot to manage educational resources, and uses JDK 17 and a PostgreSQL database with a specified schema.
 
-Este projeto foi desenvolvido em Java e Spring Boot para gerenciar recursos educacionais. Utiliza JDK 17 e banco de dados PostgreSQL com o esquema de banco de dados especificado. Esta é uma atividade desenvolvida dentro do módulo de Backend Java, Lab365, SENAI - Florianópolis, SC.
-
+The EduConnect application is an educational management system that offers a RESTful API to facilitate the administration of educational institutions. It allows managing students, teachers, courses, grades, and other education-related information. Through the API, users can perform operations such as creating, updating, retrieving, and deleting data stored in the database, as well as authenticating users and controlling access to endpoints based on their roles and permissions.
 
 ## Autora
 
-Sou a Barbara Calderon, desenvolvedora de software.
+I am Barbara Calderon, a software developer.
 - [Github](https://www.github.com/barbaracalderon)
-- [Linkedin](https://www.linkedin.com/in/barbaracalderondev)
+- [Linkedin](https://www.linkedin.com/in/barbaracalderondev/?locale=en_US)
 - [Twitter](https://www.x.com/bederoni)
 
-# Sumário
+# Table of Contents
 
-1. [Kanban e Trello](#1-kanban-e-trello)
-2. [Tecnologias utilizadas](#2-tecnologias-utilizadas)
-3. [Estrutura de pastas](#3-estrutura-de-pastas-do-projeto)
-4. [Rotas e autorizações](#4-rotas-e-autorizações)
-5. [Instalação](#5-instalação)
-6. [Passo-a-passo de uso](#6-passo-a-passo-de-uso)
-7. [Descrição de endpoints](#7-descrição-de-endpoints)
-8. [Princípio de responsabilidade única](#8-princípio-de-responsabilide-única)
-9. [Gitflow e desenvolvimento](#9-gitflow-e-desenvolvimento)
-10. [Futuramente](#10-futuramente)
-11. [Considerações finais](#considerações-finais)
+1. [Kanban and Trello](#1-kanban-and-trello)  
+2. [Technologies Used](#2-technologies-used)  
+3. [Project Folder Structure](#3-project-folder-structure)  
+4. [Routes and Authorizations](#4-routes-and-authorizations)  
+5. [Installation](#5-installation)  
+6. [Step-by-Step Usage](#6-step-by-step-usage)  
+7. [Endpoint Descriptions](#7-endpoint-descriptions)  
+8. [Single Responsibility Principle](#8-single-responsibility-principle)  
+9. [Gitflow and Development](#9-gitflow-and-development)  
+10. [Future Enhancements](#10-future-enhancements)  
+11. [Final Considerations](#final-considerations)  
+
+## 1. Kanban and Trello
+
+The project was developed using a [public Kanban dashboard on Trello](https://trello.com/b/FR67nTgH/fmt-m%C3%B3dulo-1-projeto-avaliativo).  
+
+An Insomnia export file for testing (`educonnect.json`) is included in the project.
+
+## 2. Technologies Used
+
+Below is the Maven project configuration.
+
+- **Spring Boot**: Framework for developing Java applications based on Spring.
+- **Spring Boot Starter Data JPA**: Support for using Spring Data JPA for data persistence.
+- **Spring Boot Starter Security**: Integration of Spring Security for authentication and authorization.
+- **Spring Boot Starter Web**: Configuration for developing web applications with Spring MVC.
+- **Spring Boot DevTools**: Development tools for automatic reload and other features during development.
+- **Spring Boot Starter Data JDBC**: Support for using Spring Data JDBC.
+- **PostgreSQL JDBC Driver**: For connecting to the PostgreSQL database.
+- **Flyway Core**: Tool for database version control and migrations.
+- **Jakarta Validation API**: Validation API for Java object validation.
+- **Java JWT**: Library for creating and verifying JWT (JSON Web Tokens).
+- **Lombok**: Library that simplifies the creation of Java classes by reducing boilerplate code.
+
+## 3. Project Folder Structure
+
+The project was designed to follow a folder organization divided into: controllers (+dtos), datasource (entities and repositories), infra (exceptions and security), interfaces, and services.
+
+![Folder Structure](educonnect_estrutura_de_pastas.png)
+
+## 4. Routes and Authorizations
+
+First, the database must be populated with the roles available for this application.
+
+![Roles in the 'papel' table in the DB](educonnect_papeis.png)
+
+When registering a user, you must specify the role ID that exists in the database. For example, when creating an ADMIN user, the role ID (`id_papel`) should be set to 1, and so on. This is important because no other roles will be accepted. The application uses this role assignment during registration to check route authorizations (`getAuthorities()`). For instance, a student user does not have access to teacher-related routes.
+
+**Important Note**: Since the application starts with an empty database, it is not feasible to allow only ADMIN users to register others because the ADMIN user does not exist initially. Therefore, this route is open to everyone (`permitAll()`).
 
 
-## 1. Kanban e Trello
 
-Projeto desenvolvido seguindo [dashboard Kanban via Trello, modo público de acesso](https://trello.com/b/FR67nTgH/fmt-m%C3%B3dulo-1-projeto-avaliativo).
+## 5. Installation
 
-Export do Insomnia presente no projeto: `educonnect.json`
-
-## 2. Tecnologias utilizadas
-
-Abaixo, a configuração do projeto Maven.
-
-- **Spring Boot**: Estrutura para desenvolvimento de aplicativos Java baseados em Spring.
-- **Spring Boot Starter Data JPA**: Suporte ao uso do Spring Data JPA para persistência de dados.
-- **Spring Boot Starter Security**: Integração do Spring Security para autenticação e autorização.
-- **Spring Boot Starter Web**: Configurações para desenvolvimento de aplicativos web com Spring MVC.
-- **Spring Boot DevTools**: Ferramentas de desenvolvimento para recarregamento automático e outras funcionalidades durante o desenvolvimento.
-- **Spring Boot Starter Data JDBC**: Suporte ao uso do Spring Data JDBC.
-- **PostgreSQL Driver JDBC**: Para conexão com o banco de dados PostgreSQL.
-- **Flyway Core**: Ferramenta para controle de versão e migração de bancos de dados.
-- **Jakarta Validation API**: API de validação para validação de objetos Java.
-- **Java JWT**: Biblioteca para criação e verificação de tokens JWT (JSON Web Tokens).
-- **Lombok**: Biblioteca que simplifica a criação de classes Java, reduzindo a quantidade de código boilerplate.
-
-## 3. Estrutura de pastas do projeto
-
-O projeto foi desenvolvido de modo a seguir uma organização de pastas dividida em: controllers (+dtos), datasource (entities e repositories), infra (exceptions e security), interfaces e services.
-
-![Estrutura de pastas](educonnect_estrutura_de_pastas.png)
-
-## 4. Rotas e autorizações
-
-Primeiramente, é preciso povoar o banco de dados com os papéis possíveis para essa aplicação. 
-
-![Papeis na tabela papel no BD](educonnect_papeis.png)
-
-Com isso, na hora de realizar o cadastro de um usuário, é preciso designar o id do papel que existe no banco. Por exemplo, na hora de criar um usuário do tipo ADMIN, é preciso indicar o id_papel de número 1. E assim sucessivamente. Isso é importante porque nenhum outro papel será aceito. É com base nessa designação, na hora da criação de um cadastro, que a aplicação confere autorização para rotas (`getAuthorities()`). Um usuário aluno não tem acesso à rota de docentes, por exemplo. 
-
-**Uma observação importante**: como a aplicação começa com o BD vazio, não é possível permitir que apenas usuário de papel ADMIN faça o cadastro dos demais..., pois ele ainda não existe. Portanto, essa rota está permissiva a qualquer um (`permitAll()`).
-
-
-## 5. Instalação
-
-### a) Clone o repositório
+### a) Clone the Repository
 
 ```
 git clone git@github.com:barbaracalderon/fmt-educonnect.git
 ```
 
-### b) Configue o banco de dados
+### b) Configure the Database
 
-No momento de start da aplicação, as tabelas são criadas automaticamente no banco. Elas estão vazias. De todo modo, as queries para criar a tabela `papel`e povoar com os dados do Enum estão abaixo:
+When starting the application, the tables are automatically created in the database, but they will be empty. Below are the queries to create the `papel` table and populate it with Enum values:
+
 
 ```sql
 CREATE TABLE papel (
@@ -94,7 +94,7 @@ INSERT INTO papel (nome_papel) VALUES
 ('ALUNO');
 ```
 
-### c) Configure o arquivo application.properties
+### c) Configure the application.properties file
 
 ```properties
 spring.application.name=educonnect
@@ -111,35 +111,35 @@ spring.flyway.schemas=public
 api.security.token.secret=${JWT_SECRET:my-secret-key}
 ```
 
-### d) Execute a aplicação
+### d) Run the application
 
-Navegue até o diretório onde está o projeto e rode a aplicação com o comando:
+Navigate to the project directory and run the application with the following command:
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-O servidor será iniciado em http://localhost:8080/
+The server will start at http://localhost:8080/
 
-## 6. Passo-a-passo de uso
+## 6. Step-by-step usage
 
-Com o servidor rodando e o banco de dados criado, e depois de povoar a tabela Papel com os valores de Enum, é preciso efetivamente povoar todas as tabelas para verificar o funcionamento de todos os endpoints com seus respectivos métodos HTTP. Lembrando que o primeiro cadastro é de um usuário ADMIN. 
+With the server running and the database created, and after populating the `Papel` table with Enum values, all tables must be populated to test the functionality of all endpoints with their corresponding HTTP methods. Remember, the first user registration should be for an ADMIN user.
 
-### - Cadastro de usuário ADMIN
+### - Registering an ADMIN User
 
-Esse cadastro de usuário ADMIN é essencial. Depois de cadastrado no endpoint POST /cadastro, o usuário existe no sistema. 
+Registering an ADMIN user is essential. Once registered via the POST `/cadastro` endpoint, the user will exist in the system.
 
-### - Login no sistema
+### - Logging into the System
 
-A partir disso é possível realizar um login por meio do endpoint POST /login, onde, após conferência de compatibilidade das senhas, será fornecido um token como resposta... em caso de sucesso. Esse token deve ser copiado e utilizado no headers, como um Bearer Token. A partir de agora, o uso desse token é obrigatório para cada requisição, sob risco de **STATUS CODE 403 Forbidden** - que é a proibição de acesso a uma rota.
+After registering, it is possible to log in through the POST `/login` endpoint. If the password verification is successful, a token will be provided as a response. This token must be copied and used in the request headers as a Bearer Token. From this point on, using the token is mandatory for every request, or a **403 Forbidden** status code will be returned, indicating access to the route is denied.
 
-Vale ressaltar que no momento do cadastro é designado um tipo de autorização para o usuário, com base no idPapel fornecido no cadastro. Cada endpoint tem seu acesso liberado ou restrito, conforme o papel do usuário. Esse esquema de autorização/restrição de acesso a rotas baseado no papel é descrito no arquivo `SecurityConfigurations` (permissões de acesso) e `CadastroEntity` (concessão de autorizações).
+It is important to note that during registration, an authorization type is assigned to the user based on the `idPapel` provided. Each endpoint's access is either granted or restricted according to the user’s role. This authorization/restriction scheme based on roles is defined in the `SecurityConfigurations` file (access permissions) and the `CadastroEntity` file (authorization assignment).
 
-### - Sequência de endpoints
+### - Endpoint Sequence
 
-É preciso seguir uma sequência na ordem de chamadas aos endpoints para povoamento dos dados no banco, uma vez que as tabelas têm relacionamentos entre si e dependência. Por exemplo, só é possível criar Docente por meio de um idCadastro - o que implica que o usuário já deve ser cadastrado na aplicação. A partir da sua existência na aplicação, pode-se criar então o Docente fornecendo o idCadastro do usuário.
+The order of endpoint calls must be followed to populate the database correctly, as the tables have relationships and dependencies. For instance, creating a teacher (`Docente`) requires a `idCadastro`, meaning the user must already be registered in the system. Once the user exists, a teacher can be created by providing the user’s `idCadastro`.
 
-Dito isso, a sequência de uso das rotas para manipulação e persistência dos dados é:
+The sequence of endpoints for data manipulation and persistence is as follows:
 
 1. `/cadastro`
 2. `/login`
@@ -150,11 +150,12 @@ Dito isso, a sequência de uso das rotas para manipulação e persistência dos 
 7. `/alunos`
 8. `/notas`
 
-Uma descrição mais detalhada de cada rota, método HTTP, JSON de request e JSON de resposta (ou mensagem de exceção) é fornecido adiante.
+A detailed description of each route, its HTTP method, request JSON, response JSON (or exception message) is provided later in the documentation.
 
-## 7. Descrição de endpoints
 
-| Autorização                    | Método HTTP | Endpoint               | Request Body (Exemplo)                                                                            |
+## 7. Endpoint description
+
+| Authorization                    | HTTP Method | Endpoint               | Request Body (Example)                                                                            |
 |--------------------------------|-------------|------------------------|---------------------------------------------------------------------------------------------------|
 | `permitAll()`                  | GET         | /cadastro              | ```{"nome": "Maria Silva", "login": "maria", "password": "1234", "idPapel": 1}```                 |
 | `permitAll()`                  | POST        | /login                 | ```{"login": "maria", "password": "1234"}```                                                      | 
@@ -194,47 +195,44 @@ Uma descrição mais detalhada de cada rota, método HTTP, JSON de request e JSO
 
 ### Logs
 
-A aplicação conta com aplicação de Logs (`@slf4j`) para visualização de `infos` e `errors` no terminal.
+The application includes logging functionality (`@slf4j`) to display `info` and `error` messages in the terminal.
 
-## 8. Princípio de responsabilidade única
+## 8. Single Responsibility Principle
 
-O projeto visa a adoção do Princípio de Responsabilidade Única ("Single Responsability Principle - SRP") amplamente descrito no paradigma da Programação Orientada a Objeto, definido por Robert C. Martin. Assim, as classes têm apenas uma única responsabilidade.
+The project follows the **Single Responsibility Principle (SRP)**, a core concept in Object-Oriented Programming, defined by Robert C. Martin. Each class is designed to handle only one responsibility.
 
-Desta forma, no contexto deste projeto, o SRP foi adotado:
+In this project, SRP was applied as follows:
 
-- **Controllers**: as classes de _controller_ recebem as requisições de HTTP e delegam o processamento para as classes de serviço Service, de modo apenas retornar as respostas adequadas para o cliente;
+- **Controllers**: Handle HTTP requests and delegate processing to service classes, returning appropriate responses to the client.
+- **Services**: Implement the application's business logic, performing validations, calculations, and data access through communication with repository classes. Each service communicates only with its respective repository (e.g., Service "A" interacts with Repository "A") or other service classes, not with other repositories directly.
+- **Repositories**: Provide methods to access and manipulate database records, sometimes with custom methods extending `JpaRepository`.
+- **DTOs (Data Transfer Objects)**: Transfer data between layers, handling only data attributes and accessor methods without business logic.
+- **Interfaces**: Define contracts for service classes, specifying methods for a specific area of functionality.
 
-- **Services**: as classes de _service_ foram responsáveis pela implementação das regras de negócio da aplicação, encapsulando a lógica relacionada às operações, como validações, cálculos e acesso aos dados por meio da comunicação com classes repositories. Assim, Service "A" apenas se comunica com seu respectivo _repository_, por exemplo, Repository "A", ou com outras classes _service_ - mas não com outros _repositories_.
-- **Repositories**: as classes de _repository_ foram responsáveis por fornecer métodos para acessar e manipular os dados no banco de dados, por vezes sendo criado um método específico dentro da implementação de extensão do JpaRepository;
-- **DTOs (Data Transfer Objects)**: as classes _DTOs_ foram responsáveis apenas pelo transporte dos dados entre as camadas da aplicação - request e response - contendo apenas atributos e seus métodos de acesso, sem nenhum lógica de negócio;
-- **Interfaces**: as classes de _interface_ definiram o contrato com o service, ou seja, os métodos relacionados a uma área específica da funcionalidade da aplicação.
+## 9. Gitflow and Development
 
-## 9. Gitflow e desenvolvimento
+This project follows the **Gitflow** branching model for version control:
 
-O desenvolvimento deste projeto foi realizado utilizando Gitflow, que é um modelo de fluxo de trabalho baseado em Git para o gerenciamento de branches. As branches utilizadas foram:
+- **Main**: Stable, production-ready code.
+- **Release**: Stable code ready for execution, with version numbers in the format `V.0.0.0`.
+- **Develop**: Main development branch where features are integrated.
+- **Features**: Branches for individual feature development (`feat`).
+- **Fixes**: Branches for bug fixes.
+- **Hotfix**: Emergency fixes applied to the production `main` branch.
 
-- **Main**: código estável e pronto para produção;
-- **Release**: código estável e pronto para execução. Cada branch release tem número de versão formato V.0.0.0;
-- **Develop**: desenvolvimento principal do código, agrupação das features;
-- **Features**: desenvolvimento de uma funcionalidade (_feat_) da aplicação;
-- **Fixes**: correção de bugs e problemas identificados;
-- **Hotfix**: correção de eventualidades identificadas na branch main em produção;
+## 10. Future Enhancements
 
-## 10. Futuramente
+Potential future improvements for this project:
 
-Este projeto também pode se beneficiar das seguintes implementações para o futuro:
+- **Automated Testing**: Implement unit tests using JUnit and Mockito.
+- **Swagger OpenAPI Documentation**: Adopt standardized API documentation with OpenAPI.
+- **Dockerization**: Add a `Dockerfile` to define the runtime environment and `docker-compose.yml` for container orchestration, simplifying deployment.
+- **Monitoring**: Integrate monitoring tools like Grafana to track application performance metrics.
 
-- Testes automatizados: implementação de testes unitários com JUnit e Mockito.
-- Documentação Swagger OpenAPI: adoção da documentação padronizada oferecida pela OpenAPI.
-- Dockerização: criação de arquivo _dockerfile_ para definir ambiente de execução e _docker-compose.yml_ para orquestração de contêineres, de modo a facilitar o empacotamento, distribuição e implantação desta aplicação em diferentes ambientes.
-- Monitoramento: configuração de ferramentas de monitoramento como Grafana para acompanhar métricas de desempenho da aplicação.
+## Final Considerations
 
+This project was developed individually as part of the Java Backend Module 1 assessment.
 
-## Considerações finais
-
-Esta foi uma atividade desenvolvida individualmente por mim a partir de uma proposta do módulo 1 Java Backend, correspondendo ao projeto avaliativo.
-
-Abs,
+Best regards,  
 
 Barbara Calderon.
-
